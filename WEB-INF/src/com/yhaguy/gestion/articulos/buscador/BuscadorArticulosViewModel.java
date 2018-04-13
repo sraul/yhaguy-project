@@ -557,7 +557,7 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 	public String getUrlBarcode() {
 		if (this.selectedItem == null) return "";
 		String codigo = (String) this.selectedItem.getPos1();
-		return "/yhaguy/archivos/barcodes/" + codigo.replace("/", "-") + ".pdf";
+		return "/yhaguy-project/archivos/barcodes/" + codigo.replace("/", "-") + ".pdf";
 	}
 	
 	/**
