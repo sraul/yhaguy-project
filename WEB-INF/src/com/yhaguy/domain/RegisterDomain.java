@@ -2692,7 +2692,8 @@ public class RegisterDomain extends Register {
 	public List<Articulo> getArticulos(String codigoInterno,
 			String codigoOriginal, String codigoProveedor, String descripcion)
 			throws Exception {
-		String query = "select a from Articulo a where lower(a.codigoInterno) like '%"
+		String query = "select a from Articulo a where a.articuloEstado.sigla = '" + Configuracion.SIGLA_ARTICULO_ESTADO_ACTIVO + "'"
+				+ " and lower(a.codigoInterno) like '%"
 				+ codigoInterno.toLowerCase()
 				+ "%' and lower(a.codigoOriginal) like '%"
 				+ codigoOriginal.toLowerCase()

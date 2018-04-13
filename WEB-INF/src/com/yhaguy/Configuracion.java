@@ -712,9 +712,9 @@ public class Configuracion extends Config {
 	public static String SIGLA_PROVEEDOR_TIPO_EXTERIOR = "PROV-TIPO-EXT";
 	public static String SIGLA_PROVEEDOR_ESTADO_ACTIVO = "PROV-EST-ACT";
 	public static String SIGLA_PROVEEDOR_ESTADO_INACT = "PROV-EST-INAC";
-	public static String SIGLA_ARTICULO_ESTADO_ACTIVO = "ART-EST-ACT";
-	public static String SIGLA_ARTICULO_ESTADO_INACTIVO = "ART-EST-INAC";
-	public static String SIGLA_ARTICULO_ESTADO_TEMPORAL = "ART-EST-TMP";
+	public static final String SIGLA_ARTICULO_ESTADO_ACTIVO = "ART-EST-ACT";
+	public static final String SIGLA_ARTICULO_ESTADO_INACTIVO = "ART-EST-INAC";
+	public static final String SIGLA_ARTICULO_ESTADO_TEMPORAL = "ART-EST-TMP";
 	public static String SIGLA_ARTICULO_LINEA = "ART-LIN";
 	public static String SIGLA_ARTICULO_LINEA_DEFAULT = "ART-LIN-DEF";
 	public static String SIGLA_ARTICULO_LINEA_NAVIERA = "ART-LIN-NAV";

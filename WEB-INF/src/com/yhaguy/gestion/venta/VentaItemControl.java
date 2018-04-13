@@ -182,7 +182,7 @@ public class VentaItemControl extends SoloViewModel {
 		be.setWidth("1000px");
 		be.setAnchoColumnas(ANCHOS);
 		be.setTitulo("Artículos del Depósito: " + deposito.getText());
-		be.addWhere("c.deposito.id = " + deposito.getId());
+		be.addWhere("c.deposito.id = " + deposito.getId() + " and c.articulo.articuloEstado.sigla = '" + Configuracion.SIGLA_ARTICULO_ESTADO_ACTIVO + "' ");
 		be.show(this.getFiltro(filtro), filtro);
 
 		if (be.isClickAceptar() == true) {

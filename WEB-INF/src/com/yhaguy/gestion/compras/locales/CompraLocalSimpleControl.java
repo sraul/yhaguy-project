@@ -74,6 +74,7 @@ public class CompraLocalSimpleControl extends SoloViewModel {
 			b.setNombresColumnas(columnas);
 			b.setAnchoColumnas(new String[] { "120px", "120px", "120px", "" });
 			b.setWidth("800px");
+			b.addWhere("c.articuloEstado.sigla = '" + Configuracion.SIGLA_ARTICULO_ESTADO_ACTIVO + "'");
 			b.show(cod, filtro);
 			if ((b.isClickAceptar())
 					&& (tipo instanceof CompraLocalFacturaDetalleDTO)) {
