@@ -458,7 +458,7 @@ public class VentaControlBody extends BodyApp {
 			if (crearPedido == false) {
 				for (VentaDetalleDTO item : out.getDetalles()) {
 					RegisterDomain rr = RegisterDomain.getInstance();
-					ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), out.getDeposito().getId());
+					ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), Configuracion.ID_DEPOSITO_PRINCIPAL);
 					ControlArticuloStock.actualizarStock(adp.getId(), item.getCantidad() * -1, this.getLoginNombre());
 					ControlArticuloStock.addMovimientoStock(out.getId(), out
 							.getTipoMovimiento().getId(), item.getCantidad()

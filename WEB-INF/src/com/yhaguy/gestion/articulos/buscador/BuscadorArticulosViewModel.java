@@ -47,7 +47,7 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 	static final NumberFormat FORMATTER = new DecimalFormat("###,###,##0");
 	
 	public static final long ID_SUC_PRINCIPAL = 2;
-	public static final long ID_DEP_1 = 2;
+	public static final long ID_DEP_1 = Configuracion.ID_DEPOSITO_PRINCIPAL;
 
 	private String codInterno = "";
 	private String codOriginal = "";
