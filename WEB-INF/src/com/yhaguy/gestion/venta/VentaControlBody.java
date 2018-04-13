@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
+
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -45,7 +48,6 @@ import com.yhaguy.domain.ArticuloDeposito;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.Deposito;
-import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.bancos.libro.ControlBancoMovimiento;
@@ -56,9 +58,6 @@ import com.yhaguy.gestion.comun.ReservaDTO;
 import com.yhaguy.gestion.comun.ReservaDetalleDTO;
 import com.yhaguy.gestion.empresa.ClienteDTO;
 import com.yhaguy.util.reporte.ReporteYhaguy;
-
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 
 public class VentaControlBody extends BodyApp {	
 	
@@ -1573,11 +1572,6 @@ public class VentaControlBody extends BodyApp {
 		}
 		
 		// verifica el saldo disponible..
-		if ((!this.dto.isCondicionContado()) && (this.dto.getCreditoDisponible() < this.dto.getTotalImporteGs())
-				&& (!this.dto.getEmpresa().getAuxi().equals(Empresa.DESBLOQUEO_TEMPORAL))) {
-			out = false;
-			this.mensajeError += " \n - Saldo insuficiente para venta crédito..";
-		}
 		
 		return out;
 	}
