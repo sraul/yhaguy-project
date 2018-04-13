@@ -34,7 +34,7 @@
 		<extends>div</extends>
 		<property>
 			<property-name>sclass</property-name>
-			<property-value>solicitarCabecera_</property-value>
+			<property-value>solicitarCabecera</property-value>
 		</property>
 		<property>
 			<property-name>vflex</property-name>
