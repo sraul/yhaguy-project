@@ -5,7 +5,7 @@
 
 		<hbox height="100%">
 		
-			<vlayout height="100%">
+			<vbox height="100%">
 				<grid sclass="vgrid">
 					<rows>
 						<row>
@@ -361,7 +361,7 @@
 							</tabpanel>
 						</tabpanels>
 					</tabbox>
-			</vlayout>
+			</vbox>
 				<vbox width="350px" vflex="true"
 					sclass="button-container" pack="center" align="center">
 										
