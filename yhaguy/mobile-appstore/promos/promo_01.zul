@@ -8,16 +8,7 @@
 					PREPARADOR DEL PEDIDO
 				</label>
 		</hbox>
-		<listbox 
-			emptyMessage="INGRESE UN CRITERIO DE BÚSQUEDA.."
-			model="@load(vm.preparadores)" style="overflow:auto" vflex="2"
-			selectedItem="@bind(vm.selectedPreparador)">
-			<template name="model">
-				<listitem>
-					<listcell label="@load(each)" />
-				</listitem>
-			</template>
-		</listbox>
+		<image src="/resources/images/promo_01.png"></image>
 		
 		<button mold="bs" sclass="btn-info btn-lg" hflex="true"
 			iconSclass="z-icon-check"
