@@ -13,22 +13,25 @@
 								<field value="Código Interno" />
 								<textbox
 									value="@bind(vm.dto.codigoInterno)"
-									constraint="${vm.check.noVacio}" />
+									hflex="true" />
 							</vlayout>
 							<vlayout spacing="0">
 								<field value="Código Proveedor" />
 								<textbox
-									value="@bind(vm.dto.codigoProveedor)" />
+									value="@bind(vm.dto.codigoProveedor)" 
+									hflex="true"/>
 							</vlayout>
 							<vlayout spacing="0">
 								<field value="Código Original" />
 								<textbox
-									value="@bind(vm.dto.codigoOriginal)" />
+									value="@bind(vm.dto.codigoOriginal)" 
+									hflex="true"/>
 							</vlayout>
 							<vlayout spacing="0">
 								<field value="Código Barra" />
 								<textbox
-									value="@bind(vm.dto.codigoBarra)" />
+									value="@bind(vm.dto.codigoBarra)" 
+									hflex="true"/>
 							</vlayout>
 						</row>
 						<row>
@@ -36,16 +39,14 @@
 								<vlayout>
 									<field value="Descripción" />
 									<textbox hflex="true"
-										value="@bind(vm.dto.descripcion)"
-										constraint="${vm.check.noVacio}" 
-										/>
+										value="@bind(vm.dto.descripcion)" />
 								</vlayout>
 							</cell>
 							<cell>
 								<vlayout>
 									<field value="Observación" />
 									<textbox hflex="true"
-										value="@bind(vm.dto.observacion)" width="220px" />
+										value="@bind(vm.dto.observacion)" />
 								</vlayout>
 							</cell>
 						</row>
@@ -54,26 +55,25 @@
 
 				<div height="10px" />
 
-					<tabbox vflex="true" style="margin-bottom:5px">
+					<tabbox vflex="true" width="100%">
 						<tabs>
-							<tab label="General" closable="false" />
-							<tab label="Proveedores" closable="false" />							
-							<tab label="Referencias"
-								closable="false" />
-							<tab label="Ubicaciones" closable="false" />
-							<tab label="Precios" closable="false" />
+							<tab label="General" hflex="true"/>
+							<tab label="Proveedores" />							
+							<tab label="Referencias" />
+							<tab label="Ubicaciones" />
+							<tab label="Precios" />
 						</tabs>
 
 						<tabpanels>
-							<tabpanel style="padding:20px; padding-top:30px">
+							<tabpanel style="padding:30px">
 							
 								<!-- ________________ DATOS GENERALES ________________ -->
 
 								<grid sclass="vgrid" vflex="true">
 									<columns>
+										<column width="15%"/>
 										<column />
-										<column />
-										<column />
+										<column width="15%"/>
 										<column />
 									</columns>
 									<rows>
@@ -86,14 +86,14 @@
 											<field value="Línea:" />
 											<combobox
 												model="@load(vm.dtoUtil.articuloLinea)" 
-												value="@load(vm.dto.articuloLinea)"
+												value="@load(vm.dto.articuloLinea.text.toUpperCase())"
 												selectedItem="@bind(vm.dto.articuloLinea)"
-												constraint="${vm.check.noVacio}"
+												hflex="true"
 												instant="true">
 												<template
 													name="model">
 													<comboitem
-														label="@load(each)" />
+														label="@load(each.text.toUpperCase())" />
 												</template>
 											</combobox>
 										</row>
@@ -105,7 +105,7 @@
 											</hlayout>
 											<field value="Peso:" />
 											<hlayout>
-												<doublespinner
+												<doublespinner hflex="true"
 													value="@bind(vm.dto.peso)">
 												</doublespinner>
 												<field>Kg.</field>
@@ -115,14 +115,14 @@
 											<field value="Estado:" />
 											<combobox
 												model="@load(vm.dtoUtil.articuloEstado)" 
-												value="@load(vm.dto.articuloEstado)"
+												value="@load(vm.dto.articuloEstado.text.toUpperCase())"
 												selectedItem="@bind(vm.dto.articuloEstado)"
-												constraint="${vm.check.noVacio}"
+												hflex="true" style="margin-right:20px"
 												instant="true">
 												<template
 													name="model">
 													<comboitem
-														label="@load(each)" />
+														label="@load(each.text.toUpperCase())" />
 												</template>
 											</combobox>
 											
@@ -131,7 +131,7 @@
 												model="@load(vm.dtoUtil.articuloMarca)"
 												value="@load(vm.dto.articuloMarca)"
 												selectedItem="@bind(vm.dto.articuloMarca)"
-												constraint="${vm.check.noVacio}">
+												hflex="true">
 												<template
 													name="model">
 													<comboitem
@@ -143,17 +143,17 @@
 											<field value="Parte:" />
 											<combobox
 												model="@load(vm.dtoUtil.articuloParte)"
-												value="@load(vm.dto.articuloParte)"
+												value="@load(vm.dto.articuloParte.text.toUpperCase())"
 												selectedItem="@bind(vm.dto.articuloParte)"
-												constraint="${vm.check.noVacio}">
+												hflex="true" style="margin-right:20px">
 												<template
 													name="model">
 													<comboitem
-														label="@load(each)" />
+														label="@load(each.text.toUpperCase())" />
 												</template>
 											</combobox>
 											<field value="Volumen:" />
-											<textbox
+											<textbox hflex="true"
 												value="@bind(vm.dto.volumen)">
 											</textbox>
 										</row>
@@ -163,7 +163,7 @@
 												model="@load(vm.dtoUtil.articuloFamilia)" 
 												value="@load(vm.dto.articuloFamilia)"
 												selectedItem="@bind(vm.dto.articuloFamilia)"
-												constraint="${vm.check.noVacio}">
+												hflex="true" style="margin-right:20px">
 												<template
 													name="model">
 													<comboitem
@@ -174,7 +174,7 @@
 											<hlayout>
 												<datebox
 													value="@bind(vm.dto.fechaAlta)" 
-													readonly="true"/>
+													readonly="true" hflex="true"/>
 											</hlayout>
 										</row>
 										<row>
@@ -183,7 +183,7 @@
 												model="@load(vm.dtoUtil.articuloUnidadMedida)"
 												value="@load(vm.dto.articuloUnidadMedida)"
 												selectedItem="@bind(vm.dto.articuloUnidadMedida)"
-												constraint="${vm.check.noVacio}">
+												hflex="true" style="margin-right:20px">
 												<template
 													name="model">
 													<comboitem
