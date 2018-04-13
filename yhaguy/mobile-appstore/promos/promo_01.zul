@@ -8,7 +8,7 @@
 					PREPARADOR DEL PEDIDO
 				</label>
 		</hbox>
-		<image src="/resources/images/promo_01.png"></image>
+		<image src="resources/images/promo_01.png"></image>
 		
 		<button mold="bs" sclass="btn-info btn-lg" hflex="true"
 			iconSclass="z-icon-check"
