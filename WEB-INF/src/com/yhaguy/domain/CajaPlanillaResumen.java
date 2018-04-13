@@ -236,7 +236,8 @@ public class CajaPlanillaResumen extends Domain {
 	public List<CajaPeriodo> getPlanillasCobranzas() {
 		List<CajaPeriodo> out = new ArrayList<CajaPeriodo>();
 		for (CajaPeriodo planilla : this.planillas) {
-			if (planilla.getTipo().equals(CajaPeriodo.TIPO_COBROS)) {
+			if (planilla.getTipo().equals(CajaPeriodo.TIPO_COBROS) ||
+					planilla.getTipo().equals(CajaPeriodo.TIPO_COBROS_MOBILE)) {
 				out.add(planilla);
 			}
 		}
