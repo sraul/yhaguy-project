@@ -170,6 +170,7 @@
 		<mapping resource="com/yhaguy/domain/VentaFiscal.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/VentaMeta.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/VentaPerdida.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/VentaPromo1.hbm.xml" />
 
 		<mapping resource="com/yhaguy/domain/ArticuloGasto.hbm.xml" />
 

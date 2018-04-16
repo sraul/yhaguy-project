@@ -7247,6 +7247,22 @@ public class RegisterDomain extends Register {
 		return this.hqlLimit(query, 200);
 	}
 	
+	/**
+	 * @return empresas segun ruc..
+	 */
+	public List<Empresa> getEmpresasByRuc(String ruc) throws Exception {
+		String query = "select e from Empresa e where e.ruc = '" + ruc + "'";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los registros de venta promo 1..
+	 */
+	public List<VentaPromo1> getVentaPromo1Registros(String ruc) throws Exception {
+		String query = "select v from VentaPromo1 v where v.empresa.ruc = '" + ruc + "'";
+		return this.hql(query);
+	}
+	
 	public static void main(String[] args) {
 		try {
 			RegisterDomain rr = RegisterDomain.getInstance();
