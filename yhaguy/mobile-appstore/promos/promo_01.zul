@@ -3,11 +3,21 @@
 	vflex="true">
 
 	<vlayout id="vl_preparador" height="100%" style="padding:50px">
-		<label value="Ingrese el R.U.C." sclass="mobile"></label>
+		<label value="Ingrese sus Datos" sclass="mobile"></label>
 		<space></space>
 		<textbox hflex="true" placeholder="RUC.."
 			value="@bind(vm.ruc)"></textbox>
 		<space></space>	
+		<textbox hflex="true" placeholder="Nombre y Apellido.."></textbox>
+		<space></space>
+		<textbox hflex="true" placeholder="Dirección.."></textbox>
+		<space></space>
+		<textbox hflex="true" placeholder="Teléfono (al cual enviar la transferencia).."></textbox>
+		<space></space>
+		<datebox hflex="true" placeholder="Fecha Nacimiento.."></datebox>
+		<space></space>
+		<textbox hflex="true" placeholder="Correo.."></textbox>
+		<space></space>
 		<button mold="bs" sclass="btn-primary btn-lg" hflex="true"
 			iconSclass="z-icon-check"
 			label=" Confirmar Registro" height="150px" style="font-size:30pt"

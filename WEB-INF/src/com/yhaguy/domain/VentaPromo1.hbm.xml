@@ -11,6 +11,11 @@
 		&hibernate-domain; 
 
 		<property name="fecha"/>
+		<property name="nombreApellido"/>
+		<property name="telefono"/>
+		<property name="direccion"/>
+		<property name="nacimiento"/>
+		<property name="correo"/>		
 			
 		<many-to-one name="empresa" class="com.yhaguy.domain.Empresa"
 			column="id_empresa" lazy="false"/>			
