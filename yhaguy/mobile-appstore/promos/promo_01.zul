@@ -2,14 +2,11 @@
 	viewModel="@id('vm') @init('com.yhaguy.gestion.venta.preparacion.PreparacionPedidosMobileVM')"
 	vflex="true">
 
-	<vlayout id="vl_preparador" height="100%">
-		<hbox hflex="true" pack="center">
-				<label style="font-size:30pt;font-weight:bold;color:#357ebd;text-align:center">
-					PREPARADOR DEL PEDIDO
-				</label>
-		</hbox>
-		<image src="resources/images/promo_01.png"></image>
-		
+	<vlayout id="vl_preparador" height="100%" style="padding:50px">
+		<label value="Ingrese el R.U.C." sclass="mobile"></label>
+		<space></space>
+		<textbox hflex="true" placeholder="RUC.."></textbox>
+		<space></space>		
 		<button mold="bs" sclass="btn-info btn-lg" hflex="true"
 			iconSclass="z-icon-check"
 			label=" Seleccionar Preparador" height="150px" style="font-size:30pt"

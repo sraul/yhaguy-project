@@ -662,6 +662,7 @@ public class ProcesosTesoreria {
 						cheque.setNumero(rfp.getChequeNumero());
 						cheque.setNumeroDeposito("");
 						cheque.setNumeroDescuento("");
+						cheque.setNumeroReembolso("");
 						cheque.setNumeroPlanilla(recibo.getNumeroPlanilla());
 						cheque.setNumeroRecibo(recibo.getNumero());
 						cheque.setNumeroVenta("");
