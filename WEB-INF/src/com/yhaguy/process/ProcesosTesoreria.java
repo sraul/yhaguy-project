@@ -639,7 +639,7 @@ public class ProcesosTesoreria {
 	 */
 	public static void addChequeTerceros() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		Date desde = Utiles.getFecha("01-09-2016 00:00:00");
+		Date desde = Utiles.getFecha("01-03-2018 00:00:00");
 		Date hasta = new Date();
 		List<Recibo> recibos = rr.getCobranzas(desde, hasta, 2);
 		for (Recibo recibo : recibos) {
@@ -1031,17 +1031,17 @@ public class ProcesosTesoreria {
 			//ProcesosTesoreria.addMovimientosBancoFormaPagoDepositoBancario();
 			//ProcesosTesoreria.chequearClientesDuplicados();
 			//ProcesosTesoreria.addRecaudacionesCentral();
-			//ProcesosTesoreria.addChequeTerceros();
+			ProcesosTesoreria.addChequeTerceros();
 			//ProcesosTesoreria.setNumeroRecibos();
 			//ProcesosTesoreria.setOrigenRecaudacionCentral();
 			//ProcesosTesoreria.setEmisionChequesTerceros();
-			ProcesosTesoreria.poblarCtaCteSaldos2017();
+			//ProcesosTesoreria.poblarCtaCteSaldos2017();
 			//ProcesosTesoreria.setRubroFuncionarioClientes(SRC_FUNCIONARIOS);
 			//ProcesosTesoreria.verificarRecibosAnulados();
 			//ProcesosTesoreria.setCtaCteNumeroImportacion();
 			//ProcesosTesoreria.setOrigenGastos();
 			//ProcesosTesoreria.setDatosClientes();
-			ProcesosTesoreria.setFechaDescuentoChequesTerceros();
+			//ProcesosTesoreria.setFechaDescuentoChequesTerceros();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
