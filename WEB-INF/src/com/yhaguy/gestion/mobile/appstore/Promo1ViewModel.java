@@ -16,6 +16,12 @@ import com.yhaguy.domain.VentaPromo1;
 public class Promo1ViewModel extends SimpleViewModel {
 	
 	private String ruc = "";
+	private String nombreApellido = "";
+	private String direccion = "";
+	private String telefono = "";
+	private Date fechaNacimiento;
+	private String correo = "";
+	
 	private String razonSocial = "";
 	private String mensaje = "";
 	private Empresa empresa;
@@ -75,6 +81,11 @@ public class Promo1ViewModel extends SimpleViewModel {
 		VentaPromo1 promo = new VentaPromo1();
 		promo.setEmpresa(this.empresa);
 		promo.setFecha(new Date());
+		promo.setNombreApellido(this.nombreApellido.toUpperCase());
+		promo.setDireccion(this.direccion.toUpperCase());
+		promo.setTelefono(this.telefono);
+		promo.setNacimiento(this.fechaNacimiento);
+		promo.setCorreo(this.correo);
 		rr.saveObject(promo, "mobile");
 		this.mensaje = "CLIENTE CORRECTAMENTE REGISTRADO: " + promo.getEmpresa().getRazonSocial();
 	}
@@ -105,5 +116,45 @@ public class Promo1ViewModel extends SimpleViewModel {
 
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
+	}
+
+	public String getNombreApellido() {
+		return nombreApellido;
+	}
+
+	public void setNombreApellido(String nombreApellido) {
+		this.nombreApellido = nombreApellido;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 }
