@@ -36,9 +36,13 @@ public class Promo1ViewModel extends SimpleViewModel {
 	
 	@Command
 	@NotifyChange("*")
-	public void registrarse() throws Exception {
-		if (this.chequearRuc()) {
+	public void registrarse() throws Exception {		
+		if (this.chequearRuc()) {			
 			if (!chequearRegistro()) {
+				if(!this.chequearDatos()) {
+					this.mensaje = "DEBE INGRESAR TODOS LOS DATOS..";
+					return;
+				}				
 				this.registrar();
 			} else {
 				this.mensaje = "CLIENTE YA FUE REGISTRADO : " + this.empresa.getRazonSocial();
@@ -46,6 +50,17 @@ public class Promo1ViewModel extends SimpleViewModel {
 		} else {
 			this.mensaje = "CLIENTE NO ENCONTRADO..";
 		}
+	}
+	
+	/**
+	 * @return true si los datos son validos..
+	 */
+	private boolean chequearDatos() {
+		if (this.ruc.trim().isEmpty() || this.nombreApellido.trim().isEmpty() || this.direccion.trim().isEmpty()
+				|| this.telefono.trim().isEmpty() || this.fechaNacimiento == null || this.correo.trim().isEmpty()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
