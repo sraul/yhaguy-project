@@ -5,8 +5,7 @@
 	<vlayout id="vl_preparador" height="100%" style="padding:50px">
 		<label value="Ingrese sus Datos" sclass="mobile"></label>
 		<space></space>
-		<textbox hflex="true" placeholder="RUC.."
-			value="@bind(vm.ruc)"></textbox>
+		<textbox hflex="true" placeholder="RUC.." value="@bind(vm.ruc)"></textbox>
 		<space></space>	
 		<textbox hflex="true" placeholder="Nombre y Apellido.."></textbox>
 		<space></space>
@@ -21,7 +20,7 @@
 		<button mold="bs" sclass="btn-primary btn-lg" hflex="true"
 			iconSclass="z-icon-check"
 			label=" Confirmar Registro" height="150px" style="font-size:30pt"
-			dir="normal" onClick="@command('registrarse')"/>
+			dir="normal" onClick="@command('registrarse')" />
 		<space></space>
 		<space></space>
 		<label sclass="mobile" value="@load(vm.mensaje)"></label>
