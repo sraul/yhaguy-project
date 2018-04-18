@@ -9,6 +9,11 @@ import com.coreweb.domain.Tipo;
 
 @SuppressWarnings("serial")
 public class BancoPrestamo extends Domain {
+	
+	public static final String VTO_MENSUAL = "MENSUAL";
+	public static final String VTO_BIMESTRAL = "BIMESTRAL";
+	public static final String VTO_TRIMESTRAL = "TRIMESTRAL";
+	public static final String VTO_SEMESTRAL = "SEMESTRAL";
 
 	private Date fecha;
 	private String numero;
@@ -18,6 +23,7 @@ public class BancoPrestamo extends Domain {
 	private double impuestos;
 	private double gastosAdministrativos;
 	private double seguro;
+	private String tipoVencimiento;
 	
 	private BancoCta banco;
 	private Empresa ctacte;
@@ -119,5 +125,13 @@ public class BancoPrestamo extends Domain {
 
 	public void setCtacte(Empresa ctacte) {
 		this.ctacte = ctacte;
+	}
+
+	public String getTipoVencimiento() {
+		return tipoVencimiento;
+	}
+
+	public void setTipoVencimiento(String tipoVencimiento) {
+		this.tipoVencimiento = tipoVencimiento;
 	}
 }

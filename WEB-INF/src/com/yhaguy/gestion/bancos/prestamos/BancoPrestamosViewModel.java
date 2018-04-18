@@ -100,6 +100,7 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 		this.nvo_prestamo.setMoneda(rr.getTipoPorSigla(Configuracion.SIGLA_MONEDA_GUARANI));
 		this.nvo_prestamo.setCuotas(12);
 		this.nvo_prestamo.setNumero("");
+		this.nvo_prestamo.setTipoVencimiento(BancoPrestamo.VTO_MENSUAL);
 	}
 
 	/**
@@ -133,6 +134,18 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 	public List<Tipo> getMonedas() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		return rr.getTipos(Configuracion.ID_TIPO_MONEDA);
+	}
+	
+	/**
+	 * @return los tipos de vencimiento..
+	 */
+	public List<String> getTiposVencimiento() {
+		List<String> out = new ArrayList<String>();
+		out.add(BancoPrestamo.VTO_MENSUAL);
+		out.add(BancoPrestamo.VTO_BIMESTRAL);
+		out.add(BancoPrestamo.VTO_TRIMESTRAL);
+		out.add(BancoPrestamo.VTO_SEMESTRAL);
+		return out;
 	}
 	
 	/**

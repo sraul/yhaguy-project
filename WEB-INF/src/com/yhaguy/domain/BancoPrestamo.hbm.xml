@@ -18,6 +18,7 @@
 		<property name="impuestos"/>
 		<property name="gastosAdministrativos"/>
 		<property name="seguro"/>
+		<property name="tipoVencimiento"/>
 			
 		<many-to-one name="banco" class="com.yhaguy.domain.BancoCta" 
 			column="id_banco" lazy="false"/>

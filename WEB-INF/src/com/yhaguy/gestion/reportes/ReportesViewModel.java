@@ -2326,7 +2326,7 @@ public class ReportesViewModel extends SimpleViewModel {
 						if (tipoCosto.equals(ReportesFiltros.COSTO_PROMEDIO)) {
 							for (Object[] det : dets) {
 								long idArt = (long) det[2];
-								double cost = rr.getCostoPromedio(idArt, hasta);
+								double cost = ControlArticuloCosto.getCostoPromedio(idArt, hasta);
 								if(cost == 0) cost = (double) det[0];
 								int cant = (int) det[1];
 								costo += (cost * cant);
@@ -2359,7 +2359,7 @@ public class ReportesViewModel extends SimpleViewModel {
 					if (tipoCosto.equals(ReportesFiltros.COSTO_PROMEDIO)) {
 						for (Object[] det : dets) {
 							long idArt = (long) det[2];
-							double cost = rr.getCostoPromedio(idArt, hasta);
+							double cost = ControlArticuloCosto.getCostoPromedio(idArt, hasta);
 							if(cost == 0) cost = (double) det[0];
 							long cant = (long) det[1];
 							costo += (cost * cant);
@@ -8781,8 +8781,8 @@ public class ReportesViewModel extends SimpleViewModel {
 						}
 						if (tipoCosto.equals(ReportesFiltros.COSTO_PROMEDIO)) {
 							for (Object[] det : dets) {
-								long idArt = (long) det[2];
-								double cost = rr.getCostoPromedio(idArt, hasta);
+								long idArt = (long) det[2];								
+								double cost = ControlArticuloCosto.getCostoPromedio(idArt, hasta);
 								if(cost == 0) cost = (double) det[0];
 								int cant = (int) det[1];
 								costo += (cost * cant);
@@ -8815,7 +8815,7 @@ public class ReportesViewModel extends SimpleViewModel {
 					if (tipoCosto.equals(ReportesFiltros.COSTO_PROMEDIO)) {
 						for (Object[] det : dets) {
 							long idArt = (long) det[2];
-							double cost = rr.getCostoPromedio(idArt, hasta);
+							double cost = ControlArticuloCosto.getCostoPromedio(idArt, hasta);
 							if(cost == 0) cost = (double) det[0];
 							long cant = (long) det[1];
 							costo += (cost * cant);

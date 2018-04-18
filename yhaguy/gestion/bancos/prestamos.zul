@@ -144,6 +144,17 @@
 						value="@bind(vm.nvo_prestamo.cuotas)"></spinner>
 				</row>
 				<row>
+					<field value="Tipo Vencimiento:" />
+					<combobox value="@load(vm.nvo_prestamo.tipoVencimiento)"
+						selectedItem="@bind(vm.nvo_prestamo.tipoVencimiento)"
+						model="@load(vm.tiposVencimiento)"
+						hflex="true">
+						<template name="model">
+							<comboitem label="@load(each)"></comboitem>
+						</template>	
+					</combobox>
+				</row>
+				<row>
 					<field value="Capital:" />
 					<guaranibox hflex="true" 
 						value="@bind(vm.nvo_prestamo.capital)" />
@@ -231,6 +242,13 @@
 					<intbox hflex="true"
 						value="@load(vm.selected_prestamo.cuotas)"
 						readonly="true"></intbox>
+				</row>
+				<row>
+					<field value="Tipo Vencimiento:" />
+					<textbox hflex="true"
+						value="@load(vm.selected_prestamo.tipoVencimiento)"
+						readonly="true">
+					</textbox>
 				</row>
 				<row>
 					<field value="Capital:" />
