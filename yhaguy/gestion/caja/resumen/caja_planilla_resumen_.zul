@@ -89,9 +89,8 @@
 				</div>
 				<hlayout
 					children="@load(vm.selectedResumen_.planillasCobranzas)"
-					style="margin:10px" spacing="0">
+					style="margin:0px 10px 0px 10px; overflow:auto">
 					<template name="children">
-						<vlayout spacing="0" hflex="true">
 						<listbox sclass="small-list" width="260px"
 							style="border: solid 1px silver; border-radius:8px; padding:10px">
 							<listhead>
@@ -222,7 +221,6 @@
 								</listfooter>
 							</listfoot>
 						</listbox>
-						</vlayout>
 						<div height="5px"></div>
 					</template>
 				</hlayout>
