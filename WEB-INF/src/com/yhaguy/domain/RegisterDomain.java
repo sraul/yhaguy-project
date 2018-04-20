@@ -7326,10 +7326,11 @@ public class RegisterDomain extends Register {
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select ('PRESTAMOS INTERNOS'), "
 				+ " b.fecha, cast(b.id as string), b.totalImporte_gs, b.banco.banco.descripcion, b.observacion"
-				+ " from BancoDescuentoCheque b where"
+				+ " from BancoDescuentoCheque b join b.formasPago f where"
 				+ " b.dbEstado = 'R'"
 				+ " and b.banco.id = " + idBanco
-				+ " and auxi = '" + BancoDescuentoCheque.PRESTAMO + "'"
+				+ " and b.auxi = '" + BancoDescuentoCheque.PRESTAMO + "'"
+				+ " and f.tipo.sigla = '" + Configuracion.SIGLA_FORMA_PAGO_DEBITO_CTA_BANCARIA + "'"
 				+ " and (b.fecha >= '"
 				+ desde_
 				+ "' and b.fecha <= '"

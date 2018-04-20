@@ -198,7 +198,6 @@ public class BancoControlBody extends BodyApp {
 
 		historicoDEBE.addAll(depositos);
 		historicoDEBE.addAll(descuentos);
-		historicoDEBE.addAll(prestamosInternos);
 		historicoDEBE.addAll(transferenciasRecibidas);
 		historicoDEBE.addAll(prestamosBancarios);
 		
@@ -206,6 +205,7 @@ public class BancoControlBody extends BodyApp {
 		historicoHABER.addAll(chequesRechazados);
 		historicoHABER.addAll(chequesRechazados_);
 		historicoHABER.addAll(transferenciasEnviadas);
+		historicoHABER.addAll(prestamosInternos);
 
 		for (Object[] movim : historicoDEBE) {
 			movim[0] = "(+)" + movim[0];
