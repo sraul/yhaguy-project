@@ -21,6 +21,7 @@
 		<property name="observacion"/>
 		<property name="planillaCaja"/>
 		<property name="cerrado" />
+		<property name="totalImporte_gs" />
 			
 		<set name="cheques" table="bancochequetercero" inverse="false" lazy="false"
 			fetch="join" cascade="all">

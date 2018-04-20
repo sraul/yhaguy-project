@@ -22,6 +22,14 @@
 		<property name="liq_registrado">
 			<column name="liq_registrado" default="false" />
 		</property>
+		<property name="totalImporte_gs" />
+		
+		<property name="confirmado">
+			<column name="confirmado" default="false" />
+		</property>
+		
+		<many-to-one name="banco" class="com.yhaguy.domain.BancoCta"
+			column="id_banco" lazy="false" />
 
 		<set name="cheques" table="bancochequetercero" inverse="false"
 			lazy="false" fetch="join" cascade="all">

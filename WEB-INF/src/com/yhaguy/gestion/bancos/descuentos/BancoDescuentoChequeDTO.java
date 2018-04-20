@@ -31,6 +31,9 @@ public class BancoDescuentoChequeDTO extends DTO {
 	private double liq_neto_diferidos = 0;
 	private boolean liq_registrado = false;
 	
+	private boolean confirmado = false;
+	
+	private MyArray banco;
 	private List<MyArray> cheques = new ArrayList<MyArray>();
 	private List<BancoChequeDTO> chequesPropios = new ArrayList<BancoChequeDTO>();
 	private List<ReciboFormaPagoDTO> formasPago = new ArrayList<ReciboFormaPagoDTO>();
@@ -52,6 +55,9 @@ public class BancoDescuentoChequeDTO extends DTO {
 		}
 		for (BancoChequeDTO cheque : this.chequesPropios) {
 			out += cheque.getMonto();
+		}
+		for (ReciboFormaPagoDTO fp : this.formasPago) {
+			out += fp.getMontoGs();
 		}
 		return out;
 	}
@@ -204,5 +210,21 @@ public class BancoDescuentoChequeDTO extends DTO {
 
 	public void setFormasPago(List<ReciboFormaPagoDTO> formasPago) {
 		this.formasPago = formasPago;
+	}
+
+	public MyArray getBanco() {
+		return banco;
+	}
+
+	public void setBanco(MyArray banco) {
+		this.banco = banco;
+	}
+
+	public boolean isConfirmado() {
+		return confirmado;
+	}
+
+	public void setConfirmado(boolean confirmado) {
+		this.confirmado = confirmado;
 	}
 }

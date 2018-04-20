@@ -1,6 +1,8 @@
 package com.yhaguy.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.zkoss.bind.annotation.DependsOn;
 
@@ -14,6 +16,9 @@ public class BancoPrestamo extends Domain {
 	public static final String VTO_BIMESTRAL = "BIMESTRAL";
 	public static final String VTO_TRIMESTRAL = "TRIMESTRAL";
 	public static final String VTO_SEMESTRAL = "SEMESTRAL";
+	
+	public static final String TIPO_CUOTAS_FIJAS = "CUOTAS FIJAS";
+	public static final String TIPO_CUOTAS_VARIABLES = "CUOTAS VARIABLES";
 
 	private Date fecha;
 	private String numero;
@@ -24,6 +29,7 @@ public class BancoPrestamo extends Domain {
 	private double gastosAdministrativos;
 	private double seguro;
 	private String tipoVencimiento;
+	private String tipoCuotas;
 	
 	private BancoCta banco;
 	private Empresa ctacte;
@@ -37,6 +43,40 @@ public class BancoPrestamo extends Domain {
 	@DependsOn({ "capital", "interes" })
 	public double getDeudaTotal() {
 		return this.capital + this.interes;
+	}
+	
+	/**
+	 * @return los tipos de cuotas..
+	 */
+	public List<String> getTiposCuotas() {
+		List<String> out = new ArrayList<String>();
+		out.add(TIPO_CUOTAS_FIJAS);
+		out.add(TIPO_CUOTAS_VARIABLES);
+		return out;
+	}
+	
+	/**
+	 * @return el parametro de meses para tipo vencimiento..
+	 */
+	public int getMesesTipoVencimiento() {
+		switch (this.tipoVencimiento) {
+		case VTO_MENSUAL:
+			return 1;
+		case VTO_BIMESTRAL:
+			return 2;
+		case VTO_TRIMESTRAL:
+			return 3;
+		case VTO_SEMESTRAL:
+			return 6;
+		}
+		return 1;
+	}
+	
+	/**
+	 * @return tipo de cuotas fijas..
+	 */
+	public String getTipoCuotasFijas() {
+		return TIPO_CUOTAS_FIJAS;
 	}
 
 	public Date getFecha() {
@@ -133,5 +173,13 @@ public class BancoPrestamo extends Domain {
 
 	public void setTipoVencimiento(String tipoVencimiento) {
 		this.tipoVencimiento = tipoVencimiento;
+	}
+
+	public String getTipoCuotas() {
+		return tipoCuotas;
+	}
+
+	public void setTipoCuotas(String tipoCuotas) {
+		this.tipoCuotas = tipoCuotas;
 	}
 }

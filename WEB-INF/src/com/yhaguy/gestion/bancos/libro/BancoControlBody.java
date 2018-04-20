@@ -1,16 +1,13 @@
 package com.yhaguy.gestion.bancos.libro;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
 
@@ -19,29 +16,42 @@ import com.coreweb.dto.Assembler;
 import com.coreweb.dto.DTO;
 import com.coreweb.extras.browser.Browser;
 import com.coreweb.extras.reporte.DatosColumnas;
-import com.coreweb.util.MyArray;
 import com.yhaguy.BodyApp;
 import com.yhaguy.domain.BancoCta;
-import com.yhaguy.domain.BancoMovimiento;
 import com.yhaguy.domain.CuentaContable;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.util.Utiles;
 import com.yhaguy.util.reporte.ReporteYhaguy;
 
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
+
 public class BancoControlBody extends BodyApp {
+	
+	static final String IMG_ENTRADA = "z-icon-arrow-right";
+	static final String IMG_SALIDA = "z-icon-arrow-left";
 
 	private BancoCtaDTO dto = new BancoCtaDTO();
 	private BancoMovimientoDTO dtoMovimiento = new BancoMovimientoDTO();
 	private BancoMovimientoDTO selectedMovimento = new BancoMovimientoDTO();
 	
 	private List<BancoMovimientoDTO> movimientos = new ArrayList<BancoMovimientoDTO>();	
-	private MyArray selectedMes;
-	private String selectedAnho = Utiles.getAnhoActual();
+	
+	private Date desde;
+	private Date hasta;
+	
+	private double totalDebe = 0;
+	private double totalHaber = 0;
+	private double totalSaldo = 0;
+	
+	private String filterConcepto = "";
+	private String filterNumero = "";
 
 	@Init(superclass = true)
 	public void init() {
 		try {
-			this.selectedMes = Utiles.getMesCorriente(this.selectedAnho);
+			this.desde = Utiles.getFechaInicioMes();
+			this.hasta = new Date();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -85,27 +95,14 @@ public class BancoControlBody extends BodyApp {
 		return new BancoBrowser();
 	}
 	
-	@DependsOn("movimientos")
-	public double getTotalDebe() {
-		double out = 0;
-		for (BancoMovimientoDTO movim : this.movimientos) {
-			out += movim.getDebe();
-		}
-		return out;
+	@Override
+	public boolean getImprimirDeshabilitado() {
+		return (this.dto.esNuevo());
 	}
 	
-	@DependsOn("movimientos")
-	public double getTotalHaber() {
-		double out = 0;
-		for (BancoMovimientoDTO movim : this.movimientos) {
-			out += movim.getHaber();
-		}
-		return out;
-	}
-	
-	@DependsOn("movimientos")
-	public double getTotalSaldo() {
-		return this.getTotalDebe() - this.getTotalHaber();
+	@Override
+	public void showImprimir() {
+		this.imprimirLibroBanco();
 	}
 
 	@Override
@@ -123,11 +120,6 @@ public class BancoControlBody extends BodyApp {
 		return "";
 	}
 	
-	@Command
-	public void imprimir() {
-		this.imprimirLibroBanco();
-	}
-	
 	/**
 	 * FUNCIONES..
 	 */
@@ -136,70 +128,152 @@ public class BancoControlBody extends BodyApp {
 	 * imprimir libro banco
 	 */
 	private void imprimirLibroBanco() {
-		List<Object[]> data = new ArrayList<Object[]>();
+		try {
+			List<Object[]> data = new ArrayList<Object[]>();
 
-		for (BancoMovimientoDTO movim : this.movimientos) {
-			Object[] obj1 = new Object[] {
-					movim.getTipoMovimiento().getPos1(),
-					Utiles.getDateToString(movim.getFecha(), Utiles.DD_MM_YYYY),
-					movim.getNroReferencia(), movim.getDescripcion().toUpperCase(),
-					movim.getDebe(), movim.getHaber(), movim.getSaldo() };
-			data.add(obj1);
+			for (Object[] movim : this.getMovimientosBanco()) {
+				Object[] obj1 = new Object[] { movim[3], movim[0], movim[2],
+						Utiles.getMaxLength((String) movim[10], 40), movim[11], movim[12], movim[13] };
+				data.add(obj1);
+			}
+
+			ReporteYhaguy rep = new ReporteLibroBanco((String) this.dto.getBanco()
+					.getPos1(), Utiles.getDateToString(this.desde, Utiles.DD_MM_YYYY), Utiles.getDateToString(this.hasta, Utiles.DD_MM_YYYY), this
+					.getSucursal().getText());
+			rep.setDatosReporte(data);
+			rep.setApaisada();
+
+			ViewPdf vp = new ViewPdf();
+			vp.setBotonImprimir(false);
+			vp.setBotonCancelar(false);
+			vp.showReporte(rep, this);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		ReporteYhaguy rep = new ReporteLibroBanco((String) this.dto.getBanco()
-				.getPos1(), (String) this.selectedMes.getPos1() + " - " + this.selectedAnho, this
-				.getSucursal().getText());
-		rep.setDatosReporte(data);
-		rep.setApaisada();
-
-		ViewPdf vp = new ViewPdf();
-		vp.setBotonImprimir(false);
-		vp.setBotonCancelar(false);
-		vp.showReporte(rep, this);
 	}
 	
 	
 	/**
 	 * GETS / SETS
 	 */	
-	@DependsOn({ "selectedMes", "selectedAnho", "dto" })
-	public List<BancoMovimientoDTO> getMovimientos_() throws Exception {	
-		Date desde = (Date) this.selectedMes.getPos2();
-		Date hasta = (Date) this.selectedMes.getPos3();
-		List<BancoMovimientoDTO> out = new ArrayList<BancoMovimientoDTO>();
-		AssemblerBancoMovimiento ass = new AssemblerBancoMovimiento();		
+	
+	/**
+	 * @return
+	 * [0]:fecha
+	 * [1]:hora
+	 * [2]:numero
+	 * [3]:concepto
+	 * [4]:entrada
+	 * [5]:salida
+	 * [6]:saldo_
+	 * [7]:banco
+	 * [9]:icono
+	 * [10]:origen
+	 */
+	@DependsOn({ "desde", "hasta", "filterConcepto", "filterNumero" })
+	public List<Object[]> getMovimientosBanco() throws Exception {
+		Date desde = this.desde;
+		Date hasta = this.hasta;
+
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<BancoMovimiento> list = rr.getBancoMovimientos(desde, hasta, this.dto.getId());
-		for (BancoMovimiento movim : list) {
-			BancoMovimientoDTO bdto = (BancoMovimientoDTO) ass.domainToDto(movim);
-			out.add(bdto);
-		}
+		List<Object[]> data = new ArrayList<Object[]>();
+		List<Object[]> historico;
+		List<Object[]> historicoDEBE;
+		List<Object[]> historicoHABER;
+
+		long idBanco = this.dto.getId();
+
+		List<Object[]> depositos = rr.getDepositosPorBanco(idBanco, desde, hasta);
+		List<Object[]> descuentos = rr.getDescuentosPorBanco(idBanco, desde, hasta);
+		List<Object[]> prestamosInternos = rr.getPrestamosInternosPorBanco(idBanco, desde, hasta);
+		List<Object[]> transferenciasEnviadas = rr.getTransferenciasOrigenPorBanco(idBanco, desde, hasta);
+		List<Object[]> transferenciasRecibidas = rr.getTransferenciasDestinoPorBanco(idBanco, desde, hasta);
+		List<Object[]> prestamosBancarios = rr.getPrestamosBancariosPorBanco(idBanco, desde, hasta);
+		List<Object[]> cheques = rr.getChequesPropiosPorBanco(idBanco, desde, hasta);
+		List<Object[]> chequesRechazados = rr.getChequesRechazadosPorBancoPorDeposito(idBanco, desde, hasta);
+		List<Object[]> chequesRechazados_ = rr.getChequesRechazadosPorBancoPorDescuento(idBanco, desde, hasta);
+
+		historicoDEBE = new ArrayList<Object[]>();
+		historicoHABER = new ArrayList<Object[]>();
+
+		historicoDEBE.addAll(depositos);
+		historicoDEBE.addAll(descuentos);
+		historicoDEBE.addAll(prestamosInternos);
+		historicoDEBE.addAll(transferenciasRecibidas);
+		historicoDEBE.addAll(prestamosBancarios);
 		
+		historicoHABER.addAll(cheques);
+		historicoHABER.addAll(chequesRechazados);
+		historicoHABER.addAll(chequesRechazados_);
+		historicoHABER.addAll(transferenciasEnviadas);
+
+		for (Object[] movim : historicoDEBE) {
+			movim[0] = "(+)" + movim[0];
+		}
+
+		historico = new ArrayList<Object[]>();
+		historico.addAll(historicoDEBE);
+		historico.addAll(historicoHABER);
+
+		// ordena la lista segun fecha..
+		Collections.sort(historico, new Comparator<Object[]>() {
+			@Override
+			public int compare(Object[] o1, Object[] o2) {
+				Date fecha1 = (Date) o1[1];
+				Date fecha2 = (Date) o2[1];
+				return fecha1.compareTo(fecha2);
+			}
+		});
+
+		double entrada_ = 0;
+		double salida_ = 0;
 		double saldo = 0;
-		for (BancoMovimientoDTO movim : out) {
-			saldo += movim.getDebe() - movim.getHaber();
-			movim.setSaldo(saldo);
-		}
+
+		Collections.sort(historico, new Comparator<Object[]>() {
+			@Override
+			public int compare(Object[] o1, Object[] o2) {
+				String val1 = (String) o1[4];
+				String val2 = (String) o2[4];
+				int compare = val1.compareTo(val2);
+				if (compare == 0) {
+					Date emision1 = (Date) o1[1];
+					Date emision2 = (Date) o2[1];
+					return emision1.compareTo(emision2);
+				} else {
+					return compare;
+				}
+			}
+		});
 		
-		this.movimientos = out;
+		for (Object[] hist : historico) {
+			String banco = (String) hist[4];
+			boolean ent = ((String) hist[0]).startsWith("(+)");
+			String fecha = Utiles.getDateToString((Date) hist[1], Utiles.DD_MM_YYYY);
+			String hora = Utiles.getDateToString((Date) hist[1], "hh:mm");
+			String numero = hist[2] + "";
+			String concepto = ((String) hist[0]).replace("(+)", "");
+			String origen = (String) hist[5];
+			String entrada = ent ? Utiles.getNumberFormat(Double.parseDouble(hist[3] + "")) : "0";
+			String salida = ent ? "0" : Utiles.getNumberFormat(Double.parseDouble(hist[3] + ""));
+			
+			if (concepto.toUpperCase().contains(this.filterConcepto.toUpperCase())
+					&& numero.contains(this.filterNumero)) {
+				entrada_ += ent ? Double.parseDouble(hist[3] + "") : 0.0;
+				salida_ += ent ? 0.0 : Double.parseDouble(hist[3] + "");
+				saldo += ent ? Double.parseDouble(hist[3] + "") : Double.parseDouble(hist[3] + "") * -1;
+				String saldo_ = Utiles.getNumberFormat(saldo);
+				data.add(new Object[] { fecha, hora, numero, concepto, entrada, salida, saldo_, banco,
+						(Date) hist[1], ent ? IMG_ENTRADA : IMG_SALIDA, origen.replace("REC-PAG-", "ORDEN PAGO ")
+								.replace("CJP-", "CAJA ").replace("CAJAS:", "").toUpperCase(), entrada_, salida_, saldo });
+			}
+		}
+		this.totalDebe = entrada_;
+		this.totalHaber = salida_;
+		this.totalSaldo = saldo;
 		BindUtils.postNotifyChange(null, null, this, "totalDebe");
 		BindUtils.postNotifyChange(null, null, this, "totalHaber");
 		BindUtils.postNotifyChange(null, null, this, "totalSaldo");
-		return out;
-	}
-	
-	/**
-	 * @return los meses..
-	 */
-	@DependsOn("selectedAnho")
-	public List<MyArray> getMeses() throws Exception {
-		List<MyArray> out = new ArrayList<MyArray>();
-		Map<Integer, MyArray> meses = Utiles.getMeses(this.selectedAnho);
-		for (Integer nromes : meses.keySet()) {
-			out.add(meses.get(nromes));
-		}
-		return out;
+		return data;
 	}
 	
 	public List<String> getAnhos() {
@@ -232,14 +306,6 @@ public class BancoControlBody extends BodyApp {
 		return out;
 
 	}
-
-	public MyArray getSelectedMes() {
-		return selectedMes;
-	}
-
-	public void setSelectedMes(MyArray selectedMes) {
-		this.selectedMes = selectedMes;
-	}
 	
 	public BancoCtaDTO getDto() {
 		return dto;
@@ -257,14 +323,60 @@ public class BancoControlBody extends BodyApp {
 		this.dtoMovimiento = dtoMovimiento;
 	}
 
-	public String getSelectedAnho() {
-		return selectedAnho;
+	public Date getDesde() {
+		return desde;
 	}
 
-	public void setSelectedAnho(String selectedAnho) throws Exception {
-		this.selectedAnho = selectedAnho;
-		this.selectedMes = Utiles.getMes((Date) this.selectedMes.getPos2(), this.selectedAnho);
-		BindUtils.postNotifyChange(null, null, this, "selectedMes");
+	public void setDesde(Date desde) {
+		this.desde = desde;
+	}
+
+	public Date getHasta() {
+		return hasta;
+	}
+
+	public void setHasta(Date hasta) {
+		this.hasta = hasta;
+	}
+
+	public void setTotalSaldo(double totalSaldo) {
+		this.totalSaldo = totalSaldo;
+	}
+
+	public double getTotalSaldo() {
+		return totalSaldo;
+	}
+
+	public double getTotalDebe() {
+		return totalDebe;
+	}
+
+	public void setTotalDebe(double totalDebe) {
+		this.totalDebe = totalDebe;
+	}
+
+	public double getTotalHaber() {
+		return totalHaber;
+	}
+
+	public void setTotalHaber(double totalHaber) {
+		this.totalHaber = totalHaber;
+	}
+
+	public String getFilterConcepto() {
+		return filterConcepto;
+	}
+
+	public void setFilterConcepto(String filterConcepto) {
+		this.filterConcepto = filterConcepto;
+	}
+
+	public String getFilterNumero() {
+		return filterNumero;
+	}
+
+	public void setFilterNumero(String filterNumero) {
+		this.filterNumero = filterNumero;
 	}
 }
 
@@ -274,7 +386,8 @@ public class BancoControlBody extends BodyApp {
 class ReporteLibroBanco extends ReporteYhaguy {
 	
 	private String banco;
-	private String periodo;
+	private String desde;
+	private String hasta;
 	private String sucursal;
 	
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
@@ -282,13 +395,14 @@ class ReporteLibroBanco extends ReporteYhaguy {
 	static DatosColumnas col2 = new DatosColumnas("Fecha", TIPO_STRING, 30);
 	static DatosColumnas col3 = new DatosColumnas("Número", TIPO_STRING, 30);
 	static DatosColumnas col4 = new DatosColumnas("Origen", TIPO_STRING);
-	static DatosColumnas col5 = new DatosColumnas("Debe", TIPO_DOUBLE_GS, 40, true);
-	static DatosColumnas col6 = new DatosColumnas("Haber", TIPO_DOUBLE_GS, 40, true);
-	static DatosColumnas col7 = new DatosColumnas("Saldo", TIPO_DOUBLE_GS, 40, true);
+	static DatosColumnas col5 = new DatosColumnas("Debe", TIPO_DOUBLE_GS, 40);
+	static DatosColumnas col6 = new DatosColumnas("Haber", TIPO_DOUBLE_GS, 40);
+	static DatosColumnas col7 = new DatosColumnas("Saldo", TIPO_DOUBLE_GS, 40);
 	
-	public ReporteLibroBanco(String banco, String periodo, String sucursal) {
+	public ReporteLibroBanco(String banco, String desde, String hasta, String sucursal) {
 		this.banco = banco;
-		this.periodo = periodo;
+		this.desde = desde;
+		this.hasta = hasta;
 		this.sucursal = sucursal;
 	}
 	
@@ -326,7 +440,8 @@ class ReporteLibroBanco extends ReporteYhaguy {
 				.horizontalFlowList()
 				.add(this.textoParValor("Banco", this.banco))
 				.add(cmp.horizontalFlowList()
-						.add(this.textoParValor("Periodo", this.periodo))
+						.add(this.textoParValor("Desde", this.desde))
+						.add(this.textoParValor("Hasta", this.hasta))
 						.add(this.textoParValor("Sucursal", this.sucursal))));
 
 		out.add(cmp.horizontalFlowList().add(this.texto("")));

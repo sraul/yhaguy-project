@@ -7263,20 +7263,248 @@ public class RegisterDomain extends Register {
 		return this.hql(query);
 	}
 	
+	/**
+	 * @return los depositos segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getDepositosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_DEPOSITO_BANCARIO + "'), "
+				+ " b.fecha, b.numeroBoleta, b.totalImporte_gs, b.nroCuenta.banco.descripcion, b.observacion"
+				+ " from BancoBoletaDeposito b where"
+				+ " b.dbEstado != 'D'"
+				+ " and b.nroCuenta.id = " + idBanco
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los descuentos segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getDescuentosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('DESCUENTO DE CHEQUES'), "
+				+ " b.fecha, cast(b.id as string), b.totalImporte_gs, b.banco.banco.descripcion, b.observacion"
+				+ " from BancoDescuentoCheque b where"
+				+ " b.dbEstado = 'R'"
+				+ " and b.banco.id = " + idBanco
+				+ " and auxi != '" + BancoDescuentoCheque.PRESTAMO + "'"
+				+ " and auxi != '" + BancoDescuentoCheque.ANTICIPO_UTILIDAD + "'"
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los descuentos que son prestamos internos segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getPrestamosInternosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('PRESTAMOS INTERNOS'), "
+				+ " b.fecha, cast(b.id as string), b.totalImporte_gs, b.banco.banco.descripcion, b.observacion"
+				+ " from BancoDescuentoCheque b where"
+				+ " b.dbEstado = 'R'"
+				+ " and b.banco.id = " + idBanco
+				+ " and auxi = '" + BancoDescuentoCheque.PRESTAMO + "'"
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las transferencias (banco origen) segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getTransferenciasOrigenPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('TRANSFERENCIA BANCARIA'), "
+				+ " b.fecha, b.numero, b.importe, b.origen.banco.descripcion, concat('TRANSFERENCIA ENVIADA A BANCO: ', b.destino.banco.descripcion)"
+				+ " from BancoTransferencia b where"
+				+ " b.origen.id = " + idBanco
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las transferencias (banco destino) segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getTransferenciasDestinoPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('TRANSFERENCIA BANCARIA'), "
+				+ " b.fecha, b.numero, b.importe, b.destino.banco.descripcion, concat('TRANSFERENCIA RECIBIDA DE BANCO: ', b.origen.banco.descripcion)"
+				+ " from BancoTransferencia b where"
+				+ " b.destino.id = " + idBanco
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los prestamos bancarios segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getPrestamosBancariosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('PRESTAMO BANCARIO'), "
+				+ " b.fecha, b.numero, (b.capital + b.interes), b.banco.banco.descripcion, concat('PRESTAMO BANCARIO ', b.tipoVencimiento, ' ',  b.tipoCuotas)"
+				+ " from BancoPrestamo b where"
+				+ " b.banco.id = " + idBanco
+				+ " and (b.fecha >= '"
+				+ desde_
+				+ "' and b.fecha <= '"
+				+ hasta_
+				+ "')" + " order by b.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los cheques emitidos segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 * [5]:origen
+	 */
+	public List<Object[]> getChequesPropiosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_EMISION_CHEQUE + "'),"
+				+ " b.fechaEmision, b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago)"
+				+ " from BancoCheque b where"
+				+ " b.dbEstado != 'D' and b.estadoComprobante.sigla != '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
+				+ " and b.anulado = 'FALSE'"
+				+ " and b.banco.id = " + idBanco
+				+ " and (b.fechaEmision >= '"
+				+ desde_
+				+ "' and b.fechaEmision <= '"
+				+ hasta_
+				+ "')" + " order by b.fechaEmision desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los cheques rechazados segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco deposito 
+	 * [5]:observacion
+	 */
+	public List<Object[]> getChequesRechazadosPorBancoPorDeposito(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_CHEQUE_RECHAZADO + "'), "
+				+ " b.emision, b.numero, b.monto, d.nroCuenta.banco.descripcion, concat(b.observacion, ' - DEPOSITO: ', b.numeroDeposito)"
+				+ " from BancoChequeTercero b, BancoBoletaDeposito d where"
+				+ " b.numeroDeposito = d.numeroBoleta and"
+				+ " b.rechazado = 'true' and b.dbEstado != 'D'"
+				+ " and d.nroCuenta.id = " + idBanco
+				+ " and (b.emision >= '"
+				+ desde_
+				+ "' and b.emision <= '"
+				+ hasta_
+				+ "')" + " order by b.emision desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los cheques rechazados segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco deposito 
+	 * [5]:observacion
+	 */
+	public List<Object[]> getChequesRechazadosPorBancoPorDescuento(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_CHEQUE_RECHAZADO + "'), "
+				+ " b.emision, b.numero, b.monto, d.banco.banco.descripcion, concat(b.observacion, ' - DESCUENTO: ', b.numeroDescuento)"
+				+ " from BancoChequeTercero b, BancoDescuentoCheque d where"
+				+ " replace(b.numeroDescuento, 'PRESTAMO ', '') = cast (d.id as string) and"
+				+ " b.rechazado = 'true' and b.dbEstado != 'D'"
+				+ " and d.banco.id = " + idBanco
+				+ " and (b.emision >= '"
+				+ desde_
+				+ "' and b.emision <= '"
+				+ hasta_
+				+ "')" + " order by b.emision desc";
+		return this.hql(query);
+	}
+	
 	public static void main(String[] args) {
+		RegisterDomain rr = RegisterDomain.getInstance();
 		try {
-			RegisterDomain rr = RegisterDomain.getInstance();
-			List<NotaCredito> ncs = rr.getObjects(NotaCredito.class.getName());
-			for (NotaCredito nc : ncs) {
-				if (nc.isNotaCreditoVenta()) {
-					nc.setAuxi(nc.isNotaCreditoVentaContado() ? TipoMovimiento.NC_CONTADO : TipoMovimiento.NC_CREDITO);
-					rr.saveObject(nc, nc.getUsuarioMod());
-					System.out.println(nc.getNumero() + " - " + nc.getAuxi());
-				}
-			}
+			/*List<BancoBoletaDeposito> list = rr.getObjects(BancoBoletaDeposito.class.getName());
+			for (BancoBoletaDeposito dep : list) {
+				dep.setTotalImporte_gs(dep.getTotalImporteGs());
+				dep.setAuxi(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_DEPOSITO_BANCARIO).getDescripcion().toUpperCase());
+				rr.saveObject(dep, dep.getUsuarioMod());
+				System.out.println(dep.getNumeroBoleta());
+			}*/
 			
+			List<BancoDescuentoCheque> list = rr.getObjects(BancoDescuentoCheque.class.getName());
+			for (BancoDescuentoCheque dto : list) {
+				dto.setTotalImporte_gs(dto.getTotalImporteGs());
+				dto.setConfirmado(dto.getDbEstado() == 'R');
+				rr.saveObject(dto, dto.getUsuarioMod());
+				System.out.println(dto.getObservacion());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 }

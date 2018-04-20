@@ -22,6 +22,7 @@ public class BancoBoletaDeposito extends Domain {
 	private String observacion;
 	private String planillaCaja; //nros de planillas separados por ;
 	private boolean cerrado;
+	private double totalImporte_gs;
 
 	@Override
 	public int compareTo(Object o) {
@@ -140,6 +141,14 @@ public class BancoBoletaDeposito extends Domain {
 
 	public void setPlanillaCaja(String planillaCaja) {
 		this.planillaCaja = planillaCaja;
+	}
+
+	public double getTotalImporte_gs() {
+		return totalImporte_gs;
+	}
+
+	public void setTotalImporte_gs(double totalImporte_gs) {
+		this.totalImporte_gs = totalImporte_gs;
 	}
 
 }

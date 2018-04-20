@@ -19,10 +19,12 @@ import com.coreweb.dto.Assembler;
 import com.coreweb.dto.DTO;
 import com.coreweb.extras.browser.Browser;
 import com.coreweb.util.MyArray;
+import com.coreweb.util.MyPair;
 import com.yhaguy.BodyApp;
 import com.yhaguy.Configuracion;
 import com.yhaguy.domain.BancoCheque;
 import com.yhaguy.domain.BancoChequeTercero;
+import com.yhaguy.domain.BancoCta;
 import com.yhaguy.domain.BancoDescuentoCheque;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.bancos.cheques.AssemblerBancoCheque;
@@ -74,6 +76,11 @@ public class DescuentoChequesVM extends BodyApp {
 	public void setDTOCorriente(DTO dto) {
 		this.chequeDescuento = (BancoDescuentoChequeDTO) dto;
 
+	}
+	
+	@Override
+	public boolean getImprimirDeshabilitado() {
+		return this.chequeDescuento.esNuevo();
 	}
 
 	@Override
@@ -228,6 +235,7 @@ public class DescuentoChequesVM extends BodyApp {
 		if (mensajeSiNo("Esta seguro de cerrar el registro?")) {
 
 			this.chequeDescuento.setReadonly();
+			this.chequeDescuento.setConfirmado(true);
 			this.saveDTO(chequeDescuento);
 
 			List<IiD> cheques = new ArrayList<IiD>();
@@ -340,10 +348,24 @@ public class DescuentoChequesVM extends BodyApp {
 		vp.setBotonCancelar(false);
 		vp.showReporte(rep, this);
 	}
-
-	@Override
-	public boolean getImprimirDeshabilitado() {
-		return this.chequeDescuento.esNuevo();
+	
+	/**
+	 * GETS / SETS
+	 */
+	
+	/**
+	 * @return los bancos..
+	 */
+	public List<MyArray> getBancos() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<BancoCta> list = rr.getBancosCta();
+		List<MyArray> out = new ArrayList<MyArray>();
+		for (BancoCta banco : list) {
+			MyArray my = new MyArray(new MyPair(banco.getBanco().getId(), banco.getBanco().getDescripcion().toUpperCase()));
+			my.setId(banco.getId());
+			out.add(my);
+		}
+		return out;
 	}
 	
 	public String getMensajeError() {

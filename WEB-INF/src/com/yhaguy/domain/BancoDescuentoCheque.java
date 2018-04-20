@@ -25,7 +25,11 @@ public class BancoDescuentoCheque extends Domain {
 	private double liq_neto_diferidos;
 	private boolean liq_registrado;
 	
+	public double totalImporte_gs;
+	private boolean confirmado;
+	
 	private Tipo moneda;
+	private BancoCta banco;
 	
 	private Set<BancoChequeTercero> cheques = new HashSet<BancoChequeTercero>();
 	private Set<BancoCheque> chequesPropios = new HashSet<BancoCheque>();
@@ -167,6 +171,30 @@ public class BancoDescuentoCheque extends Domain {
 
 	public void setFormasPago(Set<ReciboFormaPago> formasPago) {
 		this.formasPago = formasPago;
+	}
+
+	public BancoCta getBanco() {
+		return banco;
+	}
+
+	public void setBanco(BancoCta banco) {
+		this.banco = banco;
+	}
+
+	public double getTotalImporte_gs() {
+		return totalImporte_gs;
+	}
+
+	public void setTotalImporte_gs(double totalImporte_gs) {
+		this.totalImporte_gs = totalImporte_gs;
+	}
+
+	public boolean isConfirmado() {
+		return confirmado;
+	}
+
+	public void setConfirmado(boolean confirmado) {
+		this.confirmado = confirmado;
 	}
 
 }

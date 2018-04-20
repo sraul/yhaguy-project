@@ -14,10 +14,12 @@ public class AssemblerBancoDescuentoCheque extends Assembler {
 
 	static final String[] ATT_IGUALES = { "fecha", "totalChequesDescontado",
 			"observacion", "liq_impuestos", "liq_gastos_adm", "liq_intereses",
-			"liq_neto_aldia", "liq_neto_diferidos", "liq_registrado" };
+			"liq_neto_aldia", "liq_neto_diferidos", "liq_registrado", "confirmado" };
 	
 	static final String[] ATT_CHEQUES = { "fecha", "banco", "numero",
 			"librado", "monto", "depositado", "sucursalApp", "descontado" };
+	
+	static final String[] ATT_BANCO = { "banco" };
 
 	@Override
 	public Domain dtoToDomain(DTO dtoG) throws Exception {
@@ -28,6 +30,7 @@ public class AssemblerBancoDescuentoCheque extends Assembler {
 		this.copiarValoresAtributos(dto, domain, ATT_IGUALES);
 		this.myPairToDomain(dto, domain, "sucursalApp");
 		this.myPairToDomain(dto, domain, "moneda");
+		this.myArrayToDomain(dto, domain, "banco");
 		this.listaMyArrayToListaDomain(dto, domain, "cheques");
 		this.listaDTOToListaDomain(dto, domain, "chequesPropios", false, false, new AssemblerBancoCheque());
 		this.listaDTOToListaDomain(dto, domain, "formasPago", true, true, new AssemblerReciboFormaPago(""));
@@ -43,6 +46,7 @@ public class AssemblerBancoDescuentoCheque extends Assembler {
 		this.copiarValoresAtributos(domain, dto, ATT_IGUALES);
 		this.domainToMyPair(domain, dto, "sucursalApp");
 		this.domainToMyPair(domain, dto, "moneda");
+		this.domainToMyArray(domain, dto, "banco", ATT_BANCO);
 		this.listaDomainToListaMyArray(domain, dto, "cheques", ATT_CHEQUES);
 		this.listaDomainToListaDTO(domain, dto, "chequesPropios", new AssemblerBancoCheque());
 		this.listaDomainToListaDTO(domain, dto, "formasPago", new AssemblerReciboFormaPago(""));

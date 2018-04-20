@@ -6,29 +6,6 @@
 		<rows>
 			<row>
 				<vlayout spacing="0">
-					<field value="Cuenta Bancaria Tipo" />
-					<combobox model="@load(vm.dtoUtil.bancoCtaTipos)"
-						value="@load(vm.dto.tipo.text)" selectedItem="@bind(vm.dto.tipo)"
-						hflex="true">
-						<template name="model">
-							<comboitem label="@load(each.text)" />
-						</template>
-					</combobox>
-				</vlayout>
-				<vlayout spacing="0">
-					<field value="Cuenta Bancaria Nro." />
-					<hlayout>
-						<textbox hflex="true"
-							value="@bind(vm.dto.nroCuenta)" width="130px" />
-						<labelConstrain />
-					</hlayout>
-				</vlayout>
-				<vlayout spacing="0">
-					<field value="Apertura" />
-					<datebox value="@bind(vm.dto.fechaApertura)"
-						hflex="true" format="dd-MM-yyyy" />
-				</vlayout>
-				<vlayout spacing="0">
 					<field value="Banco" />
 					<hlayout>
 						<combobox model="@load(vm.dtoUtil.bancos)"
@@ -53,111 +30,92 @@
 						</template>
 					</combobox>
 				</vlayout>
+				<vlayout spacing="0">
+					<field value="Desde" />
+					<datebox width="150px"
+						readonly="@load(!vm.siempreHabilitado)"
+						buttonVisible="@load(vm.siempreHabilitado)"
+						value="@bind(vm.desde)" hflex="true" style="background:#eef7fa">
+					</datebox>
+				</vlayout>
+				<vlayout spacing="0">
+					<field value="Hasta" />
+					<datebox width="150px"
+						readonly="@load(!vm.siempreHabilitado)"
+						buttonVisible="@load(vm.siempreHabilitado)"
+						value="@bind(vm.hasta)" hflex="true" style="background:#eef7fa">
+					</datebox>
+				</vlayout>
 			</row>
 		</rows>
 	</grid>
 
 	<solicitarCabecera visible="@load(!vm.tabsVisible)">
 	</solicitarCabecera>
-
-	<hlayout sclass="button-container"
-		visible="@load(vm.tabsVisible)">
-		<field value="Periodo: " />
-		<combobox model="@load(vm.meses)"
-			selectedItem="@bind(vm.selectedMes)"
-			value="@load(vm.selectedMes.pos1)"
-			readonly="@load(!vm.siempreHabilitado)"
-			buttonVisible="@load(vm.siempreHabilitado)">
-			<template name="model">
-				<comboitem label="@load(each.pos1)" />
-			</template>
-		</combobox>
-		<combobox value="@load(vm.selectedAnho)" readonly="@load(!vm.siempreHabilitado)"
-			buttonVisible="@load(vm.siempreHabilitado)"
-			model="@load(vm.anhos)"
-			selectedItem="@bind(vm.selectedAnho)">
-			<template name="model">
-				<comboitem label="@load(each)"/>
-			</template>
-		</combobox>
-		<space hflex="true" />
-		<button mold="bs" sclass="btn-primary btn-sm" width="150px"
-			iconSclass="z-icon-print"
-			disabled="@load(!vm.siempreHabilitado)"
-			onClick="@command('imprimir')" label=" Imprimir" />
-		<div width="50px"></div>
-	</hlayout>
-
-	<listbox model="@load(vm.movimientos_)"
-		selectedItem="@bind(vm.selectedMovimento)" sclass="small-list"
+	<div height="10px"></div>
+	<listbox model="@load(vm.movimientosBanco)" sclass="small-list"
 		vflex="true" visible="@load(vm.tabsVisible)"
 		emptyMessage="SIN MOVIMIENTOS..">
-		<custom-attributes org.zkoss.zul.grid.autoSort="true" />
 		<listhead sizable="true">
-			<listheader label="" width="40px" align="center" />
-			<listheader label="Concepto" width="170px"
-				style="text-align:center" sort="auto(tipoMovimiento.pos1)" />
-			<listheader label="Fecha" width="100px"
-				style="text-align:center" sort="auto(fecha)" />
-			<listheader label="Número" width="100px"
-				style="text-align:center" align="right" sort="auto(nroReferencia)" />
-			<listheader label="Origen" style="text-align:center"
-				sort="auto(descripcion)" />
+			<listheader label="Concepto" width="190px" style="text-align:center" />
+			<listheader label="Fecha" width="100px" style="text-align:center" />
+			<listheader label="Hora" width="100px" style="text-align:center" />
+			<listheader label="Número" width="130px" style="text-align:center" align="right" />
+			<listheader label="Origen" style="text-align:center" />
 			<listheader label="Debe" width="150px"
-				style="text-align:center" align="right" sort="auto(monto)" />
+				style="text-align:center" align="right" />
 			<listheader label="Haber" width="150px"
-				style="text-align:center" align="right" sort="auto(monto)" />
+				style="text-align:center" align="right" />
 			<listheader label="Saldo" width="150px"
 				style="text-align:center" align="right" />
 		</listhead>
+		<auxhead>
+			<auxheader>
+				<textbox sclass="filter" hflex="true" readonly="@load(!vm.siempreHabilitado)"
+					placeholder="Concepto.." value="@bind(vm.filterConcepto)" instant="true"></textbox>
+			</auxheader>
+			<auxheader></auxheader>
+			<auxheader></auxheader>
+			<auxheader>
+				<textbox sclass="filter" hflex="true" readonly="@load(!vm.siempreHabilitado)"
+					placeholder="Número.." value="@bind(vm.filterNumero)" instant="true"></textbox>
+			</auxheader>
+			<auxheader></auxheader>
+			<auxheader></auxheader>
+			<auxheader></auxheader>
+			<auxheader></auxheader>
+		</auxhead>
 		<template name="model">
-			<listitem style="@load(each.saldoInicial ? 'background:lightyellow' : '')">
-				<listcell>
-					<image
-						src="@load(each.emisionCheque or each.chequeRechazado ? '/core/images/cheque.png' : '/core/images/deposito.png')" />
-				</listcell>
-				<listcell label="@load(each.tipoMovimiento.pos1)"
-					style="@load(each.saldoInicial ? 'color:blue' : 'color:black')" />
-				<listcell
-					label="@load(each.fecha) @converter('formatedDate', format='dd-MM-yyyy')"
-					style="@load(each.saldoInicial ? 'color:blue' : 'color:black')"  />
-				<listcell label="@load(each.nroReferencia)"
-					style="@load(each.saldoInicial ? 'color:blue' : 'color:black')"  />
-				<listcell label="@load(each.descripcion.toUpperCase())"
-					style="@load(each.saldoInicial ? 'color:blue' : 'color:black')"  tooltiptext="@load(each.descripcion)" />
-				<listcell
-					label="@load(each.debe) @converter(vm.cnv.monedaLocal)" 
-						style="@load(each.saldoInicial ? 'color:blue' : 'color:black')" />
-				<listcell
-					label="@load(each.haber) @converter(vm.cnv.monedaLocal)" 
-						style="@load(each.saldoInicial ? 'color:blue' : 'color:black')" />
-				<listcell
-					label="@load(each.saldo) @converter(vm.cnv.monedaLocal)" 
-						style="@load(each.saldoInicial ? 'color:blue' : 'color:black')" />
+			<listitem>
+				<listcell label="@load(each[3])" />
+				<listcell label="@load(each[0])" />
+				<listcell label="@load(each[1])" />
+				<listcell label="@load(each[2])" />
+				<listcell label="@load(each[10])" />
+				<listcell label="@load(each[4])" />
+				<listcell label="@load(each[5])" />
+				<listcell label="@load(each[6])" />
 			</listitem>
 		</template>
 		<listfoot>
-			<listfooter span="2" align="left">
-				<field value="@load(vm.movimientos.size())" />
+			<listfooter align="left">
 				<field value="ítems" />
 			</listfooter>
-			<listfooter span="6" align="right">
-				<hlayout>
-					<field value="Debe:" />
-					<guaranibox readonly="true"
-						style="background:#EEF7FA;text-align:right;font-weight:bold"
+			<listfooter span="4" align="right"></listfooter>
+			<listfooter>
+				<guaranibox readonly="true"
+						style="background:#EEF7FA;text-align:right;font-weight:bold" hflex="true" 
 						value="@load(vm.totalDebe)" />
-					<space />
-					<field value="Haber:" />
-					<guaranibox readonly="true"
-						style="background:#EEF7FA;text-align:right;font-weight:bold"
+			</listfooter>
+			<listfooter>
+				<guaranibox readonly="true"
+						style="background:#EEF7FA;text-align:right;font-weight:bold" hflex="true" 
 						value="@load(vm.totalHaber)" />
-					<space />
-					<field value="Saldo:" />
-					<guaranibox readonly="true"
-						style="background:#EEF7FA;text-align:right;font-weight:bold"
-						value="@load(vm.totalSaldo)" />
-				</hlayout>
+			</listfooter>
+			<listfooter>
+				<guaranibox readonly="true"
+						style="background:#EEF7FA;text-align:right;font-weight:bold" hflex="true" 
+						value="@load(vm.totalSaldo)"/>
 			</listfooter>
 		</listfoot>
 	</listbox>

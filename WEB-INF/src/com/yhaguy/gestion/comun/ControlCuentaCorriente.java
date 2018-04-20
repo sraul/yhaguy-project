@@ -280,7 +280,12 @@ public class ControlCuentaCorriente {
 		int acum = Integer.parseInt(mm);
 		
 		for (int i = 1; i <= cuotas; i++) {
-			int mes_ = acum + 1;
+			acum += prestamo.getMesesTipoVencimiento();
+			if(acum >= 12) {
+				acum = acum - 12;
+				aa = ((Integer.parseInt(aa) + 1) + "");
+			}
+			int mes_ = acum + 0;
 			CtaCteEmpresaMovimiento ctm = new CtaCteEmpresaMovimiento();
 			ctm.setTipoMovimiento(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_PRESTAMO_BANCARIO));
 			ctm.setTipoCaracterMovimiento(rr.getTipoPorSigla(Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_PROVEEDOR));
@@ -295,16 +300,7 @@ public class ControlCuentaCorriente {
 			ctm.setSucursal(rr.getSucursalAppById(2));
 			ctm.setSaldo(prestamo.getDeudaTotal() / cuotas);
 			rr.saveObject(ctm, user);
-			acum ++;
-			if(acum >= 12) {
-				acum = 0;
-				aa = ((Integer.parseInt(aa) + 1) + "");
-			}
 		}		
-	}
-	
-	public static void main(String[] args) {
-		System.out.println(Integer.parseInt("04"));
 	}
 	
 	/**

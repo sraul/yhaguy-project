@@ -21,6 +21,7 @@ import com.yhaguy.domain.BancoPrestamo;
 import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.comun.ControlCuentaCorriente;
+import com.yhaguy.util.Utiles;
 
 public class BancoPrestamosViewModel extends SimpleViewModel {
 	
@@ -35,6 +36,8 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 	private String filterFechaDD = "";
 	private String filterFechaMM = "";
 	private String filterFechaAA = "";
+	
+	private List<Object[]> cuotas = new ArrayList<Object[]>();
 
 	@Init(superclass = true)
 	public void init() {
@@ -101,7 +104,10 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 		this.nvo_prestamo.setCuotas(12);
 		this.nvo_prestamo.setNumero("");
 		this.nvo_prestamo.setTipoVencimiento(BancoPrestamo.VTO_MENSUAL);
+		this.nvo_prestamo.setTipoCuotas(BancoPrestamo.TIPO_CUOTAS_FIJAS);
 	}
+	
+	
 
 	/**
 	 * GETS / SETS
@@ -118,6 +124,32 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 		if(this.filter_ruc.trim().isEmpty() && this.filter_razonSocial.trim().isEmpty()) return new ArrayList<Empresa>();
 		RegisterDomain rr = RegisterDomain.getInstance();
 		return rr.getEmpresas(this.filter_ruc, "", this.filter_razonSocial, "");
+	}
+	
+	@Command
+	@NotifyChange("cuotas")
+	public void calcularCuotas() throws Exception {
+		this.cuotas = new ArrayList<Object[]>();
+		
+		int cuotas = this.nvo_prestamo.getCuotas();
+		String dd = Utiles.getDateToString(this.nvo_prestamo.getFecha(), "dd");
+		String mm = Utiles.getDateToString(this.nvo_prestamo.getFecha(), "MM");
+		String aa = Utiles.getDateToString(this.nvo_prestamo.getFecha(), "yyyy");
+		int acum = Integer.parseInt(mm);
+		
+		for (int i = 1; i <= cuotas; i++) {
+			acum += this.nvo_prestamo.getMesesTipoVencimiento();
+			if(acum >= 12) {
+				acum = acum - 12;
+				aa = ((Integer.parseInt(aa) + 1) + "");
+			}
+			int mes_ = acum + 0;
+			Object[] cuota = new Object[] {
+					i,
+					Utiles.getFecha(dd + "-" + (mes_ > 9 ? ("" + mes_) : ("0" + mes_)) + "-" + aa + " 00:00:00"),
+					this.nvo_prestamo.getDeudaTotal() / cuotas };
+			this.cuotas.add(cuota);
+		}		
 	}
 	
 	/**
@@ -233,5 +265,13 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 
 	public void setFilter_razonSocial(String filter_razonSocial) {
 		this.filter_razonSocial = filter_razonSocial;
+	}
+
+	public List<Object[]> getCuotas() {
+		return cuotas;
+	}
+
+	public void setCuotas(List<Object[]> cuotas) {
+		this.cuotas = cuotas;
 	}
 }

@@ -8,7 +8,9 @@
 			<column width="150px" />
 			<column width="150px" />
 			<column width="150px" />
-			<column width="" />
+			<column width="150px" />
+			<column></column>
+			<column width="150px" />
 		</columns>
 		<rows>
 			<row>
@@ -22,9 +24,19 @@
 				<vlayout spacing="0">
 					<field value="Fecha" />
 					<datebox value="@bind(vm.chequeDescuento.fecha)"
-						readonly="true" tooltiptext="Fecha del descuento de cheuqes."
 						hflex="true" 
 						format="dd-MM-yyyy" />
+				</vlayout>
+				<vlayout spacing="0">
+					<field value="Banco" />
+					<combobox hflex="true"
+						value="@load(vm.chequeDescuento.banco.pos1.text)"
+						selectedItem="@bind(vm.chequeDescuento.banco)"
+						model="@load(vm.bancos)">
+						<template name="model">
+							<comboitem label="@load(each.pos1.text)"></comboitem>
+						</template>
+					</combobox>
 				</vlayout>
 				<vlayout spacing="0">
 					<field value="Moneda" />
@@ -50,6 +62,14 @@
 					<textbox
 						hflex="true" value="@bind(vm.chequeDescuento.observacion)"
 						tooltiptext="@load(vm.chequeDescuento.observacion)" />
+				</vlayout>
+				<vlayout spacing="0">
+					<field value="Estado" />
+					<hlayout>
+						<textbox value="@load(vm.chequeDescuento.confirmado? 'CERRADO' : 'PENDIENTE')"
+							readonly="true" hflex="true" />
+						<image src="@load(vm.chequeDescuento.confirmado? '/core/images/accept_.png' : '/core/images/delete_.png')"></image>
+					</hlayout>
 				</vlayout>
 			</row>
 			<row height="10px"/>
