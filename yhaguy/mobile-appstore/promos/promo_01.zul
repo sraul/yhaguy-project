@@ -34,6 +34,7 @@
 		<hbox align="end" hflex="true">
 			<div hflex="true" style="border-bottom:solid 2px #428bca"></div>
 			<image src="/core/css/logo.png" height="70px"></image>
+			<div width="5px" />
 		</hbox>
 	</vlayout>
 
