@@ -309,7 +309,6 @@
 							<checkbox checked="@bind(vm.dtoGasto.no_generar_saldo)"
 								visible="@load(vm.dtoGasto.gastoContado)"></checkbox>
 							<label value="No generar saldo en Cta.Cte."
-								visible="@load(vm.dtoGasto.gastoContado)"
 								tooltiptext="Ej: Facturas Contado que se debitan de la Cta.Cte.."></label>
 							<space></space>
 						<hlayout valign="middle" visible="@load(vm.dtoGasto.gastoImportacion)">

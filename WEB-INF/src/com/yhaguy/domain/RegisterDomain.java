@@ -7409,6 +7409,75 @@ public class RegisterDomain extends Register {
 	}
 	
 	/**
+	 * @return los gastos bancarios segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getGastosBancariosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('DEBITO BANCARIO'), "
+				+ " g.fecha, g.numeroFactura, g.importeGs, g.banco.banco.descripcion, g.observacion"
+				+ " from Gasto g where g.debitoBancario = 'TRUE'"
+				+ " and g.banco.id = " + idBanco
+				+ " and (g.fecha >= '"
+				+ desde_
+				+ "' and g.fecha <= '"
+				+ hasta_
+				+ "')" + " order by g.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las formas de pago debito en cta. segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getFormasPagoDebitoBancarioPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('DEBITO CTA. BANCARIA'), "
+				+ " r.fechaEmision, r.numero, f.montoGs, f.depositoBancoCta.banco.descripcion, concat(r.numero, ' - ', r.proveedor.empresa.razonSocial)"
+				+ " from Recibo r join r.formasPago f where f.tipo.sigla = '" + Configuracion.SIGLA_FORMA_PAGO_DEBITO_CTA_BANCARIA + "'"
+				+ " and f.depositoBancoCta.id = " + idBanco
+				+ " and (r.fechaEmision >= '"
+				+ desde_
+				+ "' and r.fechaEmision <= '"
+				+ hasta_
+				+ "')" + " order by r.fechaEmision desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las formas de pago deposito en cta. segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getFormasPagoDepositoBancarioPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('DEPOSITO CTA. BANCARIA'), "
+				+ " r.fechaEmision, r.numero, f.montoGs, f.depositoBancoCta.banco.descripcion, concat(r.numero, ' - ', r.cliente.empresa.razonSocial)"
+				+ " from Recibo r join r.formasPago f where f.tipo.sigla = '" + Configuracion.SIGLA_FORMA_PAGO_DEPOSITO_BANCARIO + "'"
+				+ " and f.depositoBancoCta.id = " + idBanco
+				+ " and (r.fechaEmision >= '"
+				+ desde_
+				+ "' and r.fechaEmision <= '"
+				+ hasta_
+				+ "')" + " order by r.fechaEmision desc";
+		return this.hql(query);
+	}
+	
+	/**
 	 * @return los cheques emitidos segun banco.. 
 	 * [0]:concepto
 	 * [1]:fecha 

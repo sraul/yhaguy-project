@@ -65,6 +65,9 @@
 		<many-to-one name="sucursal" class="com.yhaguy.domain.SucursalApp"
 			column="idSucursal" lazy="false"/>
 			
+		<many-to-one name="banco" class="com.yhaguy.domain.BancoCta"
+			column="id_banco" lazy="false" />
+			
 		<set name="detalles" table="gastodetalle" inverse="false" lazy="false" fetch="join" cascade="all">
    		   <key><column name="idGasto" not-null="false"/></key>	
    		   <one-to-many entity-name="com.yhaguy.domain.GastoDetalle"></one-to-many>   				   			

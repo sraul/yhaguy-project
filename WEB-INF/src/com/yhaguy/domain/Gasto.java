@@ -49,6 +49,7 @@ public class Gasto extends Domain {
 	private CondicionPago condicionPago;
 	private Tipo estadoComprobante;
 	private SucursalApp sucursal;
+	private BancoCta banco;
 	
 	private Set<GastoDetalle> detalles = new HashSet<GastoDetalle>();
 	private Set<ReciboFormaPago> formasPago = new HashSet<ReciboFormaPago>();
@@ -404,5 +405,13 @@ public class Gasto extends Domain {
 
 	public void setNo_generar_saldo(boolean no_generar_saldo) {
 		this.no_generar_saldo = no_generar_saldo;
+	}
+
+	public BancoCta getBanco() {
+		return banco;
+	}
+
+	public void setBanco(BancoCta banco) {
+		this.banco = banco;
 	}
 }
