@@ -132,8 +132,8 @@ public class BancoControlBody extends BodyApp {
 			List<Object[]> data = new ArrayList<Object[]>();
 
 			for (Object[] movim : this.getMovimientosBanco()) {
-				Object[] obj1 = new Object[] { movim[3], movim[0], movim[2],
-						Utiles.getMaxLength((String) movim[10], 40), movim[11], movim[12], movim[13] };
+				boolean ent = (boolean) movim[14];
+				Object[] obj1 = new Object[] { movim[3], movim[0], movim[2], ent ? movim[11] : 0.0, ent ? 0.0 : movim[12], movim[13] };
 				data.add(obj1);
 			}
 
@@ -270,7 +270,7 @@ public class BancoControlBody extends BodyApp {
 				String saldo_ = Utiles.getNumberFormat(saldo);
 				data.add(new Object[] { fecha, hora, numero, concepto, entrada, salida, saldo_, banco,
 						(Date) hist[1], ent ? IMG_ENTRADA : IMG_SALIDA, origen.replace("REC-PAG-", "ORDEN PAGO ")
-								.replace("CJP-", "CAJA ").replace("CAJAS:", "").toUpperCase(), entrada_, salida_, saldo });
+								.replace("CJP-", "CAJA ").replace("CAJAS:", "").toUpperCase(), entrada_, salida_, saldo, ent });
 			}
 		}
 		this.totalDebe = entrada_;
@@ -397,10 +397,9 @@ class ReporteLibroBanco extends ReporteYhaguy {
 	private String sucursal;
 	
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
-	static DatosColumnas col1 = new DatosColumnas("Concepto", TIPO_STRING, 50);
-	static DatosColumnas col2 = new DatosColumnas("Fecha", TIPO_STRING, 30);
-	static DatosColumnas col3 = new DatosColumnas("Número", TIPO_STRING, 30);
-	static DatosColumnas col4 = new DatosColumnas("Origen", TIPO_STRING);
+	static DatosColumnas col1 = new DatosColumnas("Concepto", TIPO_STRING);
+	static DatosColumnas col2 = new DatosColumnas("Fecha", TIPO_STRING, 40);
+	static DatosColumnas col3 = new DatosColumnas("Número", TIPO_STRING, 40);
 	static DatosColumnas col5 = new DatosColumnas("Debe", TIPO_DOUBLE_GS, 40);
 	static DatosColumnas col6 = new DatosColumnas("Haber", TIPO_DOUBLE_GS, 40);
 	static DatosColumnas col7 = new DatosColumnas("Saldo", TIPO_DOUBLE_GS, 40);
@@ -416,7 +415,6 @@ class ReporteLibroBanco extends ReporteYhaguy {
 		cols.add(col1);
 		cols.add(col2);
 		cols.add(col3);
-		cols.add(col4);
 		cols.add(col5);
 		cols.add(col6);
 		cols.add(col7);
