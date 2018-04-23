@@ -56,6 +56,7 @@ public class GastoDTO extends DTO{
 	private MyArray condicionPago = new MyArray();
 	private MyPair estadoComprobante = new MyPair();
 	private MyPair sucursal = new MyPair();
+	private MyArray banco;
 	
 	private MyArray importacion;
 	private boolean gastoImportacion = false;
@@ -461,5 +462,13 @@ public class GastoDTO extends DTO{
 
 	public void setNo_generar_saldo(boolean no_generar_saldo) {
 		this.no_generar_saldo = no_generar_saldo;
+	}
+
+	public MyArray getBanco() {
+		return banco;
+	}
+
+	public void setBanco(MyArray banco) {
+		this.banco = banco;
 	}
 }

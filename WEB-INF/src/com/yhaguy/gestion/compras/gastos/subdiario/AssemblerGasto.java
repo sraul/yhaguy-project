@@ -23,6 +23,7 @@ public class AssemblerGasto extends Assembler {
 	final static String[] ATT_TIMBRADO = { "numero", "vencimiento" };
 	final static String[] ATT_CONDICION = { "descripcion", "plazo" };
 	final static String[] ATT_TIPO_MOVIMIENTO = { "descripcion", "sigla", "clase", "tipoIva" };
+	final static String[] ATT_BANCO = { "bancoDescripcion" };
 
 	@Override
 	public Domain dtoToDomain(DTO dtoG) throws Exception {
@@ -38,6 +39,7 @@ public class AssemblerGasto extends Assembler {
 		this.myArrayToDomain(dto, domain, "tipoMovimiento");
 		this.myArrayToDomain(dto, domain, "timbrado");
 		this.myArrayToDomain(dto, domain, "condicionPago");
+		this.myArrayToDomain(dto, domain, "banco");
 		this.myPairToDomain(dto, domain, "estadoComprobante");
 		this.myPairToDomain(dto, domain, "sucursal");
 		this.listaDTOToListaDomain(dto, domain, "detalles", true, true, new AssemblerGastoDetalle());		
@@ -56,6 +58,7 @@ public class AssemblerGasto extends Assembler {
 		this.domainToMyArray(domain, dto, "tipoMovimiento", ATT_TIPO_MOVIMIENTO);
 		this.domainToMyArray(domain, dto, "timbrado", ATT_TIMBRADO);
 		this.domainToMyArray(domain, dto, "condicionPago", ATT_CONDICION);
+		this.domainToMyArray(domain, dto, "banco", ATT_BANCO);
 		this.domainToMyPair(domain, dto, "estadoComprobante");
 		this.domainToMyPair(domain, dto, "sucursal");
 		this.listaDomainToListaDTO(domain, dto, "detalles", new AssemblerGastoDetalle());

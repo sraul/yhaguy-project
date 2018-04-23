@@ -897,6 +897,7 @@ public class ReciboSimpleControl extends SoloViewModel {
 		String siglaFPTC = Configuracion.SIGLA_FORMA_PAGO_TARJETA_CREDITO;
 		String siglaFPTD = Configuracion.SIGLA_FORMA_PAGO_TARJETA_DEBITO;
 		String siglaFPDB = Configuracion.SIGLA_FORMA_PAGO_DEPOSITO_BANCARIO;
+		String siglaFPDE = Configuracion.SIGLA_FORMA_PAGO_DEBITO_CTA_BANCARIA;
 		String siglaFPRE = Configuracion.SIGLA_FORMA_PAGO_RETENCION;
 		String siglaFPCA = Configuracion.SIGLA_FORMA_PAGO_CHEQUE_AUTOCOBRANZA;
 		String siglaFPDC = Configuracion.SIGLA_FORMA_PAGO_DEBITO_COBRANZA_CENTRAL;
@@ -966,6 +967,25 @@ public class ReciboSimpleControl extends SoloViewModel {
 			rwNroTarjeta.setVisible(false); rwProcesadora.setVisible(false);
 			rwNroComprobante.setVisible(false); rwCuotas.setVisible(false);
 			rwDepositoBanco.setVisible(true); rwDepositoReferencia.setVisible(true);
+			rwChequeBanco.setVisible(false); rwLibrador.setVisible(false);
+			rwMontoCheque.setVisible(false); rwChequeAutoCobranza.setVisible(false);
+			rwChequeBancoAutoCobro.setVisible(false); rwLibradorAutoCobro.setVisible(false);
+			rwVencimientoAutoCobro.setVisible(false);
+			rwNroRetencion.setVisible(false); rwTimbradoRetencion.setVisible(false);
+			rwTimbradoVencimiento.setVisible(false); 
+			rwDebitoCobroCentral.setVisible(false);
+			rwSaldoFavorCobrado.setVisible(false);
+			dbxGs.setReadonly(false); dbxUS.setReadonly(false);
+			rwMontoAplicado.setVisible(true);
+			this.nvoFormaPago.setDescripcion(this.nvoFormaPago.getTipo().getText());
+		
+		} else if(siglaFP.compareTo(siglaFPDE) == 0){
+			rwBanco.setVisible(false); rwChequera.setVisible(false);
+			rwNroCheque.setVisible(false); rwVencimiento.setVisible(false);
+			rwTarjeta.setVisible(false); rwEmisor.setVisible(false);
+			rwNroTarjeta.setVisible(false); rwProcesadora.setVisible(false);
+			rwNroComprobante.setVisible(false); rwCuotas.setVisible(false);
+			rwDepositoBanco.setVisible(true); rwDepositoReferencia.setVisible(false);
 			rwChequeBanco.setVisible(false); rwLibrador.setVisible(false);
 			rwMontoCheque.setVisible(false); rwChequeAutoCobranza.setVisible(false);
 			rwChequeBancoAutoCobro.setVisible(false); rwLibradorAutoCobro.setVisible(false);

@@ -633,6 +633,11 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 				this.mensaje += "\n - Debe asignar la importación..";
 				out = false;
 			}
+			
+			if (this.dtoGasto.isDebitoBancario() && this.dtoGasto.getBanco() == null) {
+				this.mensaje += "\n - Debe seleccionar el Banco a debitar..";
+				out = false;
+			}
 
 			if (duplicado) {
 				this.mensaje += "\n - Ya existe un Gasto con el mismo numero de factura y timbrado..";
@@ -819,6 +824,21 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 	@DependsOn({"deshabilitado", "dtoGasto"})
 	public boolean isConfirmarDisabled() {
 		return this.isDeshabilitado() || this.dtoGasto.esNuevo();
+	}
+	
+	/**
+	 * @return los bancos..
+	 */
+	public List<MyArray> getBancos() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<BancoCta> bancos = rr.getBancosCta();
+		List<MyArray> out = new ArrayList<MyArray>();
+		for (BancoCta banco : bancos) {
+			MyArray my = new MyArray(banco.getBanco().getDescripcion().toUpperCase());
+			my.setId(banco.getId());
+			out.add(my);
+		}
+		return out;
 	}
 	
 	public double getTotalImporte() {

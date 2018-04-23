@@ -41,8 +41,7 @@ public class AssemblerOrdenPedidoGasto extends Assembler {
 	@Override
 	public Domain dtoToDomain(DTO dtoP) throws Exception {
 		OrdenPedidoGastoDTO dto = (OrdenPedidoGastoDTO) dtoP;
-		OrdenPedidoGasto domain = (OrdenPedidoGasto) getDomain(dto,
-				OrdenPedidoGasto.class);
+		OrdenPedidoGasto domain = (OrdenPedidoGasto) getDomain(dto, OrdenPedidoGasto.class);
 
 		this.copiarValoresAtributos(dto, domain, attIgualesOrdenPedidoGasto);
 

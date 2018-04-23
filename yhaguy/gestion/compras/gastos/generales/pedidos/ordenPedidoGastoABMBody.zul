@@ -261,7 +261,19 @@
 										</hlayout>
 									</vlayout>
 								</cell>
-								<cell colspan="3">
+								<cell visible="@load(vm.dtoGasto.debitoBancario? 'true':'false')">
+									<vlayout>
+										<field value="Banco" />
+										<combobox model="@load(vm.bancos)" hflex="true"
+											selectedItem="@bind(vm.dtoGasto.banco)"
+											value="@load(vm.dtoGasto.banco.pos1)">
+											<template name="model">
+												<comboitem label="@load(each.pos1)"/>
+											</template>
+										</combobox>
+									</vlayout>
+								</cell>
+								<cell colspan="2">
 									<vlayout>
 										<field value="Proveedor" />
 										<hlayout>

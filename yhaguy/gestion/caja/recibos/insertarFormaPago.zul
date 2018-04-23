@@ -159,19 +159,15 @@
 			
 			<row id="rwDepositoBanco" visible="false">
 				<field value="Banco:"/>
-				<hlayout>
-					<combobox readonly="true"
-						value="@load(vm.nvoFormaPago.depositoBancoCta.pos1)"
-						model="@load(vm.dtoUtil.bancos)"
-						hflex="true"
-						selectedItem="@bind(vm.nvoFormaPago.depositoBancoCta)"
-						instant="true">
-						<template name="model">
-							<comboitem label="@load(each.pos1)" />
-						</template>
-					</combobox>
-					<labelConstrain/>
-				</hlayout>
+				<combobox readonly="true"
+					value="@load(vm.nvoFormaPago.depositoBancoCta.pos1)"
+					model="@load(vm.dtoUtil.bancos)" hflex="true"
+					selectedItem="@bind(vm.nvoFormaPago.depositoBancoCta)"
+					instant="true">
+					<template name="model">
+						<comboitem label="@load(each.pos1)" />
+					</template>
+				</combobox>
 			</row>
 			
 			<row id="rwDepositoReferencia" visible="false">
