@@ -136,14 +136,6 @@ public class ControlBancoMovimiento extends Control {
 	public static void addMovimientoDepositoBancario(BancoBoletaDeposito dep, String user)
 			throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		BancoMovimiento bm = new BancoMovimiento();
-		bm.setDescripcion("BOLETA DE DEPOSITO NRO. " + dep.getNumeroBoleta());
-		bm.setFecha(dep.getFecha());
-		bm.setMonto(dep.getTotalImporteGs());
-		bm.setNroCuenta(dep.getNroCuenta());
-		bm.setNroReferencia(dep.getNumeroBoleta());
-		bm.setTipoMovimiento(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_DEPOSITO_BANCARIO));		
-		rr.saveObject(bm, user);
 		
 		// marca los cheques como depositados..
 		for (BancoChequeTercero cheque : dep.getCheques()) {

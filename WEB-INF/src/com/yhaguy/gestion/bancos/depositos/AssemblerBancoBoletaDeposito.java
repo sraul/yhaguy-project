@@ -35,6 +35,8 @@ public class AssemblerBancoBoletaDeposito extends Assembler {
 		this.listaMyArrayToListaDomain(dto, domain, "cheques");
 		this.hijoDtoToHijoDomain(dto, domain, "bancoMovimiento", new AssemblerBancoMovimiento(), true);
 		this.hijoDtoToHijoDomain(dto, domain, "nroCuenta", new AssemblerBancoCtaCte(), false);
+		
+		domain.setTotalImporte_gs(domain.getTotalImporteGs());
 
 		return domain;
 	}

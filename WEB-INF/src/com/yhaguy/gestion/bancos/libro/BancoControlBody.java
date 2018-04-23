@@ -132,8 +132,7 @@ public class BancoControlBody extends BodyApp {
 			List<Object[]> data = new ArrayList<Object[]>();
 
 			for (Object[] movim : this.getMovimientosBanco()) {
-				boolean ent = (boolean) movim[14];
-				Object[] obj1 = new Object[] { movim[3], movim[0], movim[2], ent ? movim[11] : 0.0, ent ? 0.0 : movim[12], movim[13] };
+				Object[] obj1 = new Object[] { movim[3], movim[0], movim[2], movim[4], movim[5], movim[6] };
 				data.add(obj1);
 			}
 
@@ -400,9 +399,9 @@ class ReporteLibroBanco extends ReporteYhaguy {
 	static DatosColumnas col1 = new DatosColumnas("Concepto", TIPO_STRING);
 	static DatosColumnas col2 = new DatosColumnas("Fecha", TIPO_STRING, 40);
 	static DatosColumnas col3 = new DatosColumnas("Número", TIPO_STRING, 40);
-	static DatosColumnas col5 = new DatosColumnas("Debe", TIPO_DOUBLE_GS, 40);
-	static DatosColumnas col6 = new DatosColumnas("Haber", TIPO_DOUBLE_GS, 40);
-	static DatosColumnas col7 = new DatosColumnas("Saldo", TIPO_DOUBLE_GS, 40);
+	static DatosColumnas col5 = new DatosColumnas("Debe", TIPO_STRING, 40);
+	static DatosColumnas col6 = new DatosColumnas("Haber", TIPO_STRING, 40);
+	static DatosColumnas col7 = new DatosColumnas("Saldo", TIPO_STRING, 40);
 	
 	public ReporteLibroBanco(String banco, String desde, String hasta, String sucursal) {
 		this.banco = banco;
@@ -412,6 +411,9 @@ class ReporteLibroBanco extends ReporteYhaguy {
 	}
 	
 	static {
+		col5.setAlineacionColuman(COLUMNA_ALINEADA_DERECHA);
+		col6.setAlineacionColuman(COLUMNA_ALINEADA_DERECHA);
+		col7.setAlineacionColuman(COLUMNA_ALINEADA_DERECHA);
 		cols.add(col1);
 		cols.add(col2);
 		cols.add(col3);
