@@ -2074,6 +2074,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				Date hasta = filtro.getFechaHasta();
 				Funcionario vendedor = filtro.getVendedor();
 				Proveedor proveedor = filtro.getProveedorExterior();
+				long idVendedor = vendedor != null ? vendedor.getId() : 0;
 
 				if (desde == null)
 					desde = new Date();
@@ -2084,7 +2085,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				RegisterDomain rr = RegisterDomain.getInstance();
 				List<Object[]> data = new ArrayList<Object[]>();
 
-				List<Object[]> cobranzas = rr.getCobranzasPorVendedor(desde, hasta, vendedor.getId(), getIdSucursal());
+				List<Object[]> cobranzas = rr.getCobranzasPorVendedor(desde, hasta, idVendedor, getIdSucursal());
 
 				for (Object[] cobro : cobranzas) {
 					Recibo rec = (Recibo) cobro[0];
@@ -2109,9 +2110,10 @@ public class ReportesViewModel extends SimpleViewModel {
 					data.add(cob);
 				}
 				String proveedor_ = proveedor == null ? "TODOS.." : proveedor.getRazonSocial(); 
+				String vendedor_ = vendedor == null ? "TODOS.." : vendedor.getRazonSocial();
 				
 				ReporteCobranzasPorVendedor rep = new ReporteCobranzasPorVendedor(
-						desde, hasta, vendedor.getRazonSocial(), proveedor_);
+						desde, hasta, vendedor_, proveedor_);
 				rep.setDatosReporte(data);
 
 				if (!mobile) {

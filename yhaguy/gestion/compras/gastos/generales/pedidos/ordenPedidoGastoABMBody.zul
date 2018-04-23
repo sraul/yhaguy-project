@@ -318,8 +318,7 @@
 							<checkbox checked="@bind(vm.dtoGasto.gastoImportacion)"></checkbox>
 							<label value="Gasto Importación"></label>
 							<space></space>
-							<checkbox checked="@bind(vm.dtoGasto.no_generar_saldo)"
-								visible="@load(vm.dtoGasto.gastoContado)"></checkbox>
+							<checkbox checked="@bind(vm.dtoGasto.no_generar_saldo)"></checkbox>
 							<label value="No generar saldo en Cta.Cte."
 								tooltiptext="Ej: Facturas Contado que se debitan de la Cta.Cte.."></label>
 							<space></space>
