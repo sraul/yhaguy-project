@@ -65,6 +65,16 @@ public class Utiles {
 	public static final String ANHO_2018 = "2018";
 	public static final String ANHO_2019 = "2019";
 	public static final String ANHO_2020 = "2020";
+	public static final String ANHO_2021 = "2021";
+	public static final String ANHO_2022 = "2022";
+	public static final String ANHO_2023 = "2023";
+	public static final String ANHO_2024 = "2024";
+	public static final String ANHO_2025 = "2025";
+	public static final String ANHO_2026 = "2026";
+	public static final String ANHO_2027 = "2027";
+	public static final String ANHO_2028 = "2028";
+	public static final String ANHO_2029 = "2029";
+	public static final String ANHO_2030 = "2030";
 	
 	/**
 	 * @return el anho actual..

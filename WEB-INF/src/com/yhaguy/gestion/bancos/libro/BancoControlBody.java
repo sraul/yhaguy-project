@@ -8,8 +8,13 @@ import java.util.List;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.BindingParam;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
+import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Popup;
 
 import com.coreweb.componente.ViewPdf;
 import com.coreweb.dto.Assembler;
@@ -17,9 +22,12 @@ import com.coreweb.dto.DTO;
 import com.coreweb.extras.browser.Browser;
 import com.coreweb.extras.reporte.DatosColumnas;
 import com.yhaguy.BodyApp;
+import com.yhaguy.Configuracion;
 import com.yhaguy.domain.BancoCta;
+import com.yhaguy.domain.BancoMovimiento;
 import com.yhaguy.domain.CuentaContable;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.TipoMovimiento;
 import com.yhaguy.util.Utiles;
 import com.yhaguy.util.reporte.ReporteYhaguy;
 
@@ -36,6 +44,10 @@ public class BancoControlBody extends BodyApp {
 	private BancoMovimientoDTO selectedMovimento = new BancoMovimientoDTO();
 	
 	private List<BancoMovimientoDTO> movimientos = new ArrayList<BancoMovimientoDTO>();	
+	
+	private BancoMovimiento saldoInicial;
+	private String selectedAnho;
+	private String selectedMes;
 	
 	private Date desde;
 	private Date hasta;
@@ -73,6 +85,7 @@ public class BancoControlBody extends BodyApp {
 
 	@Override
 	public void setDTOCorriente(DTO dto) {
+		this.inicializarSaldoInicial(dto.getId());
 		this.dto = (BancoCtaDTO) dto;
 	}
 
@@ -120,6 +133,17 @@ public class BancoControlBody extends BodyApp {
 		return "";
 	}
 	
+	@Command
+	@NotifyChange({ "saldoInicial", "movimientosBanco" })
+	public void registrarSaldoInicial(@BindingParam("comp") Popup comp) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		this.saldoInicial.setFecha(Utiles.getFecha("01-" + this.selectedMes + "-" + this.selectedAnho + " 00:00:00"));
+		rr.saveObject(this.saldoInicial, this.getLoginNombre());
+		this.inicializarSaldoInicial(this.dto.getId());
+		comp.close();
+		Clients.showNotification("REGISTRO GUARDADO..!");
+	}
+	
 	/**
 	 * FUNCIONES..
 	 */
@@ -146,6 +170,24 @@ public class BancoControlBody extends BodyApp {
 			vp.setBotonImprimir(false);
 			vp.setBotonCancelar(false);
 			vp.showReporte(rep, this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * inicializa los datos del saldo inicial..
+	 */
+	private void inicializarSaldoInicial(long idBanco) {
+		try {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			this.saldoInicial = new BancoMovimiento();
+			this.saldoInicial.setNroCuenta((BancoCta) rr.getObject(BancoCta.class.getName(), idBanco));
+			this.saldoInicial.setTipoMovimiento(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_SALDO_INICIAL_BANCO));
+			this.saldoInicial.setDescripcion(this.saldoInicial.getTipoMovimiento().getDescripcion());
+			this.saldoInicial.setMonto(0);
+			this.selectedAnho = Utiles.getAnhoActual();
+			this.selectedMes = Utiles.getMesActual();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -182,6 +224,7 @@ public class BancoControlBody extends BodyApp {
 
 		long idBanco = this.dto.getId();
 
+		List<Object[]> saldosIniciales = rr.getSaldosInicialesPorBanco(idBanco, desde, hasta);
 		List<Object[]> depositos = rr.getDepositosPorBanco(idBanco, desde, hasta);
 		List<Object[]> descuentos = rr.getDescuentosPorBanco(idBanco, desde, hasta);
 		List<Object[]> prestamosInternos = rr.getPrestamosInternosPorBanco(idBanco, desde, hasta);
@@ -199,6 +242,7 @@ public class BancoControlBody extends BodyApp {
 		historicoDEBE = new ArrayList<Object[]>();
 		historicoHABER = new ArrayList<Object[]>();
 
+		historicoDEBE.addAll(saldosIniciales);
 		historicoDEBE.addAll(depositos);
 		historicoDEBE.addAll(descuentos);
 		historicoDEBE.addAll(transferenciasRecibidas);
@@ -283,8 +327,21 @@ public class BancoControlBody extends BodyApp {
 		return data;
 	}
 	
+	/**
+	 * @return la descripcion del saldo inicial..
+	 */
+	public String getDescripcionSaldoInicial() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		TipoMovimiento tm = rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_SALDO_INICIAL_BANCO);
+		return tm.getDescripcion().toUpperCase();
+	}
+	
 	public List<String> getAnhos() {
 		return Utiles.getAnhos();
+	}
+	
+	public List<String> getMeses() {
+		return Utiles.getMeses_();
 	}
 	
 	public List<BancoMovimientoDTO> getMovimientos() {
@@ -384,6 +441,30 @@ public class BancoControlBody extends BodyApp {
 
 	public void setFilterNumero(String filterNumero) {
 		this.filterNumero = filterNumero;
+	}
+
+	public BancoMovimiento getSaldoInicial() {
+		return saldoInicial;
+	}
+
+	public void setSaldoInicial(BancoMovimiento saldoInicial) {
+		this.saldoInicial = saldoInicial;
+	}
+
+	public String getSelectedAnho() {
+		return selectedAnho;
+	}
+
+	public void setSelectedAnho(String selectedAnho) {
+		this.selectedAnho = selectedAnho;
+	}
+
+	public String getSelectedMes() {
+		return selectedMes;
+	}
+
+	public void setSelectedMes(String selectedMes) {
+		this.selectedMes = selectedMes;
 	}
 }
 

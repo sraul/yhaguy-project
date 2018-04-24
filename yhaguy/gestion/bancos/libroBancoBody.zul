@@ -46,6 +46,12 @@
 						value="@bind(vm.hasta)" hflex="true" style="background:#eef7fa">
 					</datebox>
 				</vlayout>
+				<vlayout spacing="0">
+					<field value="Saldo inicial mensual" />
+					<button label="Registrar saldo inicial" hflex="true" iconSclass="z-icon-check"
+						disabled="@load(!vm.siempreHabilitado)"
+						onClick='pop_saldo_inicial.open(self, "after_end")'/>
+				</vlayout>
 			</row>
 		</rows>
 	</grid>
@@ -86,7 +92,7 @@
 			<auxheader></auxheader>
 		</auxhead>
 		<template name="model">
-			<listitem>
+			<listitem style="@load(each[3] eq vm.descripcionSaldoInicial ? 'background:#b5d5ed' : '')">
 				<listcell label="@load(each[3])" />
 				<listcell label="@load(each[0])" />
 				<listcell label="@load(each[1])" />
@@ -119,4 +125,61 @@
 			</listfooter>
 		</listfoot>
 	</listbox>
+	
+	<popup id="pop_saldo_inicial" sclass="rounded">
+		<grid sclass="vgrid" width="400px" style="margin:10px">
+			<columns>
+				<column width="25%"></column>
+				<column></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Banco:" />
+					<textbox hflex="true" readonly="true"
+						value="@load(vm.saldoInicial.nroCuenta.banco.descripcion.toUpperCase())"></textbox>
+				</row>
+				<row>
+					<field value="Concepto:" />
+					<textbox hflex="true" readonly="true"
+						value="@load(vm.saldoInicial.tipoMovimiento.descripcion.toUpperCase())"></textbox>
+				</row>
+				<row>
+					<field value="Año:" />
+					<combobox hflex="true"
+						readonly="@load(!vm.siempreHabilitado)"
+						buttonVisible="@load(vm.siempreHabilitado)"
+						model="@load(vm.anhos)" instant="true"
+						value="@load(vm.selectedAnho)"
+						selectedItem="@bind(vm.selectedAnho)">
+						<template name="model">
+							<comboitem label="@load(each)"></comboitem>
+						</template>
+					</combobox>
+				</row>
+				<row>
+					<field value="Mes:" />
+					<combobox hflex="true"
+						readonly="@load(!vm.siempreHabilitado)"
+						buttonVisible="@load(vm.siempreHabilitado)"
+						model="@load(vm.meses)" instant="true"
+						value="@load(vm.selectedMes)"
+						selectedItem="@bind(vm.selectedMes)">
+						<template name="model">
+							<comboitem label="@load(each)"></comboitem>
+						</template>
+					</combobox>
+				</row>
+				<row>
+					<field value="Importe Gs.:" />
+					<guaranibox hflex="true" readonly="@load(!vm.siempreHabilitado)"
+						value="@bind(vm.saldoInicial.monto)"></guaranibox>
+				</row>
+			</rows>
+		</grid>
+		<hbox width="100%" style="margin: 0px 10px 0px 10px">
+			<button mold="bs" sclass="btn-sm btn-primary" iconSclass="z-icon-check" hflex="true"
+				disabled="@load(!vm.siempreHabilitado)"
+				onClick="@command('registrarSaldoInicial', comp=pop_saldo_inicial)"></button>
+		</hbox>
+	</popup>
 </window>
