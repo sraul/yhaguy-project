@@ -7463,11 +7463,11 @@ public class RegisterDomain extends Register {
 	 * [3]:totalImporteGs 
 	 * [4]:banco 
 	 */
-	public List<Object[]> getFormasPagoDepositoBancarioPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+	public List<Object[]> getFormasPagoDepositoBancarioEnRecibosPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select ('DEPOSITO CTA. BANCARIA'), "
-				+ " r.fechaEmision, f.depositoNroReferencia, f.montoGs, f.depositoBancoCta.banco.descripcion, concat(r.numero, ' - ', r.cliente.empresa.razonSocial)"
+				+ " r.fechaEmision, f.depositoNroReferencia, f.montoGs, f.depositoBancoCta.banco.descripcion, concat('RECIBO NRO. ', r.numero, ' - ', r.cliente.empresa.razonSocial)"
 				+ " from Recibo r join r.formasPago f where f.tipo.sigla = '" + Configuracion.SIGLA_FORMA_PAGO_DEPOSITO_BANCARIO + "'"
 				+ " and f.depositoBancoCta.id = " + idBanco
 				+ " and (r.fechaEmision >= '"
@@ -7475,6 +7475,30 @@ public class RegisterDomain extends Register {
 				+ "' and r.fechaEmision <= '"
 				+ hasta_
 				+ "')" + " order by r.fechaEmision desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las formas de pago deposito en cta. segun banco.. 
+	 * [0]:concepto
+	 * [1]:fecha 
+	 * [2]:numero 
+	 * [3]:totalImporteGs 
+	 * [4]:banco 
+	 */
+	public List<Object[]> getFormasPagoDepositoBancarioEnVentasPorBanco(long idBanco, Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select ('DEPOSITO CTA. BANCARIA'), "
+				+ " v.fecha, f.depositoNroReferencia, f.montoGs, f.depositoBancoCta.banco.descripcion, concat('VENTA NRO. ', v.numero, ' - ', v.cliente.empresa.razonSocial)"
+				+ " from Venta v join v.formasPago f where f.tipo.sigla = '" + Configuracion.SIGLA_FORMA_PAGO_DEPOSITO_BANCARIO + "'"
+				+ " and v.estadoComprobante is null"
+				+ " and f.depositoBancoCta.id = " + idBanco
+				+ " and (v.fecha >= '"
+				+ desde_
+				+ "' and v.fecha <= '"
+				+ hasta_
+				+ "')" + " order by v.fecha desc";
 		return this.hql(query);
 	}
 	
@@ -7491,16 +7515,16 @@ public class RegisterDomain extends Register {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_EMISION_CHEQUE + "'),"
-				+ " b.fechaEmision, b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago, ' - ', b.beneficiario)"
+				+ " b.fechaVencimiento, b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago, ' - ', b.beneficiario)"
 				+ " from BancoCheque b where"
 				+ " b.dbEstado != 'D' and b.estadoComprobante.sigla != '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
 				+ " and b.anulado = 'FALSE'"
 				+ " and b.banco.id = " + idBanco
-				+ " and (b.fechaEmision >= '"
+				+ " and (b.fechaVencimiento >= '"
 				+ desde_
-				+ "' and b.fechaEmision <= '"
+				+ "' and b.fechaVencimiento <= '"
 				+ hasta_
-				+ "')" + " order by b.fechaEmision desc";
+				+ "')" + " order by b.fechaVencimiento desc";
 		return this.hql(query);
 	}
 	
