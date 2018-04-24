@@ -2643,13 +2643,13 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		
 		List<Object[]> data = new ArrayList<Object[]>();
 
-		for (ImportacionFacturaDetalleDTO item : this.dto.getImportacionFactura().get(0).getDetalles()) {
-			Object[] obj1 = new Object[] { item.getArticulo().getCodigoInterno(), item.getArticulo().getDescripcion(),
-					item.getCantidad(), 
-					Utiles.getRedondeo(item.getCostoGs()), 
-					misc.redondeoDosDecimales(item.getCostoDs()), 
-					Utiles.getRedondeo(item.getImporteGsCalculado()),
-					misc.redondeoDosDecimales(item.getImporteDsCalculado()) };
+		for (MyArray item : this.getItemsCostoFinal()) {
+			Object[] obj1 = new Object[] { item.getPos1(), item.getPos2(),
+					item.getPos5(), 
+					Utiles.getRedondeo((double) item.getPos3()), 
+					misc.redondeoDosDecimales((double) item.getPos4()), 
+					Utiles.getRedondeo((double) item.getPos8()),
+					misc.redondeoDosDecimales((double) item.getPos9()) };
 			data.add(obj1);
 		}
 
