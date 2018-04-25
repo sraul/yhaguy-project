@@ -77,6 +77,8 @@ public class ReportesFiltros {
 	
 	private Date fechaDesde;
 	private Date fechaHasta;
+	private Date fechaDesde2;
+	private Date fechaHasta2;
 	private Date fechaHoy = new Date();
 	private String filterFechaDD = "";
 	private String filterFechaMM = "";
@@ -395,6 +397,20 @@ public class ReportesFiltros {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {
 			out = rr.getTipos(Configuracion.ID_TIPO_BANCOS_TERCEROS);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+		return out;
+	}
+	
+	/**
+	 * @return las cuentas de banco..
+	 */
+	public List<BancoCta> getBancos() {
+		List<BancoCta> out = new ArrayList<BancoCta>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		try {
+			out = rr.getBancosCta();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -1328,4 +1344,19 @@ public class ReportesFiltros {
 		this.tipoCosto = tipoCosto;
 	}
 
+	public Date getFechaDesde2() {
+		return fechaDesde2;
+	}
+
+	public void setFechaDesde2(Date fechaDesde2) {
+		this.fechaDesde2 = fechaDesde2;
+	}
+
+	public Date getFechaHasta2() {
+		return fechaHasta2;
+	}
+
+	public void setFechaHasta2(Date fechaHasta2) {
+		this.fechaHasta2 = fechaHasta2;
+	}
 }

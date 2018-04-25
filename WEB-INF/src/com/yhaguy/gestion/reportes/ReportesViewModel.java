@@ -1037,40 +1037,24 @@ public class ReportesViewModel extends SimpleViewModel {
 		/**
 		 * reporte STK-00008
 		 */
-		@SuppressWarnings("unchecked")
 		private void articulosSinMovimiento() {
 			try {
 				Date desde = filtro.getFechaDesde();
 				Date hasta = filtro.getFechaHasta();
-				
-				if (Utiles.diasEntreFechas(desde, hasta) > 32) {
-					Clients.showNotification("Rango máximo 30 días..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
-					return;
-				}
 
 				RegisterDomain rr = RegisterDomain.getInstance();
 				List<Object[]> data = new ArrayList<Object[]>();
 				
-				List<Articulo> articulos = rr.getArticulos();
-				List<Venta> ventas = rr.getVentas(desde, hasta, 0);
-				Map<String, VentaDetalle> dets = new HashMap<String, VentaDetalle>();
+				List<Object[]> arts = rr.getArticulosSinMovimiento(desde, hasta);
 				
-				for (Venta venta : ventas) {
-					if (!venta.isAnulado()) {
-						for (VentaDetalle item : venta.getDetalles()) {
-							dets.put(item.getArticulo().getCodigoInterno(), item);
+				for (Object[] item : arts) {
+					String cod = (String) item[1];
+					if (!cod.equals("INTERESES") && !cod.startsWith("@")) {
+						Object[] adp = rr.getStockDisponible_((long) item[0], BuscadorArticulosViewModel.ID_DEP_1);
+						long stock = adp == null ? 0 : (long) adp[1];
+						if (stock > 0) {
+							data.add(new Object[]{ cod, item[2], stock });
 						}
-					}					
-				}
-				
-				for (Articulo art : articulos) {
-					if ((dets.get(art.getCodigoInterno()) == null) 
-							&& (art.isServicio() == false)
-							&& (!art.getCodigoInterno().equals("INTERESES"))
-							&& (!art.getCodigoInterno().startsWith("@"))) {
-						ArticuloDeposito adp = rr.getArticuloDeposito(art.getId(), BuscadorArticulosViewModel.ID_DEP_1);
-						long stock = adp == null ? 0 : adp.getStock();
-						data.add(new Object[]{ art.getCodigoInterno(), art.getDescripcion(), stock });
 					}
 				}
 
@@ -4073,6 +4057,8 @@ public class ReportesViewModel extends SimpleViewModel {
 	public void inicializarFiltros() {
 		this.filtro.setFechaDesde(null);
 		this.filtro.setFechaHasta(null);
+		this.filtro.setFechaDesde2(null);
+		this.filtro.setFechaHasta2(null);
 		this.filtro.setLibradoPor("");
 		this.filtro.setNroComprobanteCheque("");
 		this.filtro.setDescontadoCheque(true);
@@ -5522,54 +5508,46 @@ public class ReportesViewModel extends SimpleViewModel {
 		private void chequesPendientesDescuento(boolean mobile) throws Exception {
 			Date desde = filtro.getFechaDesde();
 			Date hasta = filtro.getFechaHasta();
-			Tipo banco = filtro.getBancoTercero();
-			String descuento = filtro.getDescuentoCheque();
+			Date vtoDesde = filtro.getFechaDesde2();
+			Date vtoHasta = filtro.getFechaHasta2();
+			
+			BancoCta banco = filtro.getBancoCta();
+			long idBanco = banco != null ? banco.getId() : 0;
 			
 			if (desde == null) desde = new Date();
 			if (hasta == null) hasta = new Date();
+			if (vtoDesde == null) vtoDesde = new Date();
+			if (vtoHasta == null) vtoHasta = new Date();
+			
+			Date vtoDesde_ = Utiles.getFecha(Utiles.getDateToString(vtoDesde, Utiles.DD_MM_YYYY + " 00:00:00"));
+			Date vtoHasta_ = Utiles.getFecha(Utiles.getDateToString(vtoHasta, Utiles.DD_MM_YYYY + " 23:00:00"));
 
 			RegisterDomain rr = RegisterDomain.getInstance();
 			List<Object[]> data = new ArrayList<Object[]>();
-			List<BancoChequeTercero> cheques = rr.getChequesTercero(desde, hasta, banco, 0);
-
-			for (BancoChequeTercero cheque : cheques) {
-				String cliente = cheque.getCliente() == null ? "" : cheque.getCliente().getRazonSocial();
-				if (descuento.isEmpty()) {
-					data.add(new Object[] {
-							cheque.getFecha(),
-							Long.parseLong(cheque.getNumero()),
-							cheque.getBanco().getDescripcion().toUpperCase(),
-							cliente,
-							cheque.isDescontado() ? "DESCONTADO"
-									: "NO DESCONTADO", cheque.getMonto() });
-
-				} else if (descuento.equals(ReportesFiltros.CHEQUES_DESCONTADOS)
-						&& cheque.isDescontado()) {
-					data.add(new Object[] {
-							cheque.getFecha(),
-							Long.parseLong(cheque.getNumero()),
-							cheque.getBanco().getDescripcion().toUpperCase(),
-							cliente,
-							cheque.isDescontado() ? "DESCONTADO"
-									: "NO DESCONTADO", cheque.getMonto() });
-					
-				} else if (descuento.equals(ReportesFiltros.CHEQUES_NO_DESCONTADOS)
-						&& !cheque.isDescontado()) {
-					data.add(new Object[] {
-							cheque.getFecha(),
-							Long.parseLong(cheque.getNumero()),
-							cheque.getBanco().getDescripcion().toUpperCase(),
-							cliente,
-							cheque.isDescontado() ? "DESCONTADO"
-									: "NO DESCONTADO", cheque.getMonto() });
+			
+			List<BancoDescuentoCheque> descuentos = rr.getBancoDescuentos(desde, hasta, idBanco);
+			
+			for (BancoDescuentoCheque dto : descuentos) {
+				for (BancoChequeTercero cheque : dto.getCheques()) {
+					if (cheque.getFecha().compareTo(vtoDesde_) >= 0
+							&& cheque.getFecha().compareTo(vtoHasta_) <=0) {
+						data.add(new Object[] { 
+								Utiles.getDateToString(cheque.getFecha(), Utiles.DD_MM_YYYY),
+								cheque.getNumero(),
+								cheque.getBanco().getDescripcion().toUpperCase(),
+								Utiles.getDateToString(dto.getFecha(), Utiles.DD_MM_YYYY),
+								dto.getId() + "",
+								dto.getBanco().getBanco().getDescripcion().toUpperCase(),
+								Utiles.getMaxLength(cheque.getCliente().getRazonSocial(), 30),
+								cheque.getMonto()});
+					}					
 				}
 			}
 
 			String sucursal = getAcceso().getSucursalOperativa().getText();
-			String banco_ = banco == null ? "TODOS.." : banco.getDescripcion().toUpperCase();
-			String descuento_ = descuento.isEmpty() ? "TODOS.." : descuento;
+			String banco_ = banco == null ? "TODOS.." : banco.getBanco().getDescripcion().toUpperCase();
 			ReporteChequesPendientesDescuento rep = new ReporteChequesPendientesDescuento(
-					desde, hasta, sucursal, banco_, descuento_);
+					desde, hasta, sucursal, banco_, vtoDesde, vtoHasta);
 			rep.setApaisada();
 			rep.setDatosReporte(data);
 			
@@ -13620,42 +13598,49 @@ class ReporteArticulosSinMovimiento extends ReporteYhaguy {
  * TES-00021 Cheques pendientes de descuento..
  */
 class ReporteChequesPendientesDescuento extends ReporteYhaguy {
-	private Date desde;
-	private Date hasta;
+	Date desde;
+	Date hasta;
+	Date vtoDesde;
+	Date vtoHasta;
 	String sucursal;
 	String banco;
 	String descuento;
 
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
-	static DatosColumnas col1 = new DatosColumnas("Nro. Cheque", TIPO_LONG, 40);
-	static DatosColumnas col2 = new DatosColumnas("Fecha", TIPO_DATE, 30);
-	static DatosColumnas col3 = new DatosColumnas("Banco", TIPO_STRING, 40);
-	static DatosColumnas col4 = new DatosColumnas("Cliente", TIPO_STRING);
-	static DatosColumnas col5 = new DatosColumnas("Descuento", TIPO_STRING, 50);
-	static DatosColumnas col6 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 35, true);
+	static DatosColumnas col1 = new DatosColumnas("Vto.Cheque", TIPO_STRING, 30);
+	static DatosColumnas col2 = new DatosColumnas("Nro.Cheque", TIPO_STRING, 30);
+	static DatosColumnas col3 = new DatosColumnas("Bco.Cheque", TIPO_STRING, 40);
+	static DatosColumnas col4 = new DatosColumnas("Fecha Dto.", TIPO_STRING, 30);
+	static DatosColumnas col5 = new DatosColumnas("Nro.Dto.", TIPO_STRING, 20);
+	static DatosColumnas col6 = new DatosColumnas("Bco.Dto.", TIPO_STRING, 40);	
+	static DatosColumnas col7 = new DatosColumnas("Cliente", TIPO_STRING);
+	static DatosColumnas col8 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 35, true);
 
 	static {
-		cols.add(col2);
 		cols.add(col1);
+		cols.add(col2);
 		cols.add(col3);
 		cols.add(col4);
 		cols.add(col5);
 		cols.add(col6);
+		cols.add(col7);
+		cols.add(col8);
 	}
 
-	public ReporteChequesPendientesDescuento(Date desde, Date hasta, String sucursal, String banco, String descuento) {
+	public ReporteChequesPendientesDescuento(Date desde, Date hasta, String sucursal, String banco, Date vtoDesde, Date vtoHasta) {
 		this.desde = desde;
 		this.hasta = hasta;
+		this.vtoDesde = vtoDesde;
+		this.vtoHasta = vtoHasta;
 		this.sucursal = sucursal;
 		this.banco = banco;
-		this.descuento = descuento;
 	}
 
 	@Override
 	public void informacionReporte() {
-		this.setTitulo("Cheques descontados / no descontados");
+		this.setTitulo("Descuento de Cheques");
 		this.setDirectorio("banco");
-		this.setNombreArchivo("Cheque-");
+		this.setNombreArchivo("DtoCheque-");
 		this.setTitulosColumnas(cols);
 		this.setBody(this.getCuerpo());
 	}
@@ -13667,17 +13652,14 @@ class ReporteChequesPendientesDescuento extends ReporteYhaguy {
 	private ComponentBuilder getCuerpo() {
 		VerticalListBuilder out = cmp.verticalList();
 		out.add(cmp
-				.horizontalFlowList()
-				.add(this.textoParValor("Desde",
-						m.dateToString(this.desde, Misc.DD_MM_YYYY)))
-				.add(this.textoParValor("Hasta",
-						m.dateToString(this.hasta, Misc.DD_MM_YYYY)))
+				.horizontalFlowList().add(this.textoParValor("Descuento Desde", m.dateToString(this.desde, Misc.DD_MM_YYYY)))
+				.add(this.textoParValor("Descuento Hasta", m.dateToString(this.hasta, Misc.DD_MM_YYYY)))
 				.add(this.textoParValor("Sucursal", this.sucursal)));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
 		out.add(cmp.horizontalFlowList()
-				.add(this.textoParValor("Banco", this.banco))
-				.add(this.textoParValor("Descontado", this.descuento))
-				.add(this.texto("")));
+				.add(this.textoParValor("Vto.Cheque Desde", m.dateToString(this.desde, Misc.DD_MM_YYYY)))
+				.add(this.textoParValor("Vto.Cheque Hasta", m.dateToString(this.hasta, Misc.DD_MM_YYYY)))
+				.add(this.textoParValor("Banco", this.banco));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
 		return out;
 	}

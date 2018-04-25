@@ -1192,6 +1192,15 @@ public class RegisterDomain extends Register {
 
 		return out;
 	}
+	
+	/**
+	 * @return el Stock disponible..
+	 */
+	public Object[] getStockDisponible_(long idArticulo, long idDeposito) throws Exception {
+		String query = "select a.id, a.stock from ArticuloDeposito a where a.articulo.id = " + idArticulo + " and a.deposito.id = " + idDeposito;
+		List<Object[]> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
 
 	/**
 	 * Retorna una lista de subdiarios segun los parametros de fecha
@@ -6317,6 +6326,22 @@ public class RegisterDomain extends Register {
 	}
 	
 	/**
+	 * @return los descuentos de cheques..
+	 */
+	public List<BancoDescuentoCheque> getBancoDescuentos(Date desde, Date hasta, long idBancoCta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select d from BancoDescuentoCheque d where" 
+				+ " (d.fecha >= '" + desde_ + "' and d.fecha <= '" + hasta_+ "')";
+		if (idBancoCta != 0) {
+			query += " and d.banco.id = " + idBancoCta;
+		}
+		query += " order by d.fecha";
+		return this.hql(query);
+	
+	}
+	
+	/**
 	 * @return los depositos bancarios..
 	 */
 	public List<BancoBoletaDeposito> getBancoDepositos(Date desde, Date hasta, long idBancoCta) throws Exception {
@@ -7602,6 +7627,23 @@ public class RegisterDomain extends Register {
 				+ "' and b.fecha <= '"
 				+ hasta_
 				+ "')" + " order by b.emision desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los articulos sin movimiento..
+	 * [0]: idarticulo
+	 * [1]: codigointerno
+	 * [2]: descripcion
+	 */
+	public List<Object[]> getArticulosSinMovimiento(Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select a.id, a.codigoInterno, a.descripcion from Articulo a where a.id NOT IN"
+				+ " (select d.articulo.id from Venta v join v.detalles d where"
+				+ " d.articulo.servicio = 'FALSE' and"
+				+ " v.estadoComprobante is null and"
+				+ " (v.fecha > '" + desde_ + "' and v.fecha < '" + hasta_ + "'))";
 		return this.hql(query);
 	}
 	

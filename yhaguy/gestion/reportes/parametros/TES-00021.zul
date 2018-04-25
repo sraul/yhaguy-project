@@ -5,38 +5,35 @@
 	</columns>
 	<rows>
 		<row>
-			<field value="Fecha Desde:" />
+			<field value="Descuento Desde:" />
 			<datebox value="@bind(vm.dato.filtro.fechaDesde)"
 				placeholder="Desde.." hflex="true" />
 		</row>
 		<row>
-			<field value="Fecha Hasta:" />
+			<field value="Descuento Hasta:" />
 			<datebox value="@bind(vm.dato.filtro.fechaHasta)"
+				placeholder="Hasta.." hflex="true" />
+		</row>
+		<row>
+			<field value="Vto. Cheque Desde:" />
+			<datebox value="@bind(vm.dato.filtro.fechaDesde2)"
+				placeholder="Desde.." hflex="true" />
+		</row>
+		<row>
+			<field value="Vto. Cheque Hasta:" />
+			<datebox value="@bind(vm.dato.filtro.fechaHasta2)"
 				placeholder="Hasta.." hflex="true" />
 		</row>
 		<row>
 			<field value="Banco:" />
 			<combobox
 				placeholder="TODOS.."
-				selectedItem="@bind(vm.dato.filtro.bancoTercero)"
-				model="@load(vm.dato.filtro.bancosTerceros)"
+				selectedItem="@bind(vm.dato.filtro.bancoCta)"
+				model="@load(vm.dato.filtro.bancos)"
 				instant="true"
 				hflex="true">
 				<template name="model">
-					<comboitem label="@load(each.descripcion.toUpperCase())" />
-				</template>
-			</combobox>
-		</row>
-		<row>
-			<field value="Descontado:" />
-			<combobox
-				placeholder="TODOS.."
-				selectedItem="@bind(vm.dato.filtro.descuentoCheque)"
-				model="@load(vm.dato.filtro.descuentoCheques)"
-				instant="true"
-				hflex="true">
-				<template name="model">
-					<comboitem label="@load(each)" />
+					<comboitem label="@load(each.banco.descripcion.toUpperCase())" />
 				</template>
 			</combobox>
 		</row>

@@ -300,7 +300,7 @@ public class BancoControlBody extends BodyApp {
 			String banco = (String) hist[4];
 			boolean ent = ((String) hist[0]).startsWith("(+)");
 			String fecha = Utiles.getDateToString((Date) hist[1], Utiles.DD_MM_YYYY);
-			String hora = Utiles.getDateToString((Date) hist[1], "hh:mm");
+			String hora = Utiles.getDateToString((Date) hist[1], "HH:mm");
 			String numero = hist[2] + "";
 			String concepto = ((String) hist[0]).replace("(+)", "");
 			String origen = (String) hist[5];
