@@ -7593,7 +7593,7 @@ public class RegisterDomain extends Register {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_CHEQUE_RECHAZADO + "'), "
-				+ " b.emision, b.numero, b.monto, d.nroCuenta.banco.descripcion, concat(b.observacion, ' - DEPOSITO: ', b.numeroDeposito, ' - ', b.cliente.empresa.razonSocial)"
+				+ " b.fecha, b.numero, b.monto, d.nroCuenta.banco.descripcion, concat(b.observacion, ' - DEPOSITO: ', b.numeroDeposito, ' - ', b.cliente.empresa.razonSocial)"
 				+ " from BancoChequeTercero b, BancoBoletaDeposito d where"
 				+ " b.numeroDeposito = d.numeroBoleta and"
 				+ " b.rechazado = 'true' and b.dbEstado != 'D'"
@@ -7619,7 +7619,7 @@ public class RegisterDomain extends Register {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_CHEQUE_RECHAZADO + "'), "
-				+ " b.emision, b.numero, b.monto, d.banco.banco.descripcion, concat(b.observacion, ' - DESCUENTO: ', b.numeroDescuento, ' - ', b.cliente.empresa.razonSocial)"
+				+ " b.fecha, b.numero, b.monto, d.banco.banco.descripcion, concat(b.observacion, ' - DESCUENTO: ', b.numeroDescuento, ' - ', b.cliente.empresa.razonSocial)"
 				+ " from BancoChequeTercero b, BancoDescuentoCheque d where"
 				+ " replace(b.numeroDescuento, 'PRESTAMO ', '') = cast (d.id as string) and"
 				+ " b.rechazado = 'true' and b.dbEstado != 'D'"
