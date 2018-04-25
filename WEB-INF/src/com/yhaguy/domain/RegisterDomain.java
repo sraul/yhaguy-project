@@ -6331,7 +6331,9 @@ public class RegisterDomain extends Register {
 	public List<BancoDescuentoCheque> getBancoDescuentos(Date desde, Date hasta, long idBancoCta) throws Exception {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
-		String query = "select d from BancoDescuentoCheque d where" 
+		String query = "select d from BancoDescuentoCheque d where"
+				+ " d.auxi != '" + BancoDescuentoCheque.PRESTAMO + "' and"
+				+ " d.auxi != '" + BancoDescuentoCheque.ANTICIPO_UTILIDAD+ "' and" 
 				+ " (d.fecha >= '" + desde_ + "' and d.fecha <= '" + hasta_+ "')";
 		if (idBancoCta != 0) {
 			query += " and d.banco.id = " + idBancoCta;

@@ -13611,7 +13611,7 @@ class ReporteChequesPendientesDescuento extends ReporteYhaguy {
 	static DatosColumnas col2 = new DatosColumnas("Nro.Cheque", TIPO_STRING, 30);
 	static DatosColumnas col3 = new DatosColumnas("Bco.Cheque", TIPO_STRING, 40);
 	static DatosColumnas col4 = new DatosColumnas("Fecha Dto.", TIPO_STRING, 30);
-	static DatosColumnas col5 = new DatosColumnas("Nro.Dto.", TIPO_STRING, 20);
+	static DatosColumnas col5 = new DatosColumnas("Nro.Dto.", TIPO_STRING, 25);
 	static DatosColumnas col6 = new DatosColumnas("Bco.Dto.", TIPO_STRING, 40);	
 	static DatosColumnas col7 = new DatosColumnas("Cliente", TIPO_STRING);
 	static DatosColumnas col8 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 35, true);
