@@ -2750,8 +2750,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	/****************************************** COSTO FINAL ****************************************/
 	
 	public List<MyArray> getItemsCostoFinal(){
-		List<MyArray> out = new ArrayList<MyArray>();
-		Hashtable<Long, MyArray> items = new Hashtable<>();			
+		List<MyArray> out = new ArrayList<MyArray>();	
 		
 		for (ImportacionFacturaDTO f : this.dto.getImportacionFactura()) {
 			
@@ -2769,10 +2768,6 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 				
 				double costoGs = d.getCostoGs();
 				double costoDs = d.getCostoDs();
-				if (this.dto.isCifProrrateado() == true) {
-					costoGs = d.getCostoSinProrrateoGs();
-					costoDs = d.getCostoSinProrrateoDs();
-				}
 				
 				long idArt = d.getArticulo().getId();
 				int cant = d.getCantidad();				
@@ -2781,40 +2776,22 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 				double costoFinalDs = this.getCostoFinal(costoDs, valorGasto, 0);
 				double costoFinal = (costoFinalDs * this.dto.getResumenGastosDespacho().getTipoCambio());
 				
-				// Primero verifica si existen ítems repetidos en el detalle..
-				if (items.get(idArt) != null) {
-					Integer cantAnterior = (int) items.get(idArt).getPos5();
-					double costoFinalAnterior = (double) items.get(idArt).getPos3();
-					if (costoFinal > costoFinalAnterior) {
-						items.get(idArt).setPos3(costoFinal);
-						items.get(idArt).setPos6(costoGs);
-						items.get(idArt).setPos7(costoDs);
-					}
-					items.get(idArt).setPos5(cantAnterior + cant);
-				} else {
-					if (d.isGastoDescuento() == false) {
-						MyArray mr = new MyArray();
-						mr.setId(idArt);
-						mr.setPos1(d.getArticulo().getCodigoInterno());
-						mr.setPos2(d.getArticulo().getDescripcion());
-						mr.setPos3(costoFinal);
-						mr.setPos4(costoFinalDs);
-						mr.setPos8(costoFinal * cant);
-						mr.setPos9(costoFinalDs * cant);
-						
-						mr.setPos5(new Integer(cant));
-						mr.setPos6(costoGs);
-						mr.setPos7(costoDs);
-						items.put(idArt, mr);
-					}					
+				if (d.isGastoDescuento() == false) {
+					MyArray mr = new MyArray();
+					mr.setId(idArt);
+					mr.setPos1(d.getArticulo().getCodigoInterno());
+					mr.setPos2(d.getArticulo().getDescripcion());
+					mr.setPos3(costoFinal);
+					mr.setPos4(costoFinalDs);
+					mr.setPos8(costoFinal * cant);
+					mr.setPos9(costoFinalDs * cant);						
+					mr.setPos5(new Integer(cant));
+					mr.setPos6(costoGs);
+					mr.setPos7(costoDs);
+					out.add(mr);
 				}			
 			}			
 		}	
-		
-		Set<Long> keys = items.keySet();
-		for (Long key : keys) {
-			out.add(items.get(key));
-		}
 		
 		return out;
 	}
