@@ -341,7 +341,7 @@ public class BancoControlBody extends BodyApp {
 	}
 	
 	public List<String> getMeses() {
-		return Utiles.getMeses_();
+		return Utiles.getNumeroMeses_();
 	}
 	
 	public List<BancoMovimientoDTO> getMovimientos() {

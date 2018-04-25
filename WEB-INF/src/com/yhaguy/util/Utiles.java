@@ -59,6 +59,19 @@ public class Utiles {
 	public static final int NRO_NOVIEMBRE = 11;
 	public static final int NRO_DICIEMBRE = 12;
 	
+	public static final String NRO_ENERO_ = "01";
+	public static final String NRO_FEBRERO_ = "02";
+	public static final String NRO_MARZO_ = "03";
+	public static final String NRO_ABRIL_ = "04";
+	public static final String NRO_MAYO_ = "05";
+	public static final String NRO_JUNIO_ = "06";
+	public static final String NRO_JULIO_ = "07";
+	public static final String NRO_AGOSTO_ = "08";
+	public static final String NRO_SETIEMBRE_ = "09";
+	public static final String NRO_OCTUBRE_ = "10";
+	public static final String NRO_NOVIEMBRE_ = "11";
+	public static final String NRO_DICIEMBRE_ = "12";
+	
 	public static final String ANHO_2015 = "2015";
 	public static final String ANHO_2016 = "2016";
 	public static final String ANHO_2017 = "2017";
@@ -484,6 +497,26 @@ public class Utiles {
 		out.add(OCTUBRE);
 		out.add(NOVIEMBRE);
 		out.add(DICIEMBRE);
+		return out;
+	}
+	
+	/**
+	 * @return los nros de meses en String..
+	 */
+	public static List<String> getNumeroMeses_() {
+		List<String> out = new ArrayList<String>();
+		out.add(NRO_ENERO_);
+		out.add(NRO_FEBRERO_);
+		out.add(NRO_MARZO_);
+		out.add(NRO_ABRIL_);
+		out.add(NRO_MAYO_);
+		out.add(NRO_JUNIO_);
+		out.add(NRO_JULIO_);
+		out.add(NRO_AGOSTO_);
+		out.add(NRO_SETIEMBRE_);
+		out.add(NRO_OCTUBRE_);
+		out.add(NRO_NOVIEMBRE_);
+		out.add(NRO_DICIEMBRE_);
 		return out;
 	}
 	
