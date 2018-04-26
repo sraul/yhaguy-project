@@ -70,6 +70,8 @@
 				<zk forEach="${vm.menuItem(self,'PreparacionPedidos')}" />
 				<zk forEach="${vm.menuItem(self,'ServicioTecnico')}" />
 				<zk forEach="${vm.menuItem(self,'ControlTalonarios')}" />
+				<menuitem label="VENTA / RUTEO VENDEDORES" iconSclass="z-icon-caret-right"
+					disabled="true"/>
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'VentaDefinicion', 'tab=cliente,empresa')}" />
 			</menupopup>
@@ -110,8 +112,6 @@
 				<zk forEach="${vm.menuItem(self,'ComisionesVentas')}" />
 				<zk forEach="${vm.menuItem(self,'PremiosVentas')}" />
 				<menuitem label="EVALUACIÓN DEL PERSONAL" iconSclass="z-icon-caret-right"
-					disabled="true"/>
-				<menuitem label="RUTEO VENDEDORES" iconSclass="z-icon-caret-right"
 					disabled="true"/>
 			</menupopup>
 		</menu>
