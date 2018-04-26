@@ -111,6 +111,8 @@
 				<zk forEach="${vm.menuItem(self,'PremiosVentas')}" />
 				<menuitem label="EVALUACIÓN DEL PERSONAL" iconSclass="z-icon-caret-right"
 					disabled="true"/>
+				<menuitem label="RUTEO VENDEDORES" iconSclass="z-icon-caret-right"
+					disabled="true"/>
 			</menupopup>
 		</menu>
 
