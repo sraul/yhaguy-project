@@ -573,65 +573,12 @@ public class ControlCtaCteEmpresa extends Control {
 	
 
 	/**
-	 * El metodo agrega los movimientos correspondientes a una factura a
-	 * credito, divide dicho movimiento en submovimientos cada uno de acuerdo al
-	 * nro de cuotas en la que se realizo el movimiento original.
-	 * 
-	 * Ejemplo uso:
-	 * 
-	 * Se ingresara a la cta cte una factura credito con el monto total por
-	 * valor de 900.000.- Gs con una entrega inicial de 300.000.- Gs y el resto
-	 * en 2 cuotas cada 30 dias (Credito 60). Esto generara 3 movimientos en la
-	 * cta cte correspondientes al movimiento de la factura. El movimiento
-	 * correspondiente a la entrega tendra importeOriginal = entregaInicial
-	 * Ademas de ese movimiento se generara 2 movimientos mas pertenecientes a
-	 * los 2 vencimientos respectivos con importeOriginal = (importeOriginal de
-	 * la Factura - entrega inicial)/nroCuotas y los saldos respectivos de la
-	 * misma forma.
-	 * 
-	 * 
-	 * @param empresa
-	 *            El "Cliente" o el "Proveedor" con el que se realizo la
-	 *            operacion.
-	 * @param idMovimientoOriginal
-	 *            El ID del movimiento original.
-	 * @param nroComprobante
-	 *            El numero de comprobante correspondiente a la operacion.
-	 * @param fechaEmision
-	 *            Fecha de emision del comprobante.
-	 * @param diasEntreVencimiento
-	 *            Plazo en dias entre cada cuota. Ej.: (30 dias)
-	 * @param cuotasVencimiento
-	 *            Cantidad de cuotas. Ej.: (4 cuotas) Por lo tanto sera 4 cuotas
-	 *            cada 30 dias.
-	 * @param importeOriginal
-	 *            Importe total del comprobante.
-	 * @param entregaInicial
-	 *            Corresponde a la entrega inicial si la hubiere
-	 * @param saldo
-	 *            Saldo a cobrar/Pagar del comprobante.
-	 * @param moneda
-	 *            Moneda en la que se realizo la operacion(Guaranies, $, etc.).
-	 * @param tipoMovimiento
-	 *            Tipo de movimiento de la operacion. Ej.: Venta Credito, Compra
-	 *            Local Credito, etc.Este dato debe ser un MyArray Donde la pos2
-	 *            si o si debe contener la sigla del movimiento
-	 * @param tipoCaracterMovimiento
-	 *            Caracter del movimiento de la empresa con la que se realizo la
-	 *            operacion. Ej.: Si se realizo una venta, entonces el caracter
-	 *            del movimiento de la Empresa con la que se realizo la
-	 *            operacion es "Cliente", si se realiza una compra, el caracter
-	 *            del movimiento de la Empresa con la que se realizo la
-	 *            operacion es "Proveedor".
-	 * @param sucursal
-	 *            Sucursal nonde se produjo el movimiento.
-	 * @throws Exception
-	 * 
+	 * add ctactemovimiento..
 	 */
 	public void addCtaCteEmpresaMovimientoFacturaCredito(IiD empresa, long idMovimientoOriginal, String nroComprobante,
 			Date fechaEmision, int diasEntreVencimientos, int cuotasVencimiento, double importeOriginal,
 			double entregaInicial, double saldo, MyPair moneda, MyArray tipoMovimiento, MyPair tipoCaracterMovimiento,
-			MyArray sucursal, String numeroImportacion) throws Exception {
+			MyArray sucursal, String numeroImportacion, double tipoCambio) throws Exception {
 
 		CtaCteEmpresaMovimientoDTO nuevoMovimientoDTO = new CtaCteEmpresaMovimientoDTO();
 		nuevoMovimientoDTO.setIdEmpresa(empresa.getId());
@@ -639,6 +586,7 @@ public class ControlCtaCteEmpresa extends Control {
 		nuevoMovimientoDTO.setFechaEmision(fechaEmision);
 		nuevoMovimientoDTO.setSaldo(saldo);
 		nuevoMovimientoDTO.setMoneda(moneda);
+		nuevoMovimientoDTO.setTipoCambio(tipoCambio);
 		nuevoMovimientoDTO.setTipoMovimiento(tipoMovimiento);
 		nuevoMovimientoDTO.setTipoCaracterMovimiento(tipoCaracterMovimiento);
 		nuevoMovimientoDTO.setSucursal(sucursal);
@@ -686,8 +634,7 @@ public class ControlCtaCteEmpresa extends Control {
 	 */
 	public void addMovimiento(CtaCteEmpresaMovimientoDTO nuevoMovimientoDTO) throws Exception {
 
-		CtaCteEmpresaMovimiento nuevoMovimientoDom = (CtaCteEmpresaMovimiento) movimientoAss
-				.dtoToDomain(nuevoMovimientoDTO);
+		CtaCteEmpresaMovimiento nuevoMovimientoDom = (CtaCteEmpresaMovimiento) movimientoAss.dtoToDomain(nuevoMovimientoDTO);
 		rr.saveObject(nuevoMovimientoDom, this.getLoginNombre());
 	}
 

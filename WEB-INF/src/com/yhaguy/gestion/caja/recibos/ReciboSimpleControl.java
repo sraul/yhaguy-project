@@ -270,13 +270,13 @@ public class ReciboSimpleControl extends SoloViewModel {
 				if (ccm.getMoneda().getId().compareTo(this.monedaLocal.getId()) == 0) {
 					opd.setTipoCambio(this.dato.getReciboDTO().getTipoCambio());
 					opd.setSaldoGs(ccm.getSaldo());
-					opd.setSaldoDs(ccm.getSaldo() / opd.getTipoCambio());
+					opd.setSaldoDs(0);
 					opd.setStyleSaldoGs("font-weight:bold");
 					opd.setFormat(this.getCnv().getMonedaLocal());
 				} else {
 					opd.setTipoCambio(this.dato.getReciboDTO().getTipoCambio());
 					opd.setSaldoDs(ccm.getSaldo());
-					opd.setSaldoGs(ccm.getSaldo() * opd.getTipoCambio());
+					opd.setSaldoGs(ccm.getSaldo() * ccm.getTipoCambio());
 					opd.setStyleSaldoDs("font-weight:bold");
 					opd.setFormat(this.getCnv().getMonedaExtranjera());
 				}
@@ -493,14 +493,6 @@ public class ReciboSimpleControl extends SoloViewModel {
 		BindUtils.postNotifyChange(null, null, item, "montoDs");
 	}	
 	
-	//actualiza el tipo de Cambio segun la moneda seleccionada
-	@Command @NotifyChange("*")
-	public void updateTipoCambio(){
-		MyArray moneda = this.dato.getReciboDTO().getMoneda();
-		double tc = dtoUtil.getCambioVentaBCP(moneda);
-		this.dato.getReciboDTO().setTipoCambio(tc);
-	}
-	
 	/***************************************************/	
 	
 	
@@ -561,6 +553,11 @@ public class ReciboSimpleControl extends SoloViewModel {
 		if (this.nvoFormaPago.isSaldoFavorGenerado() && this.nvoFormaPago.getMontoGs() > 0) {
 			this.nvoFormaPago.setMontoGs(this.nvoFormaPago.getMontoGs() * -1);
 		}
+		
+		if (!this.dato.getReciboDTO().isMonedaLocal()) {
+			this.nvoFormaPago.setMontoGs(this.nvoFormaPago.getMontoDs() * this.dato.getReciboDTO().getTipoCambio());
+		}
+		
 		this.dato.getReciboDTO().getFormasPago().add(nvoFormaPago);
 		w.detach();
 	}

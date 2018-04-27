@@ -18,6 +18,7 @@ public class CtaCteEmpresaMovimientoDTO extends DTO {
 	Date fechaVencimiento = new Date();
 	double importeOriginal = 0;
 	double saldo = 0;
+	double tipoCambio = 0;
 	private boolean cerrado;
 	private boolean anulado = false;
 	private boolean tesaka;
@@ -211,6 +212,14 @@ public class CtaCteEmpresaMovimientoDTO extends DTO {
 
 	public void setNumeroImportacion(String numeroImportacion) {
 		this.numeroImportacion = numeroImportacion;
+	}
+
+	public double getTipoCambio() {
+		return tipoCambio;
+	}
+
+	public void setTipoCambio(double tipoCambio) {
+		this.tipoCambio = tipoCambio;
 	}
 
 }

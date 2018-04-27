@@ -63,7 +63,7 @@
 				<label value="Articulo:" sclass="mobile" />
 				<bandbox hflex="true" readonly="true"
 					value="@load(vm.selectedArticulo.codigoInterno)" id="bndArt"
-					onDrop="tx_filter.focus()">
+					onOpen="tx_filter.focus()">
 					<bandpopup height="750px">
 						<listbox hflex="true"
 							model="@load(vm.articulos)"

@@ -21,6 +21,7 @@ public class CtaCteEmpresaMovimiento extends Domain {
 	private Date fechaVencimiento = new Date();
 	private double importeOriginal = 0;
 	private double saldo = 0;
+	private double tipoCambio = 0;
 	private long idVendedor;
 	private TipoMovimiento tipoMovimiento;
 	private Tipo tipoCaracterMovimiento;
@@ -96,6 +97,13 @@ public class CtaCteEmpresaMovimiento extends Domain {
 		Misc misc = new Misc();
 		long vto = misc.diasEntreFechas(this.fechaVencimiento, new Date());
 		return (vto >= desde) && (vto <= hasta);
+	}
+	
+	/**
+	 * @return true si es moneda local..
+	 */
+	public boolean isMonedaLocal() {
+		return this.moneda.getSigla().equals(Configuracion.SIGLA_MONEDA_GUARANI);
 	}
 	
 	/**
@@ -351,5 +359,13 @@ public class CtaCteEmpresaMovimiento extends Domain {
 
 	public void setNumeroImportacion(String numeroImportacion) {
 		this.numeroImportacion = numeroImportacion;
+	}
+
+	public double getTipoCambio() {
+		return tipoCambio;
+	}
+
+	public void setTipoCambio(double tipoCambio) {
+		this.tipoCambio = tipoCambio;
 	}
 }

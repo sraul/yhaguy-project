@@ -545,7 +545,8 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 			ctr.addCtaCteEmpresaMovimientoFacturaCredito(empresa,
 					gasto.getId(), gasto.getNumeroFactura(), gasto.getFecha(),
 					0, 1, importe, 0, importe, moneda,
-					gasto.getTipoMovimiento(), caracter, sucursal, gasto.getNumeroImportacion());
+					gasto.getTipoMovimiento(), caracter, sucursal, gasto.getNumeroImportacion(),
+					gasto.getTipoCambio());
 
 		} else if (sigla.equals(Configuracion.SIGLA_TM_FAC_GASTO_CONTADO) 
 				|| sigla.equals(Configuracion.SIGLA_TM_BOLETA_VENTA)) {

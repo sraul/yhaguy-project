@@ -411,7 +411,6 @@ public class CajaPeriodoControlBody extends BodyApp {
 			this.reciboDTO.setSucursal(this.dto.getCaja().getSucursal());
 			this.reciboDTO.setTipoMovimiento(tipoMovto);
 			this.reciboDTO.setMoneda(this.monedaLocal);
-			this.reciboDTO.setTipoCambio(this.getTipoCambioGuarani());
 			this.reciboDTO.setImputar(true);
 			this.reciboDTO.setEstadoComprobante(this.estadoComprobanteConfeccionado);
 			this.reciboDTO.setEstadosComprobantes(this.utilDto.getEstadosComprobantes());
@@ -1488,10 +1487,6 @@ public class CajaPeriodoControlBody extends BodyApp {
 
 	private String getNombreUsuario() {
 		return this.getUs().getNombre();
-	}
-
-	private double getTipoCambioGuarani() {
-		return this.utilDto.getCambioVentaBCP(monedaLocal);
 	}
 
 	public boolean isCobro() {

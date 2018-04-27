@@ -7651,21 +7651,17 @@ public class RegisterDomain extends Register {
 	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		try {
-			/*List<BancoBoletaDeposito> list = rr.getObjects(BancoBoletaDeposito.class.getName());
-			for (BancoBoletaDeposito dep : list) {
-				dep.setTotalImporte_gs(dep.getTotalImporteGs());
-				dep.setAuxi(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_DEPOSITO_BANCARIO).getDescripcion().toUpperCase());
-				rr.saveObject(dep, dep.getUsuarioMod());
-				System.out.println(dep.getNumeroBoleta());
-			}*/
-			
-			List<BancoDescuentoCheque> list = rr.getObjects(BancoDescuentoCheque.class.getName());
-			for (BancoDescuentoCheque dto : list) {
-				dto.setTotalImporte_gs(dto.getTotalImporteGs());
-				dto.setConfirmado(dto.getDbEstado() == 'R');
-				rr.saveObject(dto, dto.getUsuarioMod());
-				System.out.println(dto.getObservacion());
+		try {			
+			List<CtaCteEmpresaMovimiento> list = rr.getObjects(CtaCteEmpresaMovimiento.class.getName());
+			for (CtaCteEmpresaMovimiento cc : list) {
+				if (!cc.isMonedaLocal()) {
+					ImportacionPedidoCompra imp = (ImportacionPedidoCompra) rr.getObject(ImportacionPedidoCompra.class.getName(), cc.getIdMovimientoOriginal());
+					if (imp != null) {
+						cc.setTipoCambio(imp.getResumenGastosDespacho().getTipoCambio());
+						rr.saveObject(cc, cc.getUsuarioMod());
+						System.out.println(cc.getNroComprobante());
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

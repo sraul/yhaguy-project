@@ -18,6 +18,7 @@
 		<property name="fechaVencimiento" />
 		<property name="importeOriginal" />
 		<property name="saldo" />
+		<property name="tipoCambio" />
 		<property name="numeroImportacion" />
 		
 		<property name="idVendedor">

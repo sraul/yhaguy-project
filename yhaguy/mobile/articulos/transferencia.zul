@@ -1,15 +1,20 @@
-<div 
+<div apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.yhaguy.gestion.mobile.TransferenciasMobileVM')"
 	vflex="true">
 		
 		<vlayout id="vlDet" height="100%">
 			<vlayout style="padding:50px">
-				<label value="Tipo Transferencia" sclass="mobile"></label>
-				<combobox hflex="true" />
+				<label value="Tipo Movimiento" sclass="mobile"></label>
+				<textbox hflex="true" readonly="true" value="@load(vm.transferencia.transferenciaTipo.descripcion)"></textbox>
 				<space></space>
 				<label value="Fecha / Número" sclass="mobile"></label>
 				<hlayout>
-					<textbox readonly="true" hflex="true"></textbox>
-					<textbox readonly="true" hflex="true"></textbox>
+					<textbox readonly="true" hflex="true"
+						value="@load(vm.transferencia.fechaCreacion) @converter('formattedDate', format='dd-MM-yyyy')"
+						style="text-align:right"></textbox>
+					<textbox readonly="true" hflex="true"
+						value="@load(vm.transferencia.numero)"
+						style="text-align:right"></textbox>
 				</hlayout>				
 				<space></space>
 				<label value="Depósito Origen" sclass="mobile"></label>
@@ -18,21 +23,30 @@
 				<label value="Depósito Destino" sclass="mobile"></label>
 				<combobox hflex="true" />
 				<space></space>
-				<label value="Articulo:" sclass="mobile" />
+				<label value="Articulo" sclass="mobile" />
 				<bandbox hflex="true" readonly="true" id="bndArt"
-					onDrop="tx_filter.focus()">
+					value="@load(vm.selectedArticulo.codigoInterno)"
+					onOpen="tx_filter.focus()">
 					<bandpopup height="750px">
 						<listbox hflex="true"
-							onSelect="bndArt.close()" height="750px">
+							onSelect="bndArt.close()" height="750px"
+							model="@load(vm.articulos)"
+							selectedItem="@bind(vm.selectedArticulo)">
 							<listhead>
 								<listheader>
 									<hlayout>
 										<textbox id="tx_filter"
 											sclass="filter-mobile"
+											value="@bind(vm.filterCodigo)"
+											instant="true"
 											hflex="true" placeholder="Buscar.." />
 									</hlayout>
 								</listheader>
 							</listhead>
+							<template name="model">
+								<listitem
+									label="@load(each.codigoInterno)" />
+							</template>
 						</listbox>
 					</bandpopup>
 				</bandbox>

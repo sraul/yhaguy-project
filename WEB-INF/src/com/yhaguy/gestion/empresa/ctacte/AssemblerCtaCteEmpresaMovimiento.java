@@ -12,7 +12,7 @@ import com.yhaguy.domain.RegisterDomain;
 public class AssemblerCtaCteEmpresaMovimiento extends Assembler {
 
 	private String[] attIgualesMovimiento = { "idEmpresa", "fechaEmision", "idMovimientoOriginal", "nroComprobante",
-			"fechaVencimiento", "importeOriginal", "saldo", "cerrado", "anulado", "tesaka", "idVendedor", "numeroImportacion" };
+			"fechaVencimiento", "importeOriginal", "saldo", "tipoCambio", "cerrado", "anulado", "tesaka", "idVendedor", "numeroImportacion" };
 
 	private String[] attSucursal = { "nombre", "descripcion" };
 

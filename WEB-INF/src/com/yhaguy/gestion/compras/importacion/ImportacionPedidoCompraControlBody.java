@@ -3,10 +3,11 @@ package com.yhaguy.gestion.compras.importacion;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Set;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -2642,9 +2643,9 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		}
 		
 		List<Object[]> data = new ArrayList<Object[]>();
-
+		
 		for (MyArray item : this.getItemsCostoFinal()) {
-			Object[] obj1 = new Object[] { item.getPos1(), item.getPos2(),
+			Object[] obj1 = new Object[] { item.getPos1(), 
 					item.getPos5(), 
 					Utiles.getRedondeo((double) item.getPos3()), 
 					misc.redondeoDosDecimales((double) item.getPos4()), 
@@ -2652,6 +2653,16 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					misc.redondeoDosDecimales((double) item.getPos9()) };
 			data.add(obj1);
 		}
+		
+		// ordena la lista segun codigo..
+		Collections.sort(data, new Comparator<Object[]>() {
+			@Override
+			public int compare(Object[] o1, Object[] o2) {
+				String rs1 = (String) o1[0];
+				String rs2 = (String) o2[0];
+				return rs1.compareTo(rs2);
+			}
+		});
 
 		ReporteYhaguy rep = new ReporteImportacion(this.dto);
 		rep.setDatosReporte(data);
@@ -2922,7 +2933,8 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					idMovimientoOriginal, nroComprobante, fechaEmision,
 					(int) fac.getCondicionPago().getPos2(), 1,
 					importeOriginal, 0, (importeOriginal - this.dto.getTotalAnticipoAplicadoDs()), moneda,
-					tipoMovimiento, this.getDtoUtil().getCtaCteEmpresaCaracterMovProveedor(), sucursal, "");			
+					tipoMovimiento, this.getDtoUtil().getCtaCteEmpresaCaracterMovProveedor(), sucursal, "", 
+					this.dto.getResumenGastosDespacho().getTipoCambio());			
 		}
 		
 		for (ImportacionAplicacionAnticipoDTO anticipo : this.dto.getAplicacionAnticipos()) {
@@ -4070,8 +4082,7 @@ class ReporteImportacion extends ReporteYhaguy {
 	private ImportacionPedidoCompraDTO importacion;	
 	
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
-	static DatosColumnas col1 = new DatosColumnas("Código", TIPO_STRING, 50);
-	static DatosColumnas col2 = new DatosColumnas("Descripción", TIPO_STRING);
+	static DatosColumnas col1 = new DatosColumnas("Código", TIPO_STRING);
 	static DatosColumnas col3 = new DatosColumnas("Cantidad", TIPO_INTEGER, 30, false);
 	static DatosColumnas col4 = new DatosColumnas("Costo Gs.", TIPO_DOUBLE_GS, 30, false); 
 	static DatosColumnas col5 = new DatosColumnas("Costo USD", TIPO_DOUBLE_DS, 30, false); 
@@ -4084,7 +4095,6 @@ class ReporteImportacion extends ReporteYhaguy {
 	
 	static {
 		cols.add(col1);
-		cols.add(col2);
 		cols.add(col3);
 		cols.add(col4);
 		cols.add(col5);

@@ -23,7 +23,6 @@
 						value="@load(vm.dato.reciboDTO.moneda.pos1)"
 						selectedItem="@bind(vm.dato.reciboDTO.moneda)" hflex="true"
 						model="@load(vm.dtoUtil.monedasConSimbolo)" instant="true"
-						onChange="@command('updateTipoCambio')"
 						visible="@load(vm.dato.reciboDTO.detalleVacio)">
 						<template name="model">
 							<comboitem label="@load(each.pos1)" />
