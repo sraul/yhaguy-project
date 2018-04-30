@@ -26,17 +26,19 @@
 				</hlayout>
 				<space />
 				<button mold="bs" sclass="btn-info btn-sm" hflex="true"
-					iconSclass="z-icon-calendar" label=" Agendamiento" />
+					iconSclass="z-icon-calendar" label=" Agendamiento" disabled="true" />
 				<space />
 				<button mold="bs" sclass="btn-success btn-sm"
 					hflex="true" iconSclass="z-icon-check"
-					label=" Visitas registradas" />
+					label=" Visitas registradas" disabled="true" />
 				<space />
 				<button mold="bs" sclass="btn-warning btn-sm"
-					hflex="true" iconSclass="z-icon-exclamation-circle" label=" Pendientes de visitar"  />
+					hflex="true" iconSclass="z-icon-exclamation-circle" label=" Pendientes de visitar"  
+					disabled="true" />
 				<space />
 				<button mold="bs" sclass="btn-primary btn-sm"
-					hflex="true" iconSclass="z-icon-print" label=" Imprimir"  />
+					hflex="true" iconSclass="z-icon-print" label=" Imprimir"  
+					disabled="true" />
 				<space />
 				<space></space>
 			</vlayout>
