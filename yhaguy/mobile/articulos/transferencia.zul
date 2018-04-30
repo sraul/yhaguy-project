@@ -2,44 +2,49 @@
 	viewModel="@id('vm') @init('com.yhaguy.gestion.mobile.TransferenciasMobileVM')"
 	vflex="true">
 		
-		<vlayout id="vlDet" height="100%">
+		<vlayout id="vlDet" height="100%" style="overflow:auto">
 			<vlayout style="padding:50px">
-				<label value="Tipo Movimiento" sclass="mobile"></label>
-				<textbox hflex="true" readonly="true" value="@load(vm.transferencia.transferenciaTipo.descripcion)"></textbox>
-				<space></space>
-				<label value="Fecha / Número" sclass="mobile"></label>
+				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
+					<label value="@load(vm.transferencia.transferenciaTipo.descripcion)" sclass="mobile" style="font-weight:bold"></label>	
+				</div>	
+				<space></space>			
+				<label value="Fecha / Número" sclass="mobile" style="font-weight:bold"></label>
 				<hlayout>
 					<textbox readonly="true" hflex="true"
 						value="@load(vm.transferencia.fechaCreacion) @converter('formattedDate', format='dd-MM-yyyy')"
 						style="text-align:right"></textbox>
+					<space></space>
 					<textbox readonly="true" hflex="true"
 						value="@load(vm.transferencia.numero)"
 						style="text-align:right"></textbox>
 				</hlayout>				
 				<space></space>
-				<label value="Depósito Origen" sclass="mobile"></label>
+				<label value="Depósito Origen" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true" model="@load(vm.depositosOrigen)"
-					selectedItem="@bind(vm.transferencia.depositoSalida)">
+					selectedItem="@bind(vm.transferencia.depositoSalida)"
+					onSelect="@command('selectDepositoOrigen')"
+					value="@load(vm.transferencia.depositoSalida.descripcion)">
 					<template name="model">
 						<comboitem label="@load(each.descripcion.toUpperCase())" />
 					</template>
 				</combobox>
 				<space></space>
-				<label value="Depósito Destino" sclass="mobile"></label>
+				<label value="Depósito Destino" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true" model="@load(vm.depositosDestino)"
-					selectedItem="@bind(vm.transferencia.depositoEntrada)">
+					selectedItem="@bind(vm.transferencia.depositoEntrada)"
+					value="@load(vm.transferencia.depositoEntrada.descripcion)">
 					<template name="model">
 						<comboitem label="@load(each.descripcion.toUpperCase())" />
 					</template>
 				</combobox>
 				<space></space>
-				<label value="Articulo" sclass="mobile" />
+				<label value="Artículo" sclass="mobile" style="font-weight:bold" />
 				<bandbox hflex="true" readonly="true" id="bndArt"
 					value="@load(vm.selectedArticulo.codigoInterno)"
 					onOpen="tx_filter.focus()">
 					<bandpopup height="750px">
 						<listbox hflex="true"
-							onSelect="bndArt.close()" height="750px"
+							onSelect="@command('selectArticulo', comp=bndArt)" height="750px"
 							model="@load(vm.articulos)"
 							selectedItem="@bind(vm.selectedArticulo)">
 							<listhead>
@@ -63,14 +68,17 @@
 			</vlayout>			
 			<space height="50px" />
 			<vlayout style="padding:50px">
-				<label value="Cantidad a transferir:" sclass="mobile" />
-				<intbox hflex="true" value="0" />
+				<label value="Cantidad disponible" sclass="mobile" style="font-weight:bold" />
+				<intbox hflex="true" value="@bind(vm.disponible)" readonly="true"/>
+				<space></space>
+				<label value="Cantidad a transferir" sclass="mobile" style="font-weight:bold" />
+				<intbox hflex="true" value="@bind(vm.cantidad)" />
 			</vlayout>
 			<space vflex="true"></space>
 			<button id="btnEnviar" mold="bs" sclass="btn-success btn-lg"
 				hflex="true" iconSclass="z-icon-check"
 				label=" Enviar Transferencia" height="150px" style="font-size:30pt"
-				dir="normal" />
+				dir="normal" onClick="@command('confirmarTransferencia')"/>
 		</vlayout>		
 
 	<style>

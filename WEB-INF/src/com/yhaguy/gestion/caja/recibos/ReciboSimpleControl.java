@@ -461,7 +461,7 @@ public class ReciboSimpleControl extends SoloViewModel {
 	@Command @NotifyChange({"datosMovimientosPendientes", "cancelarTodo"})
 	public void guaranizar(@BindingParam("item") ReciboDetalleDTO item, 
 			@BindingParam("comp") Doublebox comp) {
-		double tc = this.getTipoCambio();
+		double tc = item.getMovimiento().getTipoCambio();
 		double montoDs = item.getMontoDs();
 		double montoGs = montoDs * tc;
 		double saldoGs = item.getSaldoGs();		
@@ -481,7 +481,7 @@ public class ReciboSimpleControl extends SoloViewModel {
 			@BindingParam("comp") Doublebox comp){
 		double montoGs = item.getMontoGs();
 		double saldoGs = item.getSaldoGs();
-		double tc = this.getTipoCambio();
+		double tc = item.getMovimiento().getTipoCambio();
 		
 		if (montoGs > saldoGs) {
 			item.setMontoGs(item.getMontoDs() * tc);
