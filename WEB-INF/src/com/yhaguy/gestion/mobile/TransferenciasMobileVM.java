@@ -13,6 +13,7 @@ import com.coreweb.domain.Tipo;
 import com.coreweb.util.AutoNumeroControl;
 import com.yhaguy.Configuracion;
 import com.yhaguy.domain.Articulo;
+import com.yhaguy.domain.Deposito;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Transferencia;
 
@@ -67,6 +68,22 @@ public class TransferenciasMobileVM extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		out.add(rr.getTipoPorSigla(Configuracion.SIGLA_TM_TRANSF_INTERNA));
 		out.add(rr.getTipoPorSigla(Configuracion.SIGLA_TM_TRANSF_EXTERNA));
+		return out;
+	}
+	
+	@DependsOn("transferencia")
+	public List<Deposito> getDepositosOrigen() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<Deposito> out = rr.getDepositosPorSucursal((long) 2);
+		out.remove(this.transferencia.getDepositoSalida());
+		return out;
+	}
+	
+	@DependsOn("transferencia")
+	public List<Deposito> getDepositosDestino() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<Deposito> out = rr.getDepositosPorSucursal((long) 2);
+		out.remove(this.transferencia.getDepositoEntrada());
 		return out;
 	}
 	

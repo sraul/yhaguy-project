@@ -70,9 +70,7 @@
 				<zk forEach="${vm.menuItem(self,'PreparacionPedidos')}" />
 				<zk forEach="${vm.menuItem(self,'ServicioTecnico')}" />
 				<zk forEach="${vm.menuItem(self,'ControlTalonarios')}" />
-				<menuitem label="VENTA / RUTEO VENDEDORES" iconSclass="z-icon-caret-right"
-					disabled="true"/>
-				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'RuteoVendedores')}" />
 				<zk forEach="${vm.menuItem(self,'VentaDefinicion', 'tab=cliente,empresa')}" />
 			</menupopup>
 		</menu>

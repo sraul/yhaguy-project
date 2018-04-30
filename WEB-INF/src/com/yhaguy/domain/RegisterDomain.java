@@ -7649,6 +7649,21 @@ public class RegisterDomain extends Register {
 		return this.hql(query);
 	}
 	
+	/**
+	 * @return el ruteo de vendedores..
+	 * [0]:vendedor
+	 * [1]:cliente
+	 * [2]:latitud
+	 * [3]:longitud
+	 */
+	public List<Object[]> getRuteoVendedores(Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select r.usuarioMod, r.auxi, r.orden, r.echo from Ping r where"
+				+ " (r.modificado > '" + desde_ + "' and r.modificado < '" + hasta_ + "'))";
+		return this.hql(query);
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			

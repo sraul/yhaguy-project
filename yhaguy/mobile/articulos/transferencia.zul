@@ -18,10 +18,20 @@
 				</hlayout>				
 				<space></space>
 				<label value="Depósito Origen" sclass="mobile"></label>
-				<combobox hflex="true" />
+				<combobox hflex="true" model="@load(vm.depositosOrigen)"
+					selectedItem="@bind(vm.transferencia.depositoSalida)">
+					<template name="model">
+						<comboitem label="@load(each.descripcion.toUpperCase())" />
+					</template>
+				</combobox>
 				<space></space>
 				<label value="Depósito Destino" sclass="mobile"></label>
-				<combobox hflex="true" />
+				<combobox hflex="true" model="@load(vm.depositosDestino)"
+					selectedItem="@bind(vm.transferencia.depositoEntrada)">
+					<template name="model">
+						<comboitem label="@load(each.descripcion.toUpperCase())" />
+					</template>
+				</combobox>
 				<space></space>
 				<label value="Articulo" sclass="mobile" />
 				<bandbox hflex="true" readonly="true" id="bndArt"
