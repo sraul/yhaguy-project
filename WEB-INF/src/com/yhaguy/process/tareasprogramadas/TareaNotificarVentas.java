@@ -26,7 +26,7 @@ public class TareaNotificarVentas {
 	static final String EMPRESA_BAT = Configuracion.EMPRESA_BATERIAS;
 	
 	static final String[] DESTINATARIOS_MRA = new String[] { "davida@yhaguyrepuestos.com.py", "hugog@yhaguyrepuestos.com.py" };
-	static final String[] DESTINATARIOS_BAT = new String[] { "nataliac@yhaguyrepuestos.com.py", "dianaa@yhaguyrepuestos.com.py" };
+	static final String[] DESTINATARIOS_BAT = new String[] { "nataliac@yhaguyrepuestos.com.py", "dianaa@yhaguyrepuestos.com.py", "yaninaf@yhaguyrepuestos.com.py" };
 	static final String[] COPIA_OCULTA = new String[] { "sergioraul777@gmail.com" };
 	
 	/**

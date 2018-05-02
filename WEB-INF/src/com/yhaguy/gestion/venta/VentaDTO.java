@@ -296,6 +296,35 @@ public class VentaDTO extends DTO {
 	}
 	
 	/**
+	 * @return el detalle para impresion del descuento..
+	 */
+	public List<VentaDetalleDTO> getDetallesConDescuento() {
+		List<VentaDetalleDTO> out = new ArrayList<VentaDetalleDTO>();
+		out.addAll(this.getDetalles());
+		if (this.isVentaConDescuento()) {
+			VentaDetalleDTO itemPrint = null;
+			for (VentaDetalleDTO item : this.getDetalles()) {
+				if (item.isImpresionDescuento()) {
+					itemPrint = item;
+				}
+			}
+			this.getDetalles().remove(itemPrint);
+			out.remove(itemPrint);
+			MyArray art = new MyArray();
+			art.setPos1("DESCUENTO");
+			art.setPos4("DESCUENTO");
+			VentaDetalleDTO item = new VentaDetalleDTO();
+			item.setArticulo(art);
+			item.setCantidad(1);
+			item.setPrecioGs(this.getTotalDescuentoGs() * -1);
+			item.setTipoIVA(new MyPair());
+			item.setImpresionDescuento(true);				
+			out.add(item);
+		}
+		return out;
+	}
+	
+	/**
 	 * @return los items que son servicio..
 	 */
 	public List<VentaDetalleDTO> getItemsServicio() {

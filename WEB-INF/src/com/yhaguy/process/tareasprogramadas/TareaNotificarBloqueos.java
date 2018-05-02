@@ -37,11 +37,11 @@ public class TareaNotificarBloqueos {
 	
 	static final String[] DESTINATARIOS_MRA = new String[] {
 			"davida@yhaguyrepuestos.com.py", "hugog@yhaguyrepuestos.com.py",
-			"derlisg@yhaguyrepuestos.com.py" };
+			"soniat@yhaguyrepuestos.com.py" };
 	
 	static final String[] DESTINATARIOS_BAT = new String[] {
 			"nataliac@yhaguyrepuestos.com.py", "dianaa@yhaguyrepuestos.com.py",
-			"derlisg@yhaguyrepuestos.com.py" };
+			"soniat@yhaguyrepuestos.com.py", "yaninaf@yhaguyrepuestos.com.py" };
 	
 	static final String[] COPIA_OCULTA = new String[] { "sergioraul777@gmail.com" };
 	static final String ASUNTO_MRA = "Bloqueos de Cuentas Automatico - Yhaguy M.R.A.";
@@ -131,8 +131,8 @@ public class TareaNotificarBloqueos {
 	}	
 	
 	public static void main(String[] args) {
-		TareaNotificarBloqueos.enviarCorreoBloqueos(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA, ASUNTO_MRA);
-		//TareaNotificarBloqueos.enviarCorreoBloqueos(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, DESTINATARIOS_BAT, ASUNTO_BAT);
+		//TareaNotificarBloqueos.enviarCorreoBloqueos(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA, ASUNTO_MRA);
+		TareaNotificarBloqueos.enviarCorreoBloqueos(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, DESTINATARIOS_BAT, ASUNTO_BAT);
 	}
 }
 

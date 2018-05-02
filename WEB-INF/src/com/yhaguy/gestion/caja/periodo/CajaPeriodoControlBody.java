@@ -75,6 +75,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
 public class CajaPeriodoControlBody extends BodyApp {
+	
+	static final String ZUL_IMPRESION_FACTURA_BAT = "/yhaguy/gestion/caja/periodo/impresion_factura_bat.zul";
 
 	private CajaPeriodoDTO dto = new CajaPeriodoDTO();
 	private MyArray selectedChequera = new MyArray();
@@ -1577,7 +1579,8 @@ public class CajaPeriodoControlBody extends BodyApp {
 	 * impresion de la venta..
 	 */
 	private void imprimirVenta(VentaDTO venta) throws Exception {
-
+		this.selectedVenta = venta;
+		
 		String source = ReportesViewModel.SOURCE_VENTA_;
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
 			source = ReportesViewModel.SOURCE_VENTA_BATERIAS;
@@ -1604,6 +1607,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("Iva10", FORMATTER.format(venta.getTotalIva10()));
 		params.put("TotalIva", FORMATTER.format(venta.getTotalIva()));
 		params.put("CantidadTotal", FORMATTER.format(venta.getTotalCantidad()));
+		params.put("Items", venta.getDetalles());
 
 		params.put("PuntoPartida", venta.getPuntoPartida().toLowerCase());
 		params.put("FechaTraslado", venta.getFechaTraslado());
@@ -1614,7 +1618,9 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("ChapaVehiculo", venta.getChapaVehiculo().toLowerCase());
 		
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
-			this.imprimirComprobante(source, params, dataSource);
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA_BAT, this.mainComponent, params);
+			this.win.doModal();
+			//this.imprimirComprobante(source, params, dataSource);
 		} else {
 			this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
 		}

@@ -1,0 +1,128 @@
+<window height="795px" width="833px" border="none"
+	sclass="printable" position="center,center"
+	id="win_fac">
+	
+	<timer delay="1500" repeats="false">
+		<attribute name="onTimer">
+			Clients.print();
+		</attribute>
+	</timer>
+	
+	<timer delay="1800" repeats="false">
+		<attribute name="onTimer">
+			win_fac.detach();
+		</attribute>
+	</timer>
+	
+	<div height="65px"></div>
+	
+	<hlayout>
+		<div hflex="true"></div>
+		<label value="@load(vm.selectedVenta.numero)" sclass="custom"></label>
+		<div width="75px"></div>
+	</hlayout>
+	
+	<div height="94px"></div>
+	
+	<hlayout>
+		<div width="170px"></div>
+		<label value="${arg.RazonSocial}" sclass="custom"></label>
+		<div hflex="true"></div>
+		<label value="${arg.CondicionVenta}" sclass="custom"></label>
+		<div width="75px"></div>
+	</hlayout>
+		
+	<hlayout>
+		<div width="80px"></div>
+		<label value="${arg.Direccion}" sclass="custom"></label>
+		<div hflex="true"></div>
+		<label value="${arg.FechaEmision}" sclass="custom"></label>
+		<div width="75px"></div>
+	</hlayout>
+	
+	<hlayout>
+		<div width="80px"></div>
+		<label value="${arg.Telefono}" sclass="custom"></label>
+	</hlayout>
+	
+	<hlayout>
+		<div width="80px"></div>
+		<label value="${arg.Ruc}" sclass="custom"></label>
+		<div width="151px"></div>
+		<label value="${arg.Vendedor}" sclass="custom"></label>
+	</hlayout>
+	
+	<div height="60px"></div>
+	
+	<vlayout children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0" height="315px">
+		<template name="children">
+			<hlayout>
+				<div width="15px"></div>
+				<div width="40px" style="text-align:center">
+					<label value="@load(each.cantidad)" sclass="det"></label>
+				</div>	
+				<div width="75px">
+					<label value="@load(each.articulo.pos1)" sclass="det"></label>
+				</div>	
+				<div width="245px">
+					<label value="@load(each.articulo.pos4)" sclass="det" maxlength="30"></label>
+				</div>	
+				<div width="75px" style="text-align:right">
+					<label value="@load(each.precioGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+				</div>	
+				<div width="75px" style="text-align:right">
+					<label value="0" sclass="det"></label>
+				</div>
+				<div width="75px" style="text-align:right">
+					<label value="0" sclass="det"></label>
+				</div>
+				<div width="145px" style="text-align:right">
+					<label value="@load(each.importeGsSinDescuento) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+				</div>
+			</hlayout>
+		</template>
+	</vlayout>
+	
+	<hlayout>
+		<div hflex="true"></div>
+		<label value="@load(vm.selectedVenta.totalImporteGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+		<div width="40px"></div>
+	</hlayout>
+	
+	<hlayout>
+		<div width="180px"></div>
+		<label value="guaraníes" sclass="det"></label>
+		<label value="@load(vm.selectedVenta.importeEnLetras)"></label>
+		<div hflex="true"></div>
+		<label value="@load(vm.selectedVenta.totalImporteGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+		<div width="40px"></div>
+	</hlayout>
+	
+	<hlayout>
+		<div width="420px"></div>
+		<label value="@load(vm.selectedVenta.totalIva10) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+		<div hflex="true"></div>
+		<label value="@load(vm.selectedVenta.totalIva) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+		<div width="40px"></div>
+	</hlayout>
+	
+	<style media="print">
+    	body > *:not(.printable) {
+        	display: none !important;
+    	}
+    	.printable {
+        	top: 0 !important;
+        	left: 0 !important;
+    	}
+		@page 
+		{
+    		size: auto;  
+    		margin: 0mm; 
+		}
+	</style>
+	
+	<style>
+		.custom { font-size:9pt; font-family:Verdana }
+		.det { font-size:8pt; font-family:Verdana }
+	</style>
+</window>
