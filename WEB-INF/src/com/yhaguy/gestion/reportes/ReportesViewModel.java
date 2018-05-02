@@ -9263,12 +9263,9 @@ class ReporteSaldosClientes extends ReporteYhaguy {
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
 	static DatosColumnas col1 = new DatosColumnas("Razón Social", TIPO_STRING);
 	static DatosColumnas col2 = new DatosColumnas("Ruc", TIPO_STRING, 30);
-	static DatosColumnas col3 = new DatosColumnas("A Vencer", TIPO_DOUBLE_GS,
-			30, true);
-	static DatosColumnas col4 = new DatosColumnas("Vencidos", TIPO_DOUBLE_GS,
-			30, true);
-	static DatosColumnas col5 = new DatosColumnas("Saldo", TIPO_DOUBLE_GS, 30,
-			true);
+	static DatosColumnas col3 = new DatosColumnas("A Vencer", TIPO_DOUBLE, 30, true);
+	static DatosColumnas col4 = new DatosColumnas("Vencidos", TIPO_DOUBLE, 30, true);
+	static DatosColumnas col5 = new DatosColumnas("Saldo", TIPO_DOUBLE, 30, true);
 
 	static {
 		cols.add(col1);
