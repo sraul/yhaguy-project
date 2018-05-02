@@ -90,7 +90,7 @@
 	</hlayout>
 	
 	<hlayout>
-		<div width="180px"></div>
+		<div width="165px"></div>
 		<label value="guaraníes"></label>
 		<label value="@load(vm.selectedVenta.importeEnLetras)"></label>
 		<div hflex="true"></div>
