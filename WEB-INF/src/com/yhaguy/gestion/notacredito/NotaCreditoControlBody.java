@@ -2,7 +2,9 @@ package com.yhaguy.gestion.notacredito;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -11,8 +13,10 @@ import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Popup;
+import org.zkoss.zul.Window;
 
 import com.coreweb.Config;
 import com.coreweb.componente.BuscarElemento;
@@ -38,10 +42,17 @@ import com.yhaguy.domain.ImportacionFactura;
 import com.yhaguy.domain.NotaCredito;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.ServicioTecnico;
+import com.yhaguy.domain.ServicioTecnicoDetalle;
 import com.yhaguy.domain.TipoMovimiento;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.comun.ControlArticuloStock;
+import com.yhaguy.gestion.reportes.formularios.ReportesViewModel;
+import com.yhaguy.util.Utiles;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRField;
 
 public class NotaCreditoControlBody extends BodyApp {
 	
@@ -70,6 +81,8 @@ public class NotaCreditoControlBody extends BodyApp {
 	private String msgError = "";
 	private String numeroOriginal = "";
 	private String filter_numero = "";
+	
+	private Window win;
 	
 	static String[] tipos = new String[] { Config.TIPO_STRING, Config.TIPO_STRING,
 			Config.TIPO_DATE, Config.TIPO_STRING, Config.TIPO_NUMERICO };
@@ -169,6 +182,22 @@ public class NotaCreditoControlBody extends BodyApp {
 			e.printStackTrace();
 		}
 		return out;
+	}
+	
+	@Override
+	public boolean getImprimirDeshabilitado() {
+		return (this.dto.esNuevo());
+	}
+	
+	@Override
+	public void showImprimir() {
+		try {
+			if (this.dto.isSolicitudNotaCreditoVenta()) {
+				this.imprimirSolicitudNC();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -646,6 +675,38 @@ public class NotaCreditoControlBody extends BodyApp {
 		this.dto = (NotaCreditoDTO) this.saveDTO(this.dto);
 		this.setEstadoABMConsulta();
 		Clients.showNotification("Nota de Crédito confirmada..");
+	}
+	
+	/**
+	 * Despliega el Reporte de Orden de Solicitud N.C..
+	 */
+	private void imprimirSolicitudNC() throws Exception {		
+		String source = ReportesViewModel.SOURCE_SOLICITUD_NC;
+		Map<String, Object> params = new HashMap<String, Object>();
+		JRDataSource dataSource = new SolicitudNotaCreditoDataSource();
+		params.put("Fecha", Utiles.getDateToString(this.dto.getFechaEmision(), Utiles.DD_MM_YYYY));
+		params.put("Numero", this.dto.getNumero());
+		params.put("Motivo", this.dto.getMotivo().getText().toUpperCase());
+		params.put("Observacion", this.dto.getObservacion().toUpperCase());
+		params.put("Cliente", this.dto.getCliente().getPos2());
+		params.put("Usuario", getUs().getNombre());
+		this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_PDF);
+	}
+	
+	/**
+	 * Despliega el comprobante en un pdf para su impresion..
+	 */
+	private void imprimirComprobante(String source,
+			Map<String, Object> parametros, JRDataSource dataSource, Object[] format) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("source", source);
+		params.put("parametros", parametros);
+		params.put("dataSource", dataSource);
+		params.put("format", format);
+
+		this.win = (Window) Executions.createComponents(
+				ReportesViewModel.ZUL_REPORTES, this.mainComponent, params);
+		this.win.doModal();
 	}
 	
 	/**
@@ -1205,6 +1266,54 @@ public class NotaCreditoControlBody extends BodyApp {
 		@Override
 		public String textoVerificarCancelar() {
 			return "Error al Cancelar";
+		}
+	}
+	
+	/**
+	 * DataSource de la Solicitud de Nota de Credito..
+	 */
+	class SolicitudNotaCreditoDataSource implements JRDataSource {
+
+		List<ServicioTecnicoDetalle> detalle = new ArrayList<ServicioTecnicoDetalle>();
+		List<MyArray> dets = new ArrayList<MyArray>();
+		String observacion = "";
+
+		public SolicitudNotaCreditoDataSource() {
+			this.observacion = dto.getObservacion();
+			for (NotaCreditoDetalleDTO item : dto.getDetallesArticulos()) {
+				this.dets.add(new MyArray("ÍTEMS", 
+						item.getArticulo().getPos1(),
+						item.getArticulo().getPos2(), 
+						item.getCantidad() + ""));
+			}
+		}
+
+		private int index = -1;
+
+		@Override
+		public Object getFieldValue(JRField field) throws JRException {
+			Object value = null;
+			String fieldName = field.getName();
+			MyArray item = this.dets.get(index);
+			if ("TituloDetalle".equals(fieldName)) {
+				value = item.getPos1();
+			} else if ("Codigo".equals(fieldName)) {
+				value = item.getPos3();
+			} else if ("Descripcion".equals(fieldName)) {
+				value = item.getPos2();
+			} else if ("Cantidad".equals(fieldName)) {
+				value = item.getPos4();
+			} 
+			return value;
+		}
+
+		@Override
+		public boolean next() throws JRException {
+			if (index < dets.size() - 1) {
+				index++;
+				return true;
+			}
+			return false;
 		}
 	}
 	

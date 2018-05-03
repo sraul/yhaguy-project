@@ -25,9 +25,9 @@ public class TareaNotificarVentas {
 	static final String EMPRESA_MRA = Configuracion.EMPRESA_MRA;
 	static final String EMPRESA_BAT = Configuracion.EMPRESA_BATERIAS;
 	
-	static final String[] DESTINATARIOS_MRA = new String[] { "davida@yhaguyrepuestos.com.py", "hugog@yhaguyrepuestos.com.py" };
+	static final String[] DESTINATARIOS_MRA = new String[] { "davida@yhaguyrepuestos.com.py" };
 	static final String[] DESTINATARIOS_BAT = new String[] { "nataliac@yhaguyrepuestos.com.py", "dianaa@yhaguyrepuestos.com.py", "yaninaf@yhaguyrepuestos.com.py" };
-	static final String[] COPIA_OCULTA = new String[] { "sergioraul777@gmail.com" };
+	static final String[] COPIA_OCULTA = new String[] { "sergioa@yhaguyrepuestos.com.py" };
 	
 	/**
 	 * notificacion por email de ventas..
@@ -109,7 +109,7 @@ public class TareaNotificarVentas {
 	}	
 	
 	public static void main(String[] args) {
-		//TareaNotificarVentas.enviarCorreoVentas(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA);
-		TareaNotificarVentas.enviarCorreoVentas(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, DESTINATARIOS_BAT);
+		TareaNotificarVentas.enviarCorreoVentas(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA);
+		//TareaNotificarVentas.enviarCorreoVentas(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, DESTINATARIOS_BAT);
 	}
 }
