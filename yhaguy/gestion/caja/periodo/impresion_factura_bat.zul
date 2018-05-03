@@ -48,40 +48,40 @@
 	<hlayout>
 		<div width="80px"></div>
 		<label value="${arg.Ruc}" sclass="custom"></label>
-		<div width="151px"></div>
+		<div width="160px"></div>
 		<label value="${arg.Vendedor}" sclass="custom"></label>
 	</hlayout>
 	
-	<div height="60px"></div>
+	<div height="75px"></div>
 	
-	<vlayout children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0" height="315px">
+	<vbox children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0px" height="315px">
 		<template name="children">
-			<hlayout>
+			<hbox spacing="0px">
 				<div width="20px"></div>
-				<div width="40px" style="text-align:center">
+				<div width="50px" style="text-align:center">
 					<label value="@load(each.cantidad)" sclass="det"></label>
 				</div>	
-				<div width="75px">
+				<div width="85px">
 					<label value="@load(each.articulo.pos1)" sclass="det"></label>
 				</div>	
-				<div width="245px">
-					<label value="@load(each.articulo.pos4)" sclass="det" maxlength="35"></label>
+				<div width="255px">
+					<label value="@load(each.articulo.pos4)" sclass="det" maxlength="36"></label>
 				</div>	
-				<div width="75px" style="text-align:right">
+				<div width="65px" style="text-align:right">
 					<label value="@load(each.precioGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
 				</div>	
-				<div width="75px" style="text-align:right">
+				<div width="80px" style="text-align:right">
 					<label value="0" sclass="det"></label>
 				</div>
-				<div width="75px" style="text-align:right">
+				<div width="85px" style="text-align:right">
 					<label value="0" sclass="det"></label>
 				</div>
 				<div width="145px" style="text-align:right">
 					<label value="@load(each.importeGsSinDescuento) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
 				</div>
-			</hlayout>
+			</hbox>
 		</template>
-	</vlayout>
+	</vbox>
 	
 	<hlayout>
 		<div hflex="true"></div>
@@ -122,7 +122,11 @@
 	</style>
 	
 	<style>
-		.custom { font-size:9pt; font-family:Verdana }
+		.custom { font-size:10pt; font-family:Verdana }
 		.det { font-size:8pt; font-family:Verdana }
+		.z-div { line-height:normal }
+		.z-hlayout-inner { line-height:normal }
+		.z-vlayout-inner { padding: 0px }
+		.z-hlayout z-valign-middle { line-height:normal }
 	</style>
 </window>
