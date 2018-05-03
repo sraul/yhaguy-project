@@ -212,7 +212,8 @@ public class VentaDTO extends DTO {
 	 */
 	public int getCantidadFacturas_a_generar() {
 		int size = this.getDetalles().size();
-		int limite = Configuracion.LIMITE_ITEMS_FACTURA_VENTA;
+		int limite = Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS) ? 
+				Configuracion.LIMITE_ITEMS_FACTURA_VENTA_BAT : Configuracion.LIMITE_ITEMS_FACTURA_VENTA;
 		Double division = (double) ((double) size / limite);
 		int entero = division.intValue();
 		double decimal = division - entero;
