@@ -16,6 +16,14 @@
 		<textbox hflex="true" placeholder="Teléfono (al cual enviar la transferencia).."
 			value="@bind(vm.telefono)"></textbox>
 		<space></space>
+		<combobox hflex="true" placeholder="Operadora"
+			model="@load(vm.operadoras)" value="@load(vm.operadora)"
+			selectedItem="@bind(vm.operadora)">
+			<template name="model">
+				<comboitem label="@load(each)"></comboitem>
+			</template>	
+		</combobox>
+		<space></space>
 		<datebox hflex="true" placeholder="Fecha Nacimiento.."
 			value="@bind(vm.fechaNacimiento)"></datebox>
 		<space></space>

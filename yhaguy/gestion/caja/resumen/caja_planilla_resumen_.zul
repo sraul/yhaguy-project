@@ -401,7 +401,7 @@
 										tooltiptext="Total Reembolso de Valores Baterías"/>
 								</listcell>
 								<listcell>
-									<label value="@load(vm.selectedResumen_.resumenReembolsoValoresBaterias) @converter('formattedNumber', format='###,###,##0')" />
+									<label value="@load(vm.selectedResumen_.totalDepositosValoresBat) @converter('formattedNumber', format='###,###,##0')" />
 								</listcell>
 							</listitem>
 							<listitem>
@@ -456,26 +456,35 @@
 			
 				<div
 					style="margin:10px 10px 5px 10px;border-bottom: solid 1px #428bca">
-					<label sclass="title">REEMBOLSO VALORES BATERÍAS</label>
-				</div>
-				<hlayout visible="@load(vm.selectedResumen_.deposito_diferidos eq null)">
+					<label sclass="title">REEMBOLSOS VALORES BATERÍAS</label>
+				</div>				
+				<hlayout visible="@load(vm.selectedResumen_.depositos_valores_bat.size() eq 0)">
 					<space></space>
 					<label style="font-style:italic">...</label>
 				</hlayout>
-				<hlayout visible="@load(vm.selectedResumen_.deposito_diferidos eq null ? 'false' : 'true')">
+				<vlayout children="@load(vm.selectedResumen_.depositos_valores_bat)" spacing="0">
+					<template name="children">
+						<hlayout>
+							<space></space>
+							<label>Nro.</label>
+							<label value="@load(each.numeroBoleta)"></label>
+							<space></space>
+							<label>Gs.</label>
+							<label value="@load(each.totalImporteGs) @converter(vm.cnv.monedaLocal)"></label>
+							<space></space>
+							<a label="ver depósito.." onClick="@command('verDeposito', comp=pop_ver_deposito, ref=self, deposito=each)"></a>
+						</hlayout>
+					</template>
+				</vlayout>
+				<hlayout visible="@load(vm.selectedResumen_.depositos_valores_bat.size() eq 0? 'false' : 'true')">
 					<space></space>
-					<label>Nro.</label>
-					<label value="@load(vm.selectedResumen_.deposito_diferidos.numeroBoleta)"></label>
+					<field>Total Importe</field>
+					<label value="        "></label>
 					<space></space>
-					<label>Gs.</label>
-					<label
-						value="@load(vm.selectedResumen_.deposito_diferidos.totalImporteGs) @converter('formattedNumber', format='###,###,##0')">
-					</label>
-					<space></space>
-					<a label="ver depósito.."
-						onClick="@command('verDeposito', comp=pop_ver_deposito, ref=self, deposito=vm.selectedResumen_.deposito_diferidos)">
-					</a>
+					<field>Gs.</field>
+					<field value="@load(vm.selectedResumen_.totalDepositosValoresBat) @converter('formattedNumber', format='###,###,##0')" />
 				</hlayout>
+				
 				
 				<div
 					style="margin:10px 10px 5px 10px;border-bottom: solid 1px #428bca">

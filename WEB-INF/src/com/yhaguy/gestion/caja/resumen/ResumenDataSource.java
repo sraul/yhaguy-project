@@ -98,13 +98,13 @@ public class ResumenDataSource implements JRDataSource {
 					planilla.getTotalResumenCobranzasAlDia(resumen.getFecha())));
 		
 		}
-		if (resumen.getDeposito_diferidos() != null) {
-			for (BancoChequeTercero cheque : resumen.getDeposito_diferidos().getCheques()) {
+		for (BancoBoletaDeposito dep : resumen.getDepositos_valores_bat()) {
+			for (BancoChequeTercero cheque : dep.getCheques()) {
 				this.dets.add(new MyArray("REEMBOLSO VALORES BATERÍAS",
 						"CHEQUE NRO. " + cheque.getNumero() + " - " + Utiles.getDateToString(cheque.getFecha(), Utiles.DD_MM_YYYY)
 						+ " - " + cheque.getBanco().getDescripcion().toUpperCase(), 
 						cheque.getMonto(),
-						resumen.getDeposito_diferidos().getTotalImporteGs()));
+						resumen.getTotalDepositosValoresBat()));
 			}
 		}			
 		for (BancoBoletaDeposito dep : resumen.getDepositos_diferidos()) {
@@ -170,7 +170,7 @@ public class ResumenDataSource implements JRDataSource {
 		this.dets.add(new MyArray("RESUMEN A DEPOSITAR",
 				"CHEQUE AL DIA", resumen.getResumenChequeAlDiaSinReembolsos(), resumen.getTotalADepositar()));
 		this.dets.add(new MyArray("RESUMEN A DEPOSITAR",
-				"REEMBOLSO VALORES BATERIAS", resumen.getResumenReembolsoValoresBaterias(), resumen.getTotalADepositar()));
+				"REEMBOLSO VALORES BATERIAS", resumen.getTotalDepositosValoresBat(), resumen.getTotalADepositar()));
 		this.dets.add(new MyArray("RESUMEN A DEPOSITAR",
 				"TRANSFERENCIAS BANCARIAS", resumen.getResumenTransferenciasBancarias(), resumen.getTotalADepositar()));
 		this.dets.add(new MyArray("RESUMEN A DEPOSITAR",

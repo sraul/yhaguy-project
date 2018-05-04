@@ -24,7 +24,7 @@ public class CajaPlanillaResumen extends Domain {
 	private String obs_efectivo_no_depositado = "";
 	private String obs_cheque_no_depositado = "";
 	
-	private BancoBoletaDeposito deposito_diferidos; // reembolso valores baterias..
+	private Set<BancoBoletaDeposito> depositos_valores_bat = new HashSet<BancoBoletaDeposito>(); // reembolso valores baterias..
 	private Set<BancoBoletaDeposito> depositos_diferidos = new HashSet<BancoBoletaDeposito>();
 	private Set<BancoBoletaDeposito> depositos_generados = new HashSet<BancoBoletaDeposito>();
 	private Set<CajaPeriodo> planillas = new HashSet<CajaPeriodo>();
@@ -148,13 +148,6 @@ public class CajaPlanillaResumen extends Domain {
 	}
 	
 	/**
-	 * @return el total resumen de reembolso valores baterias..
-	 */
-	public double getResumenReembolsoValoresBaterias() {
-		return this.deposito_diferidos == null ? 0.0 : this.deposito_diferidos.getTotalImporteGs();
-	}
-	
-	/**
 	 * @return el total de resumen de depositos diferidos..
 	 */
 	public double getResumenChequeDiferidoADepositar() {
@@ -200,7 +193,7 @@ public class CajaPlanillaResumen extends Domain {
 	@DependsOn({ "sobranteFaltante", "efectivoNoDepositado", "chequeNoDepositado" })
 	public double getTotalADepositar() {
 		return this.getResumenEfectivo_() + this.getResumenChequeAlDiaSinReembolsos()
-				+ this.getResumenReembolsoValoresBaterias()
+				+ this.getTotalDepositosValoresBat()
 				+ this.getResumenTransferenciasBancarias()
 				+ this.getResumenChequeDiferidoADepositar()
 				+ this.getResumenReembolsoChequesRechazados();
@@ -325,6 +318,15 @@ public class CajaPlanillaResumen extends Domain {
 		return out;
 	}
 	
+	@DependsOn("depositos_valores_bat")
+	public double getTotalDepositosValoresBat() {
+		double out = 0;
+		for (BancoBoletaDeposito dep : this.depositos_valores_bat) {
+			out += dep.getTotalImporteGs();
+		}
+		return out;
+	}
+	
 	/**
 	 * @return las transferencias bancarias..
 	 */
@@ -367,14 +369,6 @@ public class CajaPlanillaResumen extends Domain {
 
 	public void setPlanillas(Set<CajaPeriodo> planillas) {
 		this.planillas = planillas;
-	}
-
-	public BancoBoletaDeposito getDeposito_diferidos() {
-		return deposito_diferidos;
-	}
-
-	public void setDeposito_diferidos(BancoBoletaDeposito deposito_diferidos) {
-		this.deposito_diferidos = deposito_diferidos;
 	}
 
 	public Set<BancoBoletaDeposito> getDepositos_diferidos() {
@@ -431,5 +425,13 @@ public class CajaPlanillaResumen extends Domain {
 
 	public void setObs_cheque_no_depositado(String obs_cheque_no_depositado) {
 		this.obs_cheque_no_depositado = obs_cheque_no_depositado.toUpperCase();
+	}
+
+	public Set<BancoBoletaDeposito> getDepositos_valores_bat() {
+		return depositos_valores_bat;
+	}
+
+	public void setDepositos_valores_bat(Set<BancoBoletaDeposito> depositos_valores_bat) {
+		this.depositos_valores_bat = depositos_valores_bat;
 	}
 }

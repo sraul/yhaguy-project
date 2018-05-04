@@ -19,9 +19,15 @@
 		
 		<property name="obs_efectivo_no_depositado"/>
 		<property name="obs_cheque_no_depositado"/>
-					
-		<many-to-one name="deposito_diferidos" class="com.yhaguy.domain.BancoBoletaDeposito"
-			column="id_deposito_diferidos" lazy="false" />			
+			
+		<set name="depositos_valores_bat" table="bancoboletadeposito"
+			inverse="false" lazy="false" fetch="join"
+			cascade="all">
+			<key>
+				<column name="id_resumen_valores_bat" not-null="false"/>
+			</key>
+			<one-to-many entity-name="com.yhaguy.domain.BancoBoletaDeposito"/>
+		</set>		
 			
 		<set name="depositos_diferidos" table="bancoboletadeposito"
 			inverse="false" lazy="false" fetch="join"

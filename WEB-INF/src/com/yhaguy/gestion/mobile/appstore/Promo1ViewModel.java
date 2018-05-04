@@ -1,5 +1,6 @@
 package com.yhaguy.gestion.mobile.appstore;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class Promo1ViewModel extends SimpleViewModel {
 	private String telefono = "";
 	private Date fechaNacimiento;
 	private String correo = "";
+	private String operadora = "";
 	
 	private String razonSocial = "";
 	private String mensaje = "";
@@ -109,6 +111,15 @@ public class Promo1ViewModel extends SimpleViewModel {
 	 * GETS / SETS..
 	 */
 	
+	public List<String> getOperadoras() {
+		List<String> out = new ArrayList<String>();
+		out.add("TIGO");
+		out.add("PERSONAL");
+		out.add("CLARO");
+		out.add("VOX");
+		return out;
+	}
+	
 	public String getRuc() {
 		return ruc;
 	}
@@ -171,5 +182,13 @@ public class Promo1ViewModel extends SimpleViewModel {
 
 	public void setCorreo(String correo) {
 		this.correo = correo;
+	}
+
+	public String getOperadora() {
+		return operadora;
+	}
+
+	public void setOperadora(String operadora) {
+		this.operadora = operadora;
 	}
 }
