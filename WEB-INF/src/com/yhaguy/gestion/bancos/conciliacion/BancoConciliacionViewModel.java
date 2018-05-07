@@ -485,7 +485,7 @@ public class BancoConciliacionViewModel extends BodyApp {
 	
 	@DependsOn({ "selectedItem1", "selectedItem2" })
 	public boolean isConciliarEnable() {
-		return (!this.isDeshabilitado()) && this.selectedItem1 != null && (((boolean) this.selectedItem1[15]) != true) && this.selectedItem2 != null;
+		return (!this.isDeshabilitado()) && this.selectedItem1 != null && this.selectedItem2 != null;
 	}
 	
 	public List<BancoCtaDTO> getBancos() throws Exception {
