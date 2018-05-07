@@ -81,12 +81,18 @@
 					selectedItems="@bind(vm.selectedItems1)"
 					onSelect="@command('selectDetalle1')">
 					<listhead>
-						<listheader width="30px" align="center"></listheader>
-						<listheader label="Fecha" style="text-align:center" align="right" width="100px" />
-						<listheader label="Número" style="text-align:center" align="right" width="120px" />
-						<listheader label="Concepto" />
-						<listheader label="Debe" style="text-align:center" align="right" width="110px"/>
-						<listheader label="Haber" style="text-align:center" align="right" width="110px"/>
+						<listheader width="30px" align="center"
+							sort="auto(15)"></listheader>
+						<listheader label="Fecha" style="text-align:center" align="right" width="100px" 
+							sort="auto(0)"/>
+						<listheader label="Número" style="text-align:center" align="right" width="120px" 
+							sort="auto(2)"/>
+						<listheader label="Concepto" 
+							sort="auto(3)"/>
+						<listheader label="Debe" style="text-align:center" align="right" width="110px"
+							sort="auto(4)"/>
+						<listheader label="Haber" style="text-align:center" align="right" width="110px"
+							sort="auto(5)"/>
 					</listhead>
 					<template name="model">
 						<listitem>
