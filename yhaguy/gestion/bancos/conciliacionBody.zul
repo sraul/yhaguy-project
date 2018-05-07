@@ -48,13 +48,15 @@
 			</rows>
 		</grid>
 		
-		<div height="10px"></div>
+		<div height="5px"></div>
 		
 		<solicitarCabecera visible="@load(!vm.detalleVisible)"/>
 		
 		<hbox width="100%" vflex="true" visible="@load(vm.detalleVisible)">
 			<vbox hflex="true" vflex="true">
 				<hlayout sclass="button-container">
+					<field value="Registros Internos" />
+					<separator orient="vertical" bar="true"></separator>
 					<button mold="bs" sclass="btn-info btn-sm"
 						width="170px" iconSclass="z-icon-check-circle"
 						disabled="@load(!vm.conciliarEnable)"
@@ -122,6 +124,8 @@
 			</vbox>
 			<vbox hflex="true" vflex="true">
 				<hlayout sclass="button-container">
+					<field value="Registros del Banco" />
+					<separator orient="vertical" bar="true"></separator>
 					<button mold="bs"
 						upload="true, accept=.csv"
 						onUpload="@command('uploadFile', file=event.media)"
