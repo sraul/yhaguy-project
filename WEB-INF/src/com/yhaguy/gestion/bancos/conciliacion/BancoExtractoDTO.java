@@ -1,8 +1,14 @@
 package com.yhaguy.gestion.bancos.conciliacion;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.zkoss.bind.annotation.DependsOn;
 
 import com.coreweb.dto.DTO;
 import com.coreweb.util.MyPair;
@@ -16,55 +22,42 @@ public class BancoExtractoDTO extends DTO {
 	private Date hasta;
 	private boolean cerrado;
 	
-	private List<BancoExtractoDetalleDTO> detalles1 = new ArrayList<BancoExtractoDetalleDTO>();
 	private List<BancoExtractoDetalleDTO> detalles2 = new ArrayList<BancoExtractoDetalleDTO>();
 	private MyPair sucursal;
 	private BancoCtaDTO banco;
 	
 	/**
-	 * @return el total de detalles 1
+	 * @return en un map los numeros de movimientos..
 	 */
-	public double getTotalDetalle1() {
-		double out = 0;
-		for (BancoExtractoDetalleDTO item : this.detalles1) {
-			out += item.getImporte();
+	public Map<String, String> getNumeros() {
+		Map<String, String> out = new HashMap<String, String>();
+		for (BancoExtractoDetalleDTO item : this.detalles2) {
+			out.put(item.getNumero(), item.getNumero());
+			if (!item.getAuxi().isEmpty()) {
+				out.put(item.getAuxi(), item.getAuxi());
+			}
 		}
 		return out;
 	}
 	
-	/**
-	 * @return el total de detalles 2
-	 */
-	public double getTotalDetalle2() {
+	@DependsOn("detalles2")
+	public double getTotalDebe() {
 		double out = 0;
 		for (BancoExtractoDetalleDTO item : this.detalles2) {
-			out += item.getImporte();
+			out += item.getDebe();
 		}
 		return out;
 	}
 	
-	/**
-	 * @return el total importe de conciliados
-	 */
-	public double getTotalImporteConciliado() {
+	@DependsOn("detalles2")
+	public double getTotalHaber() {
 		double out = 0;
-		for (BancoExtractoDetalleDTO item : this.detalles1) {
-			out += item.isConciliado() ? item.getImporte() : 0;
+		for (BancoExtractoDetalleDTO item : this.detalles2) {
+			out += item.getHaber();
 		}
 		return out;
 	}
 	
-	/**
-	 * @return el total importe de no conciliados
-	 */
-	public double getTotalImporteNoConciliado() {
-		double out = 0;
-		for (BancoExtractoDetalleDTO item : this.detalles1) {
-			out += item.isConciliado() ? 0 : item.getImporte();
-		}
-		return out;
-	}
-
 	public String getNumero() {
 		return numero;
 	}
@@ -87,14 +80,6 @@ public class BancoExtractoDTO extends DTO {
 
 	public void setHasta(Date hasta) {
 		this.hasta = hasta;
-	}
-
-	public List<BancoExtractoDetalleDTO> getDetalles1() {
-		return detalles1;
-	}
-
-	public void setDetalles1(List<BancoExtractoDetalleDTO> detalles) {
-		this.detalles1 = detalles;
 	}
 
 	public boolean isCerrado() {
@@ -122,6 +107,23 @@ public class BancoExtractoDTO extends DTO {
 	}
 
 	public List<BancoExtractoDetalleDTO> getDetalles2() {
+		// ordena la lista segun fecha..
+		Collections.sort(detalles2, new Comparator<BancoExtractoDetalleDTO>() {
+			@Override
+			public int compare(BancoExtractoDetalleDTO o1, BancoExtractoDetalleDTO o2) {
+				String nro1 = o1.getNumero();
+				String nro2 = o2.getNumero();
+				int compare = nro1.compareTo(nro2);
+				if (compare == 0) {
+					Date fecha1 = o1.getFecha();
+					Date fecha2 = o2.getFecha();
+		            return fecha1.compareTo(fecha2);
+		        }
+		        else {
+		            return compare;
+		        }
+			}
+		});
 		return detalles2;
 	}
 

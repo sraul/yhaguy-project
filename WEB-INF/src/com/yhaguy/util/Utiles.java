@@ -112,6 +112,14 @@ public class Utiles {
 	}
 	
 	/**
+	 * @return la fecha tipo Date a partir de un String..
+	 */
+	public static Date getFecha(String fecha, String format) throws Exception {
+		DateFormat formatter = new SimpleDateFormat(format);
+		return formatter.parse(fecha);		
+	}
+	
+	/**
 	 * @return la fecha de inicio del mes..
 	 */
 	public static Date getFechaInicioMes(int mes) {

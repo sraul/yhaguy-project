@@ -10,8 +10,7 @@ import com.yhaguy.gestion.bancos.libro.AssemblerBancoMovimiento;
 
 public class BancoExtractoAssembler extends Assembler {
 
-	static String[] attIguales = new String[] { "numero", "desde", "hasta",
-			"cerrado" };
+	static String[] attIguales = new String[] { "numero", "desde", "hasta", "cerrado" };
 
 	@Override
 	public Domain dtoToDomain(DTO dto) throws Exception {
@@ -21,7 +20,6 @@ public class BancoExtractoAssembler extends Assembler {
 		this.copiarValoresAtributos(dto, domain, attIguales);
 		this.hijoDtoToHijoDomain(dto, domain, "banco", new AssemblerBancoCtaCte(), false);
 		this.myPairToDomain(dto, domain, "sucursal");
-		this.listaDTOToListaDomain(dto, domain, "detalles1", true, true, new BancoExtractoDetalleAssembler());
 		this.listaDTOToListaDomain(dto, domain, "detalles2", true, true, new BancoExtractoDetalleAssembler());
 		
 		return domain;
@@ -35,7 +33,6 @@ public class BancoExtractoAssembler extends Assembler {
 		this.copiarValoresAtributos(domain, dto, attIguales);
 		this.hijoDomainToHijoDTO(domain, dto, "banco", new AssemblerBancoCtaCte());
 		this.domainToMyPair(domain, dto, "sucursal");
-		this.listaDomainToListaDTO(domain, dto, "detalles1", new BancoExtractoDetalleAssembler());
 		this.listaDomainToListaDTO(domain, dto, "detalles2", new BancoExtractoDetalleAssembler());
 
 		return dto;
@@ -48,7 +45,7 @@ public class BancoExtractoAssembler extends Assembler {
  */
 class BancoExtractoDetalleAssembler extends Assembler {
 	
-	static  String[] attIguales = { "numero", "descripcion", "importe", "conciliado" };
+	static  String[] attIguales = { "fecha", "numero", "descripcion", "debe", "haber", "conciliado" };
 
 	@Override
 	public Domain dtoToDomain(DTO dto) throws Exception {

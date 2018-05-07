@@ -103,6 +103,7 @@ public class Promo1ViewModel extends SimpleViewModel {
 		promo.setTelefono(this.telefono);
 		promo.setNacimiento(this.fechaNacimiento);
 		promo.setCorreo(this.correo);
+		promo.setAuxi(this.operadora);
 		rr.saveObject(promo, "mobile");
 		this.mensaje = "CLIENTE CORRECTAMENTE REGISTRADO: " + promo.getEmpresa().getRazonSocial();
 	}

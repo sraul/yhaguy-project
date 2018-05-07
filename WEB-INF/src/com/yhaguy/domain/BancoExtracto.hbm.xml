@@ -19,16 +19,7 @@
 			column="idbanco" lazy="false"/>
 			
 		<many-to-one name="sucursal" class="com.yhaguy.domain.SucursalApp" 
-			column="idSucursal" lazy="false"/>
-			
-	    <set name="detalles1" table="bancoextractodetalle"
-			inverse="false" lazy="false" fetch="join" cascade="all">
-			<key>
-				<column name="idConciliacion1" not-null="false"/>
-			</key>
-			<one-to-many entity-name="com.yhaguy.domain.BancoExtractoDetalle"></one-to-many>
-		</set> 
-		
+			column="idSucursal" lazy="false"/>		
 		
 		<set name="detalles2" table="bancoextractodetalle"
 			inverse="false" lazy="false" fetch="join" cascade="all">

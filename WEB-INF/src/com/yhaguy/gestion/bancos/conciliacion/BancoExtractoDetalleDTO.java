@@ -12,7 +12,8 @@ public class BancoExtractoDetalleDTO extends DTO {
 	private String numero = "";
 	private String descripcion = "";
 	private Date fecha; 
-	private double importe = 0;
+	private double debe = 0;
+	private double haber = 0;
 	private boolean conciliado = false;
 	
 	private double numero_ = 0;
@@ -24,7 +25,7 @@ public class BancoExtractoDetalleDTO extends DTO {
 	 * @return el importe en String..
 	 */
 	public String getImporteGs_() {
-		return Utiles.getNumberFormat(this.importe);
+		return Utiles.getNumberFormat(this.debe);
 	}
 
 	public String getNumero() {
@@ -49,14 +50,6 @@ public class BancoExtractoDetalleDTO extends DTO {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
-	}
-
-	public double getImporte() {
-		return importe;
-	}
-
-	public void setImporte(double importe) {
-		this.importe = importe;
 	}
 
 	public boolean isConciliado() {
@@ -89,5 +82,21 @@ public class BancoExtractoDetalleDTO extends DTO {
 
 	public void setBancoMovimiento(BancoMovimientoDTO bancoMovimiento) {
 		this.bancoMovimiento = bancoMovimiento;
+	}
+
+	public double getDebe() {
+		return debe;
+	}
+
+	public void setDebe(double debe) {
+		this.debe = debe;
+	}
+
+	public double getHaber() {
+		return haber;
+	}
+
+	public void setHaber(double haber) {
+		this.haber = haber;
 	}	
 }

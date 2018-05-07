@@ -15982,7 +15982,6 @@ class ConciliacionesBancariasDataSource implements JRDataSource {
 		List<BancoExtractoDetalle> items1 = new ArrayList<BancoExtractoDetalle>();
 		List<BancoExtractoDetalle> items2 = new ArrayList<BancoExtractoDetalle>();
 		
-		items1.addAll(det.getDetalles1());
 		items2.addAll(det.getDetalles2());
 		
 		Collections.sort(items1, new Comparator<BancoExtractoDetalle>() {
@@ -16003,13 +16002,13 @@ class ConciliacionesBancariasDataSource implements JRDataSource {
 		
 		for (BancoExtractoDetalle conc : items1) {
 			dets1.add(new BeanConciliacion(conc.getNumero(), 
-					conc.getDescripcion(), Utiles.getNumberFormat(conc.getImporte())));
-			this.totalGs_1 += conc.getImporte();
+					conc.getDescripcion(), Utiles.getNumberFormat(conc.getDebe())));
+			this.totalGs_1 += conc.getDebe();
 		}		
 		for (BancoExtractoDetalle conc : items2) {
 			dets2.add(new BeanConciliacion(conc.getNumero(), 
-					conc.getDescripcion(), Utiles.getNumberFormat(conc.getImporte())));
-			this.totalGs_2 += conc.getImporte();
+					conc.getDescripcion(), Utiles.getNumberFormat(conc.getDebe())));
+			this.totalGs_2 += conc.getDebe();
 		}
 
 		if ("TituloDetalle".equals(fieldName)) {

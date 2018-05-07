@@ -27,8 +27,6 @@ import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.SucursalApp;
 import com.yhaguy.gestion.bancos.cheques.AssemblerBancoCheque;
 import com.yhaguy.gestion.bancos.cheques.BancoChequeDTO;
-import com.yhaguy.gestion.bancos.conciliacion.BancoExtractoDTO;
-import com.yhaguy.gestion.bancos.conciliacion.BancoExtractoDetalleDTO;
 import com.yhaguy.gestion.bancos.debitos.BancoDebitoDTO;
 import com.yhaguy.gestion.bancos.descuentos.BancoDescuentoChequeDTO;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
@@ -73,21 +71,6 @@ public class ControlBancoMovimiento extends Control {
 		bct.setNumeroDescuento("");		
 		bct.setReciboFormaPago(formaPago);
 		rr.saveObject(bct, user);
-	}
-	
-	/**
-	 * marca el movimiento como conciliado..
-	 */
-	public static void conciliarMovimientos(BancoExtractoDTO dto, String user)
-			throws Exception {
-		RegisterDomain rr = RegisterDomain.getInstance();
-		for (BancoExtractoDetalleDTO item : dto.getDetalles1()) {
-			BancoMovimiento bm = (BancoMovimiento) rr.getObject(
-					BancoMovimiento.class.getName(), item.getBancoMovimiento().getId());
-			bm.setConciliado(item.isConciliado());
-			bm.setNumeroConciliacion(dto.getNumero());
-			rr.saveObject(bm, user);
-		}
 	}
 	
 	/**

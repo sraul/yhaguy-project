@@ -12,7 +12,6 @@ public class BancoExtracto extends Domain {
 	private String numero;
 	private Date desde;
 	private Date hasta;
-	private Set<BancoExtractoDetalle> detalles1 = new HashSet<BancoExtractoDetalle>();
 	private Set<BancoExtractoDetalle> detalles2 = new HashSet<BancoExtractoDetalle>();
 	private boolean cerrado;	
 
@@ -54,14 +53,6 @@ public class BancoExtracto extends Domain {
 
 	public void setHasta(Date hasta) {
 		this.hasta = hasta;
-	}
-
-	public Set<BancoExtractoDetalle> getDetalles1() {
-		return detalles1;
-	}
-
-	public void setDetalles1(Set<BancoExtractoDetalle> detalles) {
-		this.detalles1 = detalles;
 	}
 
 	public boolean isCerrado() {
