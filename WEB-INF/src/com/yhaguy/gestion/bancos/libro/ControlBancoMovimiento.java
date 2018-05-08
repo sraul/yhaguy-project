@@ -246,10 +246,11 @@ public class ControlBancoMovimiento extends Control {
 	/**
 	 * setea el cheque propio como cobrado..
 	 */
-	public static void setChequeCobrado(long idCheque, boolean cobrado, String user) throws Exception {
+	public static void setChequeCobrado(long idCheque, boolean cobrado, Date fechaCobro, String user) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		BancoCheque cheque = rr.getChequeById(idCheque);
 		cheque.setCobrado(cobrado);
+		cheque.setFechaCobro(fechaCobro);
 		rr.saveObject(cheque, user);
 	}
 	

@@ -19,6 +19,7 @@
 		<property name="monto" />
 		<property name="numeroCaja" />
 		<property name="numeroOrdenPago" />
+		<property name="fechaCobro" />
 		
 		<property name="anulado">
 			<column name="anulado" not-null="true" default="false" />

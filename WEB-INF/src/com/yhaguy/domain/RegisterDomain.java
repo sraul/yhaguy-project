@@ -7570,13 +7570,13 @@ public class RegisterDomain extends Register {
 				+ " b.fechaVencimiento, b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago, ' - ', b.beneficiario)"
 				+ " from BancoCheque b where"
 				+ " b.dbEstado != 'D' and b.estadoComprobante.sigla != '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
-				+ " and b.anulado = 'FALSE'"
+				+ " and b.anulado = 'FALSE' and b.cobrado = 'TRUE'"
 				+ " and b.banco.id = " + idBanco
-				+ " and (b.fechaVencimiento >= '"
+				+ " and (b.fechaCobro >= '"
 				+ desde_
-				+ "' and b.fechaVencimiento <= '"
+				+ "' and b.fechaCobro <= '"
 				+ hasta_
-				+ "')" + " order by b.fechaVencimiento desc";
+				+ "')" + " order by b.fechaCobro desc";
 		return this.hql(query);
 	}
 	

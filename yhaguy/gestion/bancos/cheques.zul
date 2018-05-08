@@ -55,7 +55,7 @@
 		selectedItem="@bind(vm.selectedItem)">
 		<auxhead>
 			<auxheader colspan="2" label="Origen"/>
-			<auxheader colspan="8" label="Cheque"/>
+			<auxheader colspan="9" label="Cheque"/>
 		</auxhead>
 		<listhead>
 			<listheader label="Caja" width="110px" />
@@ -64,6 +64,7 @@
 			<listheader label="Número" align="right" width="120px" />
 			<listheader label="Emisión" width="110px" />
 			<listheader label="Vencimiento" width="110px" />
+			<listheader label="Fecha Cobro" width="110px" />
 			<listheader label="Tipo" width="80px" />
 			<listheader label="Beneficiario" />
 			<listheader label="Importe Gs." align="right" width="140px" />
@@ -134,6 +135,7 @@
 				</hlayout>
 			</auxheader>
 			<auxheader/>
+			<auxheader/>
 			<auxheader>
 				<hlayout>
 					<textbox hflex="true" 
@@ -155,6 +157,7 @@
 				<listcell label="@load(each.pos3)" />
 				<listcell label="@load(each.pos4) @converter('formattedDate', format='dd-MM-yyyy')" />
 				<listcell label="@load(each.pos5) @converter('formattedDate', format='dd-MM-yyyy')" />
+				<listcell label="@load(each.pos13) @converter('formattedDate', format='dd-MM-yyyy')" />
 				<listcell label="@load(each.pos8 ? 'AL DÍA' : 'DIFERIDO')" />
 				<listcell label="@load(each.pos6.toString().toUpperCase())" />
 				<listcell label="@load(each.pos7) @converter(vm.cnv.monedaLocal)" />
@@ -167,7 +170,7 @@
 			</listitem>
 		</template>
 		<listfoot>
-			<listfooter span="9">
+			<listfooter span="10">
 				<hlayout>
 					<field value="@load(vm.cheques.size())" />
 					<field value="ítems" />
@@ -180,14 +183,19 @@
 		</listfoot>
 	</listbox>
 	
-	<popup id="popCob" width="120px" sclass="rounded">
-		<hlayout>
-			<button mold="bs" sclass="btn-success btn-sm"
-				label="SI" width="45px" 
-				onClick="@command('setChequeCobrado', cobrado = true, comp=popCob)"/>
-			<button mold="bs" sclass="btn-danger btn-sm"
-				label="NO" width="45px" 
-				onClick="@command('setChequeCobrado', cobrado = false, comp=popCob)"/>
-		</hlayout>
+	<popup id="popCob" width="140px" sclass="rounded">
+		<vbox width="100%">
+			<hlayout>
+				<button mold="bs" sclass="btn-success btn-sm" label="SI"
+					width="55px"
+					onClick="@command('setChequeCobrado', cobrado = true, comp=popCob)" />
+				<button mold="bs" sclass="btn-danger btn-sm" label="NO"
+					width="55px"
+					onClick="@command('setChequeCobrado', cobrado = false, comp=popCob)" />
+			</hlayout>
+			<div height="5px"></div>
+			<datebox placeholder="Fecha Cobro.." hflex="true"
+				value="@bind(vm.fechaCobro)"></datebox>
+		</vbox>
 	</popup>
 </window>

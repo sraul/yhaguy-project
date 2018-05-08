@@ -32,6 +32,7 @@ public class BancoCheque extends Domain {
 	
 	private boolean anulado;
 	private boolean cobrado;
+	private Date fechaCobro;
 	
 	/**
 	 * @return true si es cheque al dia..
@@ -191,5 +192,13 @@ public class BancoCheque extends Domain {
 
 	public void setCobrado(boolean cobrado) {
 		this.cobrado = cobrado;
+	}
+
+	public Date getFechaCobro() {
+		return fechaCobro;
+	}
+
+	public void setFechaCobro(Date fechaCobro) {
+		this.fechaCobro = fechaCobro;
 	}
 }

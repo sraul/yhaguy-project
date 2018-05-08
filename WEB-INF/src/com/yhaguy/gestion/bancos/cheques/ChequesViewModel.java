@@ -53,6 +53,8 @@ public class ChequesViewModel extends SimpleViewModel {
 	static final String SOURCE_ALDIA = "/yhaguy/gestion/bancos/impresion_cheque_al_dia.zul";
 	static final String SOURCE_DIFERIDO = "/yhaguy/gestion/bancos/impresion_cheque_diferido.zul";
 	
+	private Date fechaCobro;
+	
 	private String filterCuenta = "";
 	private String filterBanco = "";
 	private String filterNro = "";	
@@ -119,8 +121,12 @@ public class ChequesViewModel extends SimpleViewModel {
 	@Command
 	@NotifyChange("*")
 	public void setChequeCobrado(@BindingParam("cobrado") boolean cobrado, @BindingParam("comp") Popup comp) throws Exception {
-		this.registrarChequeCobrado(this.selectedItem_, cobrado);
+		if (cobrado && this.fechaCobro == null) {
+			return;
+		}
+		this.registrarChequeCobrado(this.selectedItem_, cobrado, this.fechaCobro);
 		comp.close();
+		this.fechaCobro = null;
 	}
 	
 	@Command
@@ -153,8 +159,8 @@ public class ChequesViewModel extends SimpleViewModel {
 	/**
 	 * registrar cheque cobrado..
 	 */
-	private void registrarChequeCobrado(MyArray cheque, boolean cobrado) throws Exception {
-		ControlBancoMovimiento.setChequeCobrado(cheque.getId(), cobrado, this.getLoginNombre());
+	private void registrarChequeCobrado(MyArray cheque, boolean cobrado, Date fechaCobro) throws Exception {
+		ControlBancoMovimiento.setChequeCobrado(cheque.getId(), cobrado, fechaCobro, this.getLoginNombre());
 		Clients.showNotification("Registro actualizado..!");
 	}
 	
@@ -192,6 +198,7 @@ public class ChequesViewModel extends SimpleViewModel {
 			my.setPos10(cheque.getNumeroOrdenPago());
 			my.setPos11(cheque.isCobrado());
 			my.setPos12(cheque.isAnulado());
+			my.setPos13(cheque.getFechaCobro());
 			if (this.selectedFiltro.equals(FILTRO_AL_DIA) && cheque.isChequeAlDia()) {
 				out.add(my);
 				this.totalImporteGs += cheque.getMonto();
@@ -490,6 +497,14 @@ public class ChequesViewModel extends SimpleViewModel {
 
 	public void setFilterFechaAA(String filterFechaAA) {
 		this.filterFechaAA = filterFechaAA;
+	}
+
+	public Date getFechaCobro() {
+		return fechaCobro;
+	}
+
+	public void setFechaCobro(Date fechaCobro) {
+		this.fechaCobro = fechaCobro;
 	}
 }
 
