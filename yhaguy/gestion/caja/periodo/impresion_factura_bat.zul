@@ -85,6 +85,7 @@
 	
 	<hlayout>
 		<div width="165px"></div>
+		<label value="CANT.TOTAL: " sclass="det"></label>
 		<label value="${arg.CantidadTotal}" sclass="det"></label>
 		<div hflex="true"></div>
 		<label value="@load(vm.selectedVenta.totalImporteGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
