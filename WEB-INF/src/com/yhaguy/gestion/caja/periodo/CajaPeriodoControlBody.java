@@ -77,6 +77,7 @@ import net.sf.jasperreports.engine.JRField;
 public class CajaPeriodoControlBody extends BodyApp {
 	
 	static final String ZUL_IMPRESION_FACTURA_BAT = "/yhaguy/gestion/caja/periodo/impresion_factura_bat.zul";
+	static final String ZUL_IMPRESION_FACTURA = "/yhaguy/gestion/caja/periodo/impresion_factura.zul";
 
 	private CajaPeriodoDTO dto = new CajaPeriodoDTO();
 	private MyArray selectedChequera = new MyArray();
@@ -1625,6 +1626,52 @@ public class CajaPeriodoControlBody extends BodyApp {
 			this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
 		}
 	}
+	
+	/**
+	 * impresion de la venta..
+	 */
+	private void imprimirVenta_(VentaDTO venta) throws Exception {
+		this.selectedVenta = venta;
+		String vencimiento = this.m.dateToString(venta.getVencimiento(), Misc.DD_MM_YYYY);
+
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("Numero", venta.getNumero());
+		params.put("RazonSocial", venta.getDenominacion());
+		params.put("Ruc", venta.getRuc());
+		params.put("Direccion", venta.getDireccion());
+		params.put("Telefono", venta.getTelefono());
+		params.put("Vendedor", venta.getVendedor_().toUpperCase());
+		params.put("FechaEmision", venta.getFechaEmision());
+		params.put("Vencimiento", vencimiento);
+		params.put("CR", venta.isCondicionContado() ? "" : "X");
+		params.put("CT", venta.isCondicionContado() ? "X" : "");
+		params.put("CondicionVenta", venta.getCondicionPago().getPos1().toString().toUpperCase());
+		params.put("ImporteTotal", FORMATTER.format(venta.getTotalImporteGs()));
+		params.put("ImporteEnLetras", venta.getImporteEnLetras());
+		params.put("Iva5", FORMATTER.format(venta.getTotalIva5()));
+		params.put("Iva10", FORMATTER.format(venta.getTotalIva10()));
+		params.put("TotalIva", FORMATTER.format(venta.getTotalIva()));
+		params.put("CantidadTotal", FORMATTER.format(venta.getTotalCantidad()));
+		params.put("Items", venta.getDetalles());
+
+		params.put("PuntoPartida", venta.getPuntoPartida().toLowerCase());
+		params.put("FechaTraslado", venta.getFechaTraslado());
+		params.put("FechaFinTraslado", venta.getFechaFinTraslado());
+		params.put("Repartidor", venta.getRepartidor().toLowerCase());
+		params.put("CedulaRepartidor", venta.getCedulaRepartidor());
+		params.put("MarcaVehiculo", venta.getMarcaVehiculo().toLowerCase());
+		params.put("ChapaVehiculo", venta.getChapaVehiculo().toLowerCase());
+		
+		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA_BAT, this.mainComponent, params);
+			this.win.doModal();
+			//this.imprimirComprobante(source, params, dataSource);
+		} else {
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA, this.mainComponent, params);
+			this.win.doModal();
+			//this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
+		}
+	}
 
 	/**
 	 * Despliega el Reporte de la Nota de Credito..
@@ -1758,7 +1805,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 			break;
 
 		case ES_VENTA_CREDITO:
-			this.imprimirVenta(this.selectedVenta);
+			this.imprimirVenta_(this.selectedVenta);
 			break;
 
 		case ES_NOTA_CREDITO_VENTA:
