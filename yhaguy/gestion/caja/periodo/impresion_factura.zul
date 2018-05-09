@@ -33,16 +33,16 @@
 	</hlayout>
 		
 	<hlayout>
-		<div width="80px"></div>
-		<label value="${arg.Direccion}" sclass="custom"></label>
+		<div width="170px"></div>
+		<label value="${arg.Direccion}" sclass="det"></label>
 		<div hflex="true"></div>
-		<label value="${arg.FechaEmision}" sclass="custom"></label>
+		<label value="${arg.FechaEmision}" sclass="det"></label>
 		<div width="75px"></div>
 	</hlayout>
 	
 	<hlayout>
-		<div width="80px"></div>
-		<label value="${arg.Telefono}" sclass="custom"></label>
+		<div width="170px"></div>
+		<label value="${arg.Telefono}" sclass="det"></label>
 	</hlayout>
 	
 	<hlayout>
