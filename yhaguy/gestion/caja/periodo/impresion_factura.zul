@@ -4,13 +4,13 @@
 	
 	<timer delay="1500" repeats="false">
 		<attribute name="onTimer">
-			Clients.print();
+			//Clients.print();
 		</attribute>
 	</timer>
 	
 	<timer delay="1800" repeats="false">
 		<attribute name="onTimer">
-			win_fac.detach();
+			//win_fac.detach();
 		</attribute>
 	</timer>
 	
@@ -130,6 +130,9 @@
 		.z-div { line-height:normal }
 		.z-hlayout-inner { line-height:normal }
 		.z-vlayout-inner { padding: 0px }
-		.z-hlayout z-valign-middle { line-height:normal }
+		.z-hlayout z-valign-middle { line-height:normal; font-size:10px }
+		body *:not([class*="z-icon-"]) {
+    		font-size: 10px;
+		}
 	</style>
 </window>
