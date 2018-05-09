@@ -34,7 +34,10 @@ public class BancoExtractoDTO extends DTO {
 		for (BancoExtractoDetalleDTO item : this.detalles2) {
 			out.put(item.getNumero(), item.getNumero());
 			if (!item.getAuxi().isEmpty()) {
-				out.put(item.getAuxi(), item.getAuxi());
+				String[] auxis = item.getAuxi().split(";");
+				for (int i = 0; i < auxis.length; i++) {
+					out.put(auxis[i], auxis[i]);
+				}
 			}
 		}
 		return out;

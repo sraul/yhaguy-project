@@ -63,11 +63,6 @@
 						onClick="@command('conciliar')"
 						label=" Conciliar Movimiento" />
 					<space />
-					<button mold="bs" sclass="btn-primary btn-sm"
-						width="170px" iconSclass="z-icon-check-circle"
-						disabled="true"
-						label=" Cheque Pendiente" />
-					<space />
 					<button mold="bs" sclass="btn-success btn-sm"
 						width="170px" iconSclass="z-icon-print"
 						disabled="true"

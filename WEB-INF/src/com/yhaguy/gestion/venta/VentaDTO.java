@@ -567,7 +567,8 @@ public class VentaDTO extends DTO {
 	 * @return el sub-detalle segun el parametro de desglose..
 	 */
 	public List<VentaDetalleDTO> getDetallesDesglose(int desglose) {
-		int limite = Configuracion.LIMITE_ITEMS_FACTURA_VENTA;
+		int limite = Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS) ? 
+				Configuracion.LIMITE_ITEMS_FACTURA_VENTA_BAT : Configuracion.LIMITE_ITEMS_FACTURA_VENTA;
 		int size = this.getDetalles().size();
 		int desde = (desglose - 1) * (limite);
 		int hasta = (((desglose - 1) * (limite))) + (limite);

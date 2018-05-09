@@ -164,10 +164,12 @@ public class BancoConciliacionViewModel extends BodyApp {
 		for (BancoExtractoDetalleDTO item : this.dto.getDetalles2()) {
 			String nro1 = (String) this.selectedItem1[2];
 			String nro2 = item.getNumero();
-			String nro2_ = item.getAuxi();
-			if (nro1.equals(nro2) || nro1.equals(nro2_)) {
-				this.selectedItem2 = item;
-				this.selectedItems2.add(item);
+			String[] nro2_ = item.getAuxi().split(";");
+			for (int i = 0; i < nro2_.length; i++) {
+				if (nro1.equals(nro2) || nro1.equals(nro2_[i])) {
+					this.selectedItem2 = item;
+					this.selectedItems2.add(item);
+				}
 			}
 		}
 	}
@@ -264,11 +266,15 @@ public class BancoConciliacionViewModel extends BodyApp {
 	 */
 	private void conciliarMovimiento() {
 		this.selectedItem1[15] = true;
-		String nro = (String) this.selectedItem1[2];
-		this.selectedItem2.setAuxi(nro);
+		String nro = (String) this.selectedItem1[2];	
 		for (BancoExtractoDetalleDTO item : this.dto.getDetalles2()) {
 			if (item.getNumero().equals(this.selectedItem2.getNumero())) {
-				item.setAuxi(nro);
+				String auxi = item.getAuxi();
+				if (auxi != null && !auxi.isEmpty()) {
+					item.setAuxi(auxi + ";" + nro);
+				} else {
+					item.setAuxi(nro);
+				}
 				item.setConciliado(true);
 			}
 		}
