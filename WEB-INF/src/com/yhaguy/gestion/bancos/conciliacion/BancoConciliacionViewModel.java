@@ -59,6 +59,7 @@ public class BancoConciliacionViewModel extends BodyApp {
 	private BancoExtractoDetalleDTO selectedItem2;
 	private List<BancoExtractoDetalleDTO> selectedItems2;
 	private List<Object[]> selectedItems1;
+	private List<Object[]> movimientosBanco_ = new ArrayList<Object[]>();
 	
 	private String mensajeValidacion = "";
 	
@@ -71,6 +72,7 @@ public class BancoConciliacionViewModel extends BodyApp {
 	
 	private Window win;
 	
+	private int size = 0;	
 	
 	@Init(superclass = true)
 	public void init() {
@@ -175,7 +177,58 @@ public class BancoConciliacionViewModel extends BodyApp {
 	}
 	
 	@Command
-	@NotifyChange("*")
+	@NotifyChange({ "selectedItem1", "selectedItems1", "movimientosBanco_" })
+	public void selectDetalle2() throws Exception {
+		this.selectedItem1 = null;
+		this.selectedItems1 = new ArrayList<>();
+		for (Object[] item : this.movimientosBanco_) {
+			String nro1 = this.selectedItem2.getNumero();
+			String nro2 = (String) item[2];
+			if (nro1.equals(nro2)) {
+				this.selectedItem1 = item;
+				this.selectedItems1.add(item);
+			} else {
+				String[] nro1_ = this.selectedItem2.getAuxi().split(";");
+				for (int i = 0; i < nro1_.length; i++) {
+					if (nro2.equals(nro1_[i])) {
+						this.selectedItems1.add(item);
+					}
+				}
+			}
+		}
+	}
+	
+	@Command
+	@NotifyChange({ "selectedItem1", "selectedItems1" })
+	public void selectItem1(@BindingParam("item") Object[] item) {
+		boolean check = (boolean) item[18];
+		this.selectedItems1 = new ArrayList<>();
+		this.deseleccionar1(item);
+		if (check) {
+			this.selectedItem1 = item;
+			this.selectedItems1.add(item);
+		} else {
+			this.selectedItem1 = null;
+			this.selectedItems1.remove(item);
+		}
+	}
+	
+	@Command
+	@NotifyChange({ "selectedItem2", "selectedItems2" })
+	public void selectItem2(@BindingParam("item") BancoExtractoDetalleDTO item) {
+		boolean check = item.isChecked();
+		this.selectedItems2 = new ArrayList<>();
+		this.deseleccionar2(item);
+		if (check) {
+			this.selectedItem2 = item;
+			this.selectedItems2.add(item);
+		} else {
+			this.selectedItem2 = null;
+			this.selectedItems2.remove(item);
+		}
+	}
+	
+	@Command
 	public void conciliar() {
 		this.conciliarMovimiento();
 	}
@@ -204,6 +257,30 @@ public class BancoConciliacionViewModel extends BodyApp {
 	private void sugerirValores(BancoExtractoDTO dto) throws Exception {
 		dto.setNumero(KEY_NRO + "-" + AutoNumeroControl.getAutoNumero(KEY_NRO, 5, true));
 		dto.setSucursal(this.getSucursal());
+	}
+	
+	/**
+	 * deseleccionar demas items..
+	 */
+	private void deseleccionar1(Object[] item) {
+		for (Object[] item_ : this.movimientosBanco_) {
+			if (item_ != item) {
+				item_[18] = false;
+				BindUtils.postNotifyChange(null, null, item_, "*");
+			}
+		}
+	}
+	
+	/**
+	 * deseleccionar demas items..
+	 */
+	private void deseleccionar2(BancoExtractoDetalleDTO item) {
+		for (BancoExtractoDetalleDTO item_ : this.dto.getDetalles2()) {
+			if (item_ != item) {
+				item_.setChecked(false);;
+				BindUtils.postNotifyChange(null, null, item_, "*");
+			}
+		}
 	}
 	
 	/**
@@ -276,9 +353,16 @@ public class BancoConciliacionViewModel extends BodyApp {
 					item.setAuxi(nro);
 				}
 				item.setConciliado(true);
+				BindUtils.postNotifyChange(null, null, item, "*");
 			}
 		}
 		this.detalles2 = this.dto.getNumeros();
+		this.selectedItem1 = null; this.selectedItems1 = new ArrayList<>();
+		this.selectedItem2 = null; this.selectedItems2 = new ArrayList<>();
+		BindUtils.postNotifyChange(null, null, this, "selectedItem1");
+		BindUtils.postNotifyChange(null, null, this, "selectedItem2");
+		BindUtils.postNotifyChange(null, null, this, "selectedItems1");
+		BindUtils.postNotifyChange(null, null, this, "selectedItems2");
 	}
 	
 	/**
@@ -301,7 +385,7 @@ public class BancoConciliacionViewModel extends BodyApp {
 	private void resumenConciliacion() {		
 		String source = ReportesViewModel.SOURCE_RESUMEN_CONCILIACION;
 		Map<String, Object> params = new HashMap<String, Object>();
-		JRDataSource dataSource = new ResumenConciliacioDataSource(this.dto);
+		JRDataSource dataSource = new ResumenConciliacioDataSource(this.dto, this.movimientosBanco_);
 		params.put("Usuario", getUs().getNombre());
 		params.put("ConciliacionNro", this.dto.getNumero());
 		params.put("Banco", this.dto.getBanco().getBanco().getPos1());
@@ -370,6 +454,7 @@ public class BancoConciliacionViewModel extends BodyApp {
 		}
 		
 		this.detalles1.clear();
+		this.movimientosBanco_.clear();
 		Date desde = this.dto.getDesde();
 		Date hasta = this.dto.getHasta();
 
@@ -461,6 +546,8 @@ public class BancoConciliacionViewModel extends BodyApp {
 			String origen = (String) hist[5];
 			String entrada = ent ? Utiles.getNumberFormat(Double.parseDouble(hist[3] + "")) : "0";
 			String salida = ent ? "0" : Utiles.getNumberFormat(Double.parseDouble(hist[3] + ""));
+			double debe = ent ? (double) hist[3] : 0.0;
+			double haber = ent ? 0.0 : (double) hist[3];
 			
 			if (concepto.toUpperCase().contains(this.filterConcepto.toUpperCase())
 					&& numero.contains(this.filterNumero)) {
@@ -471,16 +558,18 @@ public class BancoConciliacionViewModel extends BodyApp {
 				boolean conciliado = this.detalles2.get(numero) != null;
 				data.add(new Object[] { fecha, hora, numero, concepto, entrada, salida, saldo_, banco,
 						(Date) hist[1], ent ? "" : "", origen.replace("REC-PAG-", "ORDEN PAGO ")
-								.replace("CJP-", "CAJA ").replace("CAJAS:", "").toUpperCase(), entrada_, salida_, saldo, ent, conciliado });
+								.replace("CJP-", "CAJA ").replace("CAJAS:", "").toUpperCase(), entrada_, salida_, saldo, ent, conciliado, debe, haber, false });
 				this.detalles1.put(numero, numero);
 			}
 		}
+		this.movimientosBanco_.addAll(data);
 		this.totalDebe = entrada_;
 		this.totalHaber = salida_;
 		this.totalSaldo = saldo;
 		BindUtils.postNotifyChange(null, null, this, "totalDebe");
 		BindUtils.postNotifyChange(null, null, this, "totalHaber");
 		BindUtils.postNotifyChange(null, null, this, "totalSaldo");
+		BindUtils.postNotifyChange(null, null, this, "movimientosBanco_");
 		return data;
 	}
 	
@@ -491,7 +580,8 @@ public class BancoConciliacionViewModel extends BodyApp {
 	
 	@DependsOn({ "selectedItem1", "selectedItem2" })
 	public boolean isConciliarEnable() {
-		return (!this.isDeshabilitado()) && this.selectedItem1 != null && this.selectedItem2 != null;
+		return (!this.isDeshabilitado()) && (this.selectedItem1 != null && (boolean) this.selectedItem1[18] == true)
+				&& (this.selectedItem2 != null && this.selectedItem2.isChecked());
 	}
 	
 	public List<BancoCtaDTO> getBancos() throws Exception {
@@ -590,6 +680,22 @@ public class BancoConciliacionViewModel extends BodyApp {
 	public void setSelectedItems1(List<Object[]> selectedItems1) {
 		this.selectedItems1 = selectedItems1;
 	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public List<Object[]> getMovimientosBanco_() {
+		return movimientosBanco_;
+	}
+
+	public void setMovimientosBanco_(List<Object[]> movimientosBanco_) {
+		this.movimientosBanco_ = movimientosBanco_;
+	}
 }
 
 /**
@@ -598,19 +704,50 @@ public class BancoConciliacionViewModel extends BodyApp {
 class ResumenConciliacioDataSource implements JRDataSource {
 	
 	private BancoExtractoDTO dto;
+	private List<Object[]> items = new ArrayList<>();
 	
-	public ResumenConciliacioDataSource(BancoExtractoDTO dto) {
+	public ResumenConciliacioDataSource(BancoExtractoDTO dto, List<Object[]> movimientosBanco) {
 		this.dto = dto;
-		// ordena la lista segun conciliacion..
-		Collections.sort(this.dto.getDetalles2(), new Comparator<BancoExtractoDetalleDTO>() {
+		for (Object[] item : movimientosBanco) {
+			item[6] = item[2];
+			item[7] = item[3];
+			items.add(item);
+			this.machear((String) item[2], (String) item[3]);
+		}
+		
+		Collections.sort(this.items, new Comparator<Object[]>() {
 			@Override
-			public int compare(BancoExtractoDetalleDTO o1,
-					BancoExtractoDetalleDTO o2) {
-				int con1 = o1.isConciliado() ? 0 : 1;
-				int con2 = o2.isConciliado() ? 0 : 1;
-				return con1 - con2;
+			public int compare(Object[] o1, Object[] o2) {
+				String val1 = (String) o1[7];
+				String val2 = (String) o2[7];
+				int compare = val1.compareTo(val2);
+				if (compare == 0) {
+					String concepto1 = (String) o1[6];
+					String concepto2 = (String) o2[6];
+					return concepto1.compareTo(concepto2);
+				} else {
+					return compare;
+				}
 			}
 		});
+	}
+	
+	/**
+	 * machear items..
+	 */
+	private void machear(String nro, String concepto) {
+		for (BancoExtractoDetalleDTO item : this.dto.getDetalles2()) {
+			String nro2 = item.getNumero();
+			String[] nro2_ = item.getAuxi().split(";");
+			for (int i = 0; i < nro2_.length; i++) {
+				if (nro.equals(nro2) || nro.equals(nro2_[i])) {
+					this.items.add(new Object[] { 
+							Utiles.getDateToString(item.getFecha(), Utiles.DD_MM_YYYY), "",
+							item.getNumero(), item.getDescripcion(), Utiles.getNumberFormat(item.getDebe()),
+							Utiles.getNumberFormat(item.getHaber()), nro, concepto });
+				}
+			}
+		}
 	}
 
 	private int index = -1;
@@ -619,16 +756,16 @@ class ResumenConciliacioDataSource implements JRDataSource {
 	public Object getFieldValue(JRField field) throws JRException {
 		Object value = null;
 		String fieldName = field.getName();
-		BancoExtractoDetalleDTO det = this.dto.getDetalles2().get(index);
+		Object[] det = this.items.get(index);
 
 		if ("Numero".equals(fieldName)) {
-			value = det.getNumero();
+			value = (String) det[2];
 		} else if ("Concepto".equals(fieldName)) {
-			value = det.getDescripcion();
+			value = ((String) det[3]).toLowerCase();
 		} else if ("Importe".equals(fieldName)) {
-			value = det.getImporteGs_();
+			value = (String) det[4];;
 		}  else if ("TituloDetalle".equals(fieldName)) {
-			value = det.isConciliado() ? "MOVIMIENTOS CONCILIADOS" : "MOVIMIENTOS NO CONCILIADOS";
+			value = (String) det[7];
 		} else if ("TotalImporte".equals(fieldName)) {
 			value = Utiles.getNumberFormat(0.0);
 		}
@@ -637,7 +774,7 @@ class ResumenConciliacioDataSource implements JRDataSource {
 
 	@Override
 	public boolean next() throws JRException {
-		if (index < this.dto.getDetalles2().size() - 1) {
+		if (index < this.items.size() - 1) {
 			index++;
 			return true;
 		}

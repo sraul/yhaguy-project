@@ -1,8 +1,6 @@
 package com.yhaguy.gestion.bancos.conciliacion;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -110,23 +108,6 @@ public class BancoExtractoDTO extends DTO {
 	}
 
 	public List<BancoExtractoDetalleDTO> getDetalles2() {
-		// ordena la lista segun fecha..
-		Collections.sort(detalles2, new Comparator<BancoExtractoDetalleDTO>() {
-			@Override
-			public int compare(BancoExtractoDetalleDTO o1, BancoExtractoDetalleDTO o2) {
-				String nro1 = o1.getNumero();
-				String nro2 = o2.getNumero();
-				int compare = nro1.compareTo(nro2);
-				if (compare == 0) {
-					Date fecha1 = o1.getFecha();
-					Date fecha2 = o2.getFecha();
-		            return fecha1.compareTo(fecha2);
-		        }
-		        else {
-		            return compare;
-		        }
-			}
-		});
 		return detalles2;
 	}
 
