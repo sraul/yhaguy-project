@@ -49,7 +49,7 @@
 				<listcell label="@load(each.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
 				<listcell label="@load(each.banco.banco.descripcion)"></listcell>
 				<listcell label="@load(each.numero)"></listcell>
-				<listcell label="@load(each.capital) @converter(vm.cnv.monedaLocal)"></listcell>
+				<listcell label="@load(each.capital - each.impuestos - each.gastosAdministrativos) @converter(vm.cnv.monedaLocal)"></listcell>
 			</listitem>
 		</template>
 		<listfoot>
