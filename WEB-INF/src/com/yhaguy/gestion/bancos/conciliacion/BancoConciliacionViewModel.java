@@ -705,13 +705,26 @@ class ResumenConciliacioDataSource implements JRDataSource {
 	
 	private BancoExtractoDTO dto;
 	private List<Object[]> items = new ArrayList<>();
+	private Map<String, Double> totales1 = new HashMap<>();
+	private Map<String, Double> totales2 = new HashMap<>();
 	
 	public ResumenConciliacioDataSource(BancoExtractoDTO dto, List<Object[]> movimientosBanco) {
 		this.dto = dto;
 		for (Object[] item : movimientosBanco) {
 			item[6] = item[2];
 			item[7] = item[3];
-			items.add(item);
+			item[8] = true;
+			this.items.add(item);
+			String key = (String) item[3];
+			double importe = (double) item[16];
+			if (importe == 0) importe = (double) item[17];
+			Double acum = this.totales1.get(key);
+			if (acum == null) {
+				this.totales1.put(key, importe);
+			} else {
+				acum += importe;
+				this.totales1.put(key, acum);
+			}
 			this.machear((String) item[2], (String) item[3]);
 		}
 		
@@ -744,7 +757,16 @@ class ResumenConciliacioDataSource implements JRDataSource {
 					this.items.add(new Object[] { 
 							Utiles.getDateToString(item.getFecha(), Utiles.DD_MM_YYYY), "",
 							item.getNumero(), item.getDescripcion(), Utiles.getNumberFormat(item.getDebe()),
-							Utiles.getNumberFormat(item.getHaber()), nro, concepto });
+							Utiles.getNumberFormat(item.getHaber()), nro, concepto, false });
+					
+					double importe = item.getDebe() == 0 ? item.getHaber() : item.getDebe();					
+					Double acum = this.totales2.get(concepto);
+					if (acum == null) {
+						this.totales2.put(concepto, importe);
+					} else {
+						acum += importe;
+						this.totales2.put(concepto, acum);
+					}
 				}
 			}
 		}
@@ -757,17 +779,31 @@ class ResumenConciliacioDataSource implements JRDataSource {
 		Object value = null;
 		String fieldName = field.getName();
 		Object[] det = this.items.get(index);
+		boolean interno = (boolean) det[8];
+		String key = (String) det[7];
 
 		if ("Numero".equals(fieldName)) {
-			value = (String) det[2];
+			String nro = (String) det[2];
+			value = nro;
 		} else if ("Concepto".equals(fieldName)) {
-			value = ((String) det[3]).toLowerCase();
+			String concepto = ((String) det[3]).toLowerCase();
+			value = concepto;
 		} else if ("Importe".equals(fieldName)) {
-			value = (String) det[4];;
-		}  else if ("TituloDetalle".equals(fieldName)) {
+			String val = (String) det[4];
+			value = interno ? (val.equals("0") ? (String) det[5] : val) : "";
+		}  else if ("Importe_".equals(fieldName)) {
+			String val = (String) det[4];
+			value = interno ? "" : val.equals("0") ? (String) det[5] : val;
+		} else if ("TituloDetalle".equals(fieldName)) {
 			value = (String) det[7];
 		} else if ("TotalImporte".equals(fieldName)) {
-			value = Utiles.getNumberFormat(0.0);
+			Double total = this.totales1.get(key);
+			value = Utiles.getNumberFormat(total);
+		} else if ("TotalImporte_".equals(fieldName)) {
+			Double total_ = this.totales2.get(key);
+			value = Utiles.getNumberFormat(total_);
+		} else if ("Interno".equals(fieldName)) {
+			value = interno ? "1" : "2";
 		}
 		return value;
 	}
