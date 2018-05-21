@@ -33,7 +33,7 @@
 					<vlayout spacing="0">
 						<label value="@load(each.cliente.razonSocial)" sclass="titulo"></label>
 						<hlayout>
-							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy hh:mm')" sclass="obs"></label>
+							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy HH:mm')" sclass="obs"></label>
 							<label value=" - " sclass="obs"></label>
 							<label value="@load(each.observacion)" sclass="obs"></label>
 						</hlayout>						
@@ -106,7 +106,7 @@
 					<vlayout spacing="0">
 						<label value="@load(each.cliente.razonSocial)" sclass="titulo"></label>
 						<hlayout>
-							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy hh:mm')" sclass="obs"></label>
+							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy HH:mm')" sclass="obs"></label>
 							<label value=" - " sclass="obs"></label>
 							<label value="@load(each.observacion)" sclass="obs"></label>
 						</hlayout>
@@ -179,7 +179,7 @@
 					<vlayout spacing="0">
 						<label value="@load(each.cliente.razonSocial)" sclass="titulo"></label>
 						<hlayout>
-							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy hh:mm')" sclass="obs"></label>
+							<label value="@load(each.fecha) @converter('formattedDate', format='dd-MM-yy HH:mm')" sclass="obs"></label>
 							<label value=" - " sclass="obs"></label>
 							<label value="@load(each.observacion)" sclass="obs"></label>
 						</hlayout>

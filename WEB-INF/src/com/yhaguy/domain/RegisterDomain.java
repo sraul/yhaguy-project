@@ -3339,6 +3339,14 @@ public class RegisterDomain extends Register {
 		}
 		return this.hql(query, params);
 	}
+	
+	/**
+	 * @return los pedidos pendientes de preparacion..
+	 */
+	public List<Venta> getPedidosPendientesPreparacion() throws Exception {
+		String query = "select v from Venta v where v.auxi = 'PENDIENTE'";
+		return this.hql(query);
+	}
 
 	
 	/**
