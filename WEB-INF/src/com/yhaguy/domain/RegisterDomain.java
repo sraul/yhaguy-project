@@ -7672,6 +7672,7 @@ public class RegisterDomain extends Register {
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select c from CtaCteEmpresaMovimiento c where"
 				+ " c.saldo > 0 and c.anulado = 'FALSE' and"
+				+ " c.tipoMovimiento.sigla = '" + Configuracion.SIGLA_TM_PRESTAMO_BANCARIO + "' and"
 				+ " (c.fechaVencimiento > '" + desde_ + "' and c.fechaVencimiento < '" + hasta_ + "')";
 		return this.hql(query);
 	}

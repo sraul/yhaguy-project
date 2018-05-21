@@ -1,16 +1,24 @@
 package com.yhaguy.process.tareasprogramadas;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.coreweb.Config;
+import com.coreweb.extras.reporte.DatosColumnas;
+import com.coreweb.util.Misc;
 import com.yhaguy.Configuracion;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Tarea_Programada;
 import com.yhaguy.util.EnviarCorreo;
 import com.yhaguy.util.Utiles;
+import com.yhaguy.util.reporte.ReporteYhaguy;
+
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 
 public class TareaNotificarBancos {
 	
@@ -59,16 +67,17 @@ public class TareaNotificarBancos {
 			
 			for (CtaCteEmpresaMovimiento prestamo : prestamos) {
 				data.add(new Object[] {
-						prestamo.get_NroComprobante(),
 						Utiles.getDateToString(prestamo.getFechaVencimiento(), Utiles.DD_MM_YYYY),
-						prestamo.getEmpresa().getRazonSocial(), prestamo.getTipoMovimiento().getDescripcion(), 
+						prestamo.get_NroComprobante(),						
+						prestamo.getTipoMovimiento().getDescripcion(), 
+						prestamo.getEmpresa().getRazonSocial(),
 						prestamo.getUsuarioMod().toUpperCase(), (long) 0});
 			}
 
 			Config.DIRECTORIO_REAL_REPORTES = directorioReportes;
 			Config.DIRECTORIO_BASE_REAL = directorioBase;
 			
-			ReporteHistorialBloqueos rep = new ReporteHistorialBloqueos(desde, hasta);
+			ReporteVencimientoPrestamos rep = new ReporteVencimientoPrestamos(desde, hasta);
 			rep.setDatosReporte(data);
 			rep.setApaisada();
 			rep.ejecutar(false);
@@ -97,5 +106,59 @@ public class TareaNotificarBancos {
 	public static void main(String[] args) {
 		//TareaNotificarBancos.enviarCorreoVtoPrestamos(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA, ASUNTO_MRA);
 		TareaNotificarBancos.enviarCorreoVtoPrestamos(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, COPIA_OCULTA, ASUNTO_BAT);
+	}
+}
+
+/**
+ * Reporte de Historial de Bloqueos de Clientes..
+ */
+class ReporteVencimientoPrestamos extends ReporteYhaguy {
+
+	static final NumberFormat FORMATTER = new DecimalFormat("###,###,##0");
+	private Date desde;
+	private Date hasta;
+
+	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
+	static DatosColumnas col1 = new DatosColumnas("Vto.", TIPO_STRING, 25);
+	static DatosColumnas col2 = new DatosColumnas("Número", TIPO_STRING, 30);
+	static DatosColumnas col3 = new DatosColumnas("Concepto", TIPO_STRING);
+	static DatosColumnas col4 = new DatosColumnas("Banco", TIPO_STRING);
+	static DatosColumnas col5 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 25);
+
+	public ReporteVencimientoPrestamos(Date desde, Date hasta) {
+		this.desde = desde;
+		this.hasta = hasta;
+	}
+
+	static {
+		cols.add(col1);
+		cols.add(col2);
+		cols.add(col3);
+		cols.add(col4);
+		cols.add(col5);
+	}
+
+	@Override
+	public void informacionReporte() {
+		this.setTitulo("Prestamos Bancarios");
+		this.setDirectorio("banco");
+		this.setNombreArchivo("Prestamo-");
+		this.setTitulosColumnas(cols);
+		this.setBody(this.getCuerpo());
+	}
+
+	/**
+	 * cabecera del reporte..
+	 */
+	@SuppressWarnings("rawtypes")
+	private ComponentBuilder getCuerpo() {
+
+		VerticalListBuilder out = cmp.verticalList();
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
+		out.add(cmp.horizontalFlowList().add(this.textoParValor("Desde", m.dateToString(this.desde, Misc.DD_MM_YYYY)))
+				.add(this.textoParValor("Hasta", m.dateToString(this.hasta, Misc.DD_MM_YYYY))));
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
+
+		return out;
 	}
 }
