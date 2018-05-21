@@ -7660,7 +7660,19 @@ public class RegisterDomain extends Register {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select r.usuarioMod, r.auxi, r.orden, r.echo from Ping r where"
-				+ " (r.modificado > '" + desde_ + "' and r.modificado < '" + hasta_ + "'))";
+				+ " (r.modificado > '" + desde_ + "' and r.modificado < '" + hasta_ + "')";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los saldos de prestamos a bancos..
+	 */
+	public List<CtaCteEmpresaMovimiento> getPrestamosBancariosConSaldo(Date desde, Date hasta) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select c from CtaCteEmpresaMovimiento c where"
+				+ " c.saldo > 0 and c.anulado = 'FALSE' and"
+				+ " (c.fechaVencimiento > '" + desde_ + "' and c.fechaVencimiento < '" + hasta_ + "')";
 		return this.hql(query);
 	}
 	
