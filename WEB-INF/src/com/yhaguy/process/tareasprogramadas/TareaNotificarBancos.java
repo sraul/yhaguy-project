@@ -71,7 +71,7 @@ public class TareaNotificarBancos {
 						prestamo.get_NroComprobante(),						
 						prestamo.getTipoMovimiento().getDescripcion(), 
 						prestamo.getEmpresa().getRazonSocial(),
-						prestamo.getUsuarioMod().toUpperCase(), (long) 0});
+						prestamo.getSaldo()});
 			}
 
 			Config.DIRECTORIO_REAL_REPORTES = directorioReportes;
