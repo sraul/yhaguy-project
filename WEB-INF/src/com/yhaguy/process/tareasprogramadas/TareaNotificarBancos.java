@@ -113,7 +113,7 @@ public class TareaNotificarBancos {
 	
 	public static void main(String[] args) {
 		//TareaNotificarBancos.enviarCorreoVtoPrestamos(EMPRESA_MRA, DIRECTORIO_REPORTES_MRA, DIRECTORIO_BASE_MRA, DESTINATARIOS_MRA, ASUNTO_MRA);
-		TareaNotificarBancos.enviarCorreoVtoPrestamos(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, COPIA_OCULTA, ASUNTO_BAT);
+		TareaNotificarBancos.enviarCorreoVtoPrestamos(EMPRESA_BAT, DIRECTORIO_REPORTES_BAT, DIRECTORIO_BASE_BAT, DESTINATARIOS_BAT, ASUNTO_BAT);
 	}
 }
 
