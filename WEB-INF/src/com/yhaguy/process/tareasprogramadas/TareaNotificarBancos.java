@@ -66,12 +66,20 @@ public class TareaNotificarBancos {
 			}
 			
 			for (CtaCteEmpresaMovimiento prestamo : prestamos) {
-				data.add(new Object[] {
-						Utiles.getDateToString(prestamo.getFechaVencimiento(), Utiles.DD_MM_YYYY),
-						prestamo.get_NroComprobante(),						
-						prestamo.getTipoMovimiento().getDescripcion(), 
-						prestamo.getEmpresa().getRazonSocial(),
-						prestamo.getSaldo()});
+				long dias = Utiles.diasEntreFechas(new Date(), prestamo.getFechaVencimiento());
+				if (dias <= 5) {
+					System.out.println("-- DIAS: " + dias);
+					data.add(new Object[] {
+							Utiles.getDateToString(prestamo.getFechaVencimiento(), Utiles.DD_MM_YYYY),
+							prestamo.get_NroComprobante(),						
+							prestamo.getTipoMovimiento().getDescripcion(), 
+							prestamo.getEmpresa().getRazonSocial(),
+							prestamo.getSaldo()});
+				}
+			}
+			
+			if (data.size() == 0) {
+				return;
 			}
 
 			Config.DIRECTORIO_REAL_REPORTES = directorioReportes;
@@ -96,7 +104,7 @@ public class TareaNotificarBancos {
 			
 			EnviarCorreo correo = new EnviarCorreo(tarea);
 			correo.sendMessage(destinatarios, COPIA_OCULTA, asunto,
-					"Vencimiento de prestamos bancarios..", "PrestamosBancarios.pdf", directorioReportes + rep.getArchivoSalida());
+					"Notificacion de vencimiento de prestamos bancarios..", "PrestamosBancarios.pdf", directorioReportes + rep.getArchivoSalida());
 
 		} catch (Exception e) {
 			e.printStackTrace();
