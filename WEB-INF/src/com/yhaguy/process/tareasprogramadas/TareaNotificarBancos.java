@@ -119,11 +119,11 @@ class ReporteVencimientoPrestamos extends ReporteYhaguy {
 	private Date hasta;
 
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
-	static DatosColumnas col1 = new DatosColumnas("Vto.", TIPO_STRING, 25);
-	static DatosColumnas col2 = new DatosColumnas("Número", TIPO_STRING, 30);
-	static DatosColumnas col3 = new DatosColumnas("Concepto", TIPO_STRING);
+	static DatosColumnas col1 = new DatosColumnas("Vto.", TIPO_STRING, 30);
+	static DatosColumnas col2 = new DatosColumnas("Número", TIPO_STRING, 40);
+	static DatosColumnas col3 = new DatosColumnas("Concepto", TIPO_STRING, 40);
 	static DatosColumnas col4 = new DatosColumnas("Banco", TIPO_STRING);
-	static DatosColumnas col5 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 25);
+	static DatosColumnas col5 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE_GS, 30);
 
 	public ReporteVencimientoPrestamos(Date desde, Date hasta) {
 		this.desde = desde;
