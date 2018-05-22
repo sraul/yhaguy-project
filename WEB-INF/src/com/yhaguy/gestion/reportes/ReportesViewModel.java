@@ -1308,6 +1308,7 @@ public class ReportesViewModel extends SimpleViewModel {
 		static final String VENTAS_GENERICO = "VEN-00028";
 		static final String VENTAS_RANKING_POR_FLIA_RES = "VEN-00029";
 		static final String VENTAS_HISTORIAL_MES = "VEN-00030";
+		static final String VENTAS_CLIENTES_ULTIMA_VTA = "VEN-00031";
 
 		/**
 		 * procesamiento del reporte..
@@ -1437,6 +1438,10 @@ public class ReportesViewModel extends SimpleViewModel {
 				
 			case VENTAS_HISTORIAL_MES:
 				this.ventasPorMes(mobile);
+				break;
+				
+			case VENTAS_CLIENTES_ULTIMA_VTA:
+				this.ventasClientesPorMes_ultimaVenta(mobile);
 				break;
 			}
 		}
@@ -4048,6 +4053,149 @@ public class ReportesViewModel extends SimpleViewModel {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}		
+		}
+		
+		/**
+		 * VEN-00031 ventas por clientes por mes vs ultima venta..
+		 */
+		private void ventasClientesPorMes_ultimaVenta(boolean mobile) {
+			if (mobile) {
+				Clients.showNotification("AUN NO DISPONIBLE PARA VERSION MOVIL..");
+				return;
+			}
+			
+			try {
+				Date desde = filtro.getFechaDesde();
+				Date hasta = filtro.getFechaHasta();
+				Date tope = filtro.getFechaHasta2();
+				boolean ncrInc = filtro.isIncluirNCR();
+				Object[] formato = filtro.getFormato();
+
+				if (desde == null)
+					desde = new Date();
+
+				if (hasta == null)
+					hasta = new Date();
+				
+				RegisterDomain rr = RegisterDomain.getInstance();
+				List<Object[]> ventas = rr.get_Ventas(desde, hasta, 0);
+				List<Object[]> ncs = rr.getNotasCredito_Venta(desde, hasta, 0);
+				List<Object[]> data = new ArrayList<Object[]>();
+				Map<String, Object[]> values = new HashMap<String, Object[]>();
+				Map<String, Object[]> values_ = new HashMap<String, Object[]>();
+				
+				//[0]:id - [1]:fecha - [2]:idCliente - [3]:razonSocial - [4]:vendedor - [5]:rubro - [6]:totalImporteGs
+				for (Object[] venta : ventas) {
+					Date fecha = (Date) venta[1];
+					long idCli_ = (long) venta[2];
+					double totalImporte = (double) venta[6];
+					int mes = Utiles.getNumeroMes(fecha) - 1;
+					String idCli = idCli_ + "";
+					String key = idCli + "-" + mes;
+					String cliente = (String) venta[3];
+					String vendedor_ = (String) venta[4];
+					String rubro_ = (String) venta[5];
+					Object[] acum = values.get(key);
+					Date ultimaVenta = rr.getUltimaVenta(idCli_).get(0);
+					if (tope.compareTo(ultimaVenta) >= 0) {
+						if (acum != null) {
+							double importe = (double) acum[0];
+							double importe_ = totalImporte;
+							importe += importe_;
+							values.put(key, new Object[] { importe, mes, cliente, vendedor_, rubro_,
+									Utiles.getDateToString(ultimaVenta, Utiles.DD_MM_YYYY) });
+						} else {
+							double importe_ = totalImporte;
+							values.put(key, new Object[] { importe_, mes, cliente, vendedor_, rubro_,
+									Utiles.getDateToString(ultimaVenta, Utiles.DD_MM_YYYY) });
+						}
+					}								
+				}
+				
+				//[0]:id - [1]:fecha - [2]:idCliente - [3]:razonSocial - [4]:vendedor - [5]:rubro - [6]:totalImporteGs
+				if (ncrInc) {
+					for (Object[] ncred : ncs) {
+						Date fecha = (Date) ncred[1];
+						long idCli_ = (long) ncred[2];
+						double totalImporte = (double) ncred[6];
+						int mes = Utiles.getNumeroMes(fecha) - 1;
+						String id = idCli_ + "";
+						String key = id + "-" + mes;
+						String cliente = (String) ncred[3];
+						String vendedor_ = (String) ncred[4];
+						String rubro_ = (String) ncred[5];
+						Object[] acum = values.get(key);
+						Date ultimaVenta = rr.getUltimaVenta(idCli_).get(0);
+						if (tope.compareTo(ultimaVenta) >= 0) {
+							if (acum != null) {
+								double importe = (double) acum[0];
+								double importe_ = totalImporte;
+								importe -= importe_;
+								values.put(key, new Object[] { importe, mes, cliente, vendedor_, rubro_,
+										Utiles.getDateToString(ultimaVenta, Utiles.DD_MM_YYYY) });
+							} else {
+								double importe_ = totalImporte;
+								values.put(key, new Object[] { importe_ * -1, mes, cliente, vendedor_, rubro_,
+										Utiles.getDateToString(ultimaVenta, Utiles.DD_MM_YYYY) });
+							}
+						}
+					}
+				}				
+				
+				for (String key : values.keySet()) {
+					Object[] value = values.get(key);
+					double importe = (double) value[0];
+					int mes = (int) value[1];
+					String id = (String) value[2];
+					String vend = (String) value[3];
+					String rubro_ = (String) value[4];
+					String ultVta = (String) value[5];
+					
+					Object[] value_ = values_.get(id);
+					if (value_ != null) {
+						value_[mes] = importe;
+						values_.put(id, value_);
+					} else {
+						Object[] datos = new Object[] { (double) 0, (double) 0,
+								(double) 0, (double) 0, (double) 0, (double) 0,
+								(double) 0, (double) 0, (double) 0, (double) 0,
+								(double) 0, (double) 0, vend, rubro_, ultVta };
+						datos[mes] = importe;
+						values_.put(id, datos);
+					}
+				}
+				
+				for (String key : values_.keySet()) {
+					Object[] value_ = values_.get(key);
+					double total = (double) value_[0] + (double) value_[1]
+							+ (double) value_[2] + (double) value_[3]
+							+ (double) value_[4] + (double) value_[5]
+							+ (double) value_[6] + (double) value_[7]
+							+ (double) value_[8] + (double) value_[9]
+							+ (double) value_[10] + (double) value_[11];
+					data.add(new Object[] { key.toUpperCase(), value_[0],
+							value_[1], value_[2], value_[3], value_[4],
+							value_[5], value_[6], value_[7], value_[8],
+							value_[9], value_[10], value_[11], total, value_[12], value_[13], value_[14] });
+				}
+				
+				String source = com.yhaguy.gestion.reportes.formularios.ReportesViewModel.SOURCE_VENTAS_POR_CLIENTES_ULT_VTA;
+				Map<String, Object> params = new HashMap<String, Object>();
+				JRDataSource dataSource = new VentasPorClienteDataSource(data);
+				params.put("Titulo", "Ventas por Clientes por Mes / Registro ultima venta");
+				params.put("Usuario", getUs().getNombre());
+				params.put("Desde", Utiles.getDateToString(desde, Utiles.DD_MM_YYYY));
+				params.put("Hasta", Utiles.getDateToString(hasta, Utiles.DD_MM_YYYY));
+				params.put("Tope", Utiles.getDateToString(tope, Utiles.DD_MM_YYYY));
+				params.put("Vendedor", "TODOS..");
+				params.put("Rubro", "TODOS..");
+				params.put("NCR_INC", filtro.isIncluirNCR() ? "SI" : "NO");
+				params.put("IVA_INC", filtro.isIvaIncluido() ? "SI" : "NO");
+				imprimirJasper(source, params, dataSource, formato);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -12146,7 +12294,9 @@ class VentasPorClienteDataSource implements JRDataSource {
 			value = det[14];
 		} else if ("Rubro".equals(fieldName)) {
 			value = det[15];
-		}else if ("Ene".equals(fieldName)) {
+		} else if ("Ult_Vta".equals(fieldName)) {
+			value = det[16];
+		} else if ("Ene".equals(fieldName)) {
 			value = FORMATTER.format(det[1]);
 		} else if ("Feb".equals(fieldName)) {
 			value = FORMATTER.format(det[2]);

@@ -71,6 +71,7 @@ public class ReportesViewModel {
 	public static final String SOURCE_RESUMEN_CONCILIACION = "/reportes/jasper/ResumenConciliacion.jasper";
 	public static final String SOURCE_VENTAS_VENDEDOR = "/reportes/jasper/VentasPorVendedor.jasper";
 	public static final String SOURCE_VENTAS_POR_CLIENTES = "/reportes/jasper/VentasPorCliente.jasper";
+	public static final String SOURCE_VENTAS_POR_CLIENTES_ULT_VTA = "/reportes/jasper/VentasPorCliente_.jasper";
 	public static final String SOURCE_METAS_VENDEDOR = "/reportes/jasper/MetasPorVendedor.jasper";
 	public static final String SOURCE_CONCILIACIONES_BANCARIAS = "/reportes/jasper/ConciliacionBancaria.jasper";
 	public static final String SOURCE_VENTAS_UTILIDAD_DETALLADO = "/reportes/jasper/VentasUtilidadDetallado.jasper";

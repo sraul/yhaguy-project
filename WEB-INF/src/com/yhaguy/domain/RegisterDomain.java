@@ -2875,6 +2875,43 @@ public class RegisterDomain extends Register {
 
 		return this.hql(query, params);
 	}
+	
+	/**
+	 * @return las ventas segun fecha..
+	 * [0]:id
+	 * [1]:fecha
+	 * [2]:idCliente
+	 * [3]:razonSocial
+	 * [4]:vendedor
+	 * [5]:rubro
+	 * [6]:totalImporteGs
+	 */
+	public List<Object[]> get_Ventas(Date desde, Date hasta, long idCliente) throws Exception {		
+		String query = "select v.id, v.fecha, v.cliente.id, v.cliente.empresa.razonSocial, v.vendedor.empresa.razonSocial, '', v.totalImporteGs"
+				+ " from Venta v where v.dbEstado != 'D' and v.estadoComprobante is null"
+				+ " and (v.tipoMovimiento.sigla = ? or v.tipoMovimiento.sigla = ?)"
+				+ " and v.fecha between ? and ?";
+		if (idCliente != 0) {
+			query += " and v.cliente.id = ?";
+		}
+		query += " order by v.numero";
+
+		List<Object> listParams = new ArrayList<Object>();
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CONTADO);
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CREDITO);
+		listParams.add(desde);
+		listParams.add(hasta);
+		if (idCliente != 0) {
+			listParams.add(idCliente);
+		}
+
+		Object[] params = new Object[listParams.size()];
+		for (int i = 0; i < listParams.size(); i++) {
+			params[i] = listParams.get(i);
+		}
+
+		return this.hql(query, params);
+	}
 
 	/**
 	 * @return las ventas segun fecha y vendedor..
@@ -3037,6 +3074,42 @@ public class RegisterDomain extends Register {
 	 */
 	public List<NotaCredito> getNotasCreditoVenta(Date desde, Date hasta, long idCliente) throws Exception {
 		String query = "select n from NotaCredito n where n.dbEstado != 'D' and n.tipoMovimiento.sigla = ?"
+				+ " and (n.fechaEmision between ? and ?)";
+
+		if (idCliente != 0) {
+			query += " and n.cliente.id = ?";
+		}
+		query += " order by n.numero";
+
+		List<Object> listParams = new ArrayList<Object>();
+		listParams.add(Configuracion.SIGLA_TM_NOTA_CREDITO_VENTA);
+		listParams.add(desde);
+		listParams.add(hasta);
+		if (idCliente != 0) {
+			listParams.add(idCliente);
+		}
+
+		Object[] params = new Object[listParams.size()];
+		for (int i = 0; i < listParams.size(); i++) {
+			params[i] = listParams.get(i);
+		}
+		return this.hql(query, params);
+	}
+	
+	/**
+	 * @return las notas de credito de venta segun fecha
+	 * [0]:id
+	 * [1]:fecha
+	 * [2]:idCliente
+	 * [3]:razonSocial
+	 * [4]:vendedor
+	 * [5]:rubro
+	 * [6]:totalImporteGs
+	 */
+	public List<Object[]> getNotasCredito_Venta(Date desde, Date hasta, long idCliente) throws Exception {
+		String query = "select n.id, n.fechaEmision, n.cliente.id, n.cliente.empresa.razonSocial, '', '', n.importeGs"
+				+ " from NotaCredito n where n.dbEstado != 'D' and n.estadoComprobante.sigla != '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
+				+ " and n.tipoMovimiento.sigla = ?"
 				+ " and (n.fechaEmision between ? and ?)";
 
 		if (idCliente != 0) {
@@ -7685,19 +7758,33 @@ public class RegisterDomain extends Register {
 		return this.hql(query);
 	}
 	
+	/**
+	 * @return la fecha de la ultima venta del cliente..
+	 */
+	public List<Date> getUltimaVenta(long idCliente) throws Exception {
+		String query = "select max(v.fecha) from Venta v where v.dbEstado != 'D' and (v.tipoMovimiento.sigla = ? or v.tipoMovimiento.sigla = ?)"
+				+ " and v.cliente.id = ?";
+		
+		List<Object> listParams = new ArrayList<Object>();
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CONTADO);
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CREDITO);
+		listParams.add(idCliente);
+
+		Object[] params = new Object[listParams.size()];
+		for (int i = 0; i < listParams.size(); i++) {
+			params[i] = listParams.get(i);
+		}
+
+		return this.hql(query, params);
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
-			List<CtaCteEmpresaMovimiento> list = rr.getObjects(CtaCteEmpresaMovimiento.class.getName());
-			for (CtaCteEmpresaMovimiento cc : list) {
-				if (!cc.isMonedaLocal()) {
-					ImportacionPedidoCompra imp = (ImportacionPedidoCompra) rr.getObject(ImportacionPedidoCompra.class.getName(), cc.getIdMovimientoOriginal());
-					if (imp != null) {
-						cc.setTipoCambio(imp.getResumenGastosDespacho().getTipoCambio());
-						rr.saveObject(cc, cc.getUsuarioMod());
-						System.out.println(cc.getNroComprobante());
-					}
-				}
+			long idCliente = 15575;
+			List<Date> test = rr.getUltimaVenta(idCliente);
+			for (Date obj : test) {
+				System.out.println(obj);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
