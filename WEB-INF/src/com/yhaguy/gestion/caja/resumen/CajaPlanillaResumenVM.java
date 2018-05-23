@@ -664,7 +664,7 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		return rr.getChequesTercero("", "", "", "",
 				"", "", "", "", "", this.filterNumeroCheque, "",
-				"", null, null, null, null, null,
+				"", null, null, null, null, null, null,
 				null, null, "", "", true);
 	}
 	

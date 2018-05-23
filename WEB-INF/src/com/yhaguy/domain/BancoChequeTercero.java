@@ -27,6 +27,7 @@ public class BancoChequeTercero extends Domain {
 	private boolean descontado;
 	private boolean anulado;
 	private boolean rechazado;
+	private boolean rechazoInterno;
 	private boolean diferido;
 	private boolean reembolsado;
 	private boolean cancelado;
@@ -41,6 +42,7 @@ public class BancoChequeTercero extends Domain {
 	
 	private Date fechaDeposito;
 	private Date fechaDescuento;
+	private Date fechaRechazo;
 	
 	private Set<RecaudacionCentral> recaudacionesCentral = new HashSet<RecaudacionCentral>();
 
@@ -308,5 +310,21 @@ public class BancoChequeTercero extends Domain {
 
 	public void setCancelado(boolean cancelado) {
 		this.cancelado = cancelado;
+	}
+
+	public Date getFechaRechazo() {
+		return fechaRechazo;
+	}
+
+	public void setFechaRechazo(Date fechaRechazo) {
+		this.fechaRechazo = fechaRechazo;
+	}
+
+	public boolean isRechazoInterno() {
+		return rechazoInterno;
+	}
+
+	public void setRechazoInterno(boolean rechazoInterno) {
+		this.rechazoInterno = rechazoInterno;
 	}
 }

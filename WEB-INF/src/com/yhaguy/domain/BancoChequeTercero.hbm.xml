@@ -28,6 +28,7 @@
 		<property name="vendedor" />
 		<property name="fechaDeposito" />
 		<property name="fechaDescuento" />
+		<property name="fechaRechazo" />
 		
 		<property name="anulado">
 			<column name="anulado" not-null="true" default="false" />
@@ -35,6 +36,10 @@
 		
 		<property name="rechazado">
 			<column name="rechazado" not-null="true" default="false" />
+		</property>
+		
+		<property name="rechazoInterno">
+			<column name="rechazoInterno" not-null="true" default="false" />
 		</property>
 		
 		<property name="diferido">

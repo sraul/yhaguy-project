@@ -5170,7 +5170,7 @@ public class ReportesViewModel extends SimpleViewModel {
 			List<Object[]> data = new ArrayList<Object[]>();
 
 			List<BancoChequeTercero> cheques = rr.getChequesTercero("", "", "",
-					"", "", "", "", "", "", "", "", "", null, "TRUE", null, 
+					"", "", "", "", "", "", "", "", "", null, "TRUE", null, null, 
 					desde, hasta, null, null, "", "", false);
 
 			for (BancoChequeTercero cheque : cheques) {
@@ -8112,7 +8112,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				RegisterDomain rr = RegisterDomain.getInstance();
 				List<Object[]> data = new ArrayList<Object[]>();
 				List<BancoChequeTercero> cheques = rr.getChequesTercero("", "",
-						"", "", "", "", "", "", "", "", "", "", null, null, null,
+						"", "", "", "", "", "", "", "", "", "", null, null, null, null,
 						null, null, desde, hasta, "", "", false);
 				
 				for (BancoChequeTercero cheque : cheques) {
@@ -8168,7 +8168,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				RegisterDomain rr = RegisterDomain.getInstance();
 				List<Object[]> data = new ArrayList<Object[]>();
 				List<BancoChequeTercero> cheques = rr.getChequesTercero("", "",
-						"", "", "", "", "", "", "", "", "", "", null, "TRUE", null,
+						"", "", "", "", "", "", "", "", "", "", null, "TRUE", null, null,
 						vtoDesde, vtoHasta, emisionDesde, emisionHasta, "", "", false);
 				
 				for (BancoChequeTercero cheque : cheques) {
@@ -8763,7 +8763,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				RegisterDomain rr = RegisterDomain.getInstance();
 				List<Object[]> data = new ArrayList<Object[]>();
 				List<BancoChequeTercero> cheques = rr.getChequesTercero("", "",
-						"", "", "", "", "", "", "", "", "", "", null, null, "TRUE",
+						"", "", "", "", "", "", "", "", "", "", null, null, "TRUE", "TRUE",
 						null, null, desde, hasta, "", "", false);
 				
 				for (BancoChequeTercero cheque : cheques) {

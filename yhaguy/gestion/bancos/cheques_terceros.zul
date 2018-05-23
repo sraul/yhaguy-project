@@ -20,36 +20,27 @@
 				style="text-align:center; font-size:12px"
 				iconSclass="z-icon-filter"
 				onClick="@command('selectFilter', filter=4)" />
-			<navitem label=" A DEPOSITAR"
+			<navitem label=" RECHAZOS INTERNOS"
 				style="text-align:center; font-size:12px"
 				iconSclass="z-icon-filter"
 				onClick="@command('selectFilter', filter=5)" />
+			<navitem label=" A DEPOSITAR"
+				style="text-align:center; font-size:12px"
+				iconSclass="z-icon-filter"
+				onClick="@command('selectFilter', filter=6)" />
 		</navbar>
 		<space></space>
-		<checkbox label="Reembolsados" style="color:green" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' ? 'true':'false')"
+		<checkbox label="Reembolsados" style="color:green" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')"
 			checked="@bind(vm.reembolsados)"></checkbox>
 		<space></space>
-		<checkbox label="Reembolso parcial" style="color:orange" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' ? 'true':'false')"
+		<checkbox label="Reembolso parcial" style="color:orange" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')"
 			checked="@bind(vm.parcial)"></checkbox>
 		<space></space>
-		<checkbox label="Sin reembolso" style="color:red" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' ? 'true':'false')"
+		<checkbox label="Sin reembolso" style="color:red" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')"
 			checked="@bind(vm.sin_reembolso)"></checkbox>
 		<space hflex="true"/>
-		<button mold="bs" sclass="btn-danger btn-sm"
-			width="140px"
-			iconSclass="z-icon-ban"
-			disabled="@load(vm.selectedCheque eq null)"
-			onClick='pop_motivo.open(self, "after_start")'
-			label=" Cheque Rechazado"/>
-		<button mold="bs" sclass="btn-success btn-sm"
-			width="140px"
-			iconSclass="z-icon-plus-circle"
-			onClick="@command('registrarCheque')">Registrar Cheque</button>
-		<button mold="bs" sclass="btn-primary btn-sm"
-			width="140px"
-			iconSclass="z-icon-print"
-			onClick="@command('listadoCheques')" 
-			label=" Imprimir Listado"/>
+		<button mold="bs" sclass="btn-sm btn-primary"
+			iconSclass="z-icon-list" onClick='pop_btns.open(self, "after_end")'></button>
 	</hlayout>
 	
 	<listbox sclass="small-list" vflex="true"
@@ -283,6 +274,14 @@
 			<textbox width="250px" placeholder="Motivo del Rechazo.."
 				value="@bind(vm.selectedCheque.pos21)"></textbox>
 			<div height="5px" />
+			<field value="Fecha Rechazo" />
+			<datebox width="250px" value="@bind(vm.fechaRechazo)"></datebox>
+			<div height="5px" />
+			<hlayout valign="bottom">
+				<field value="Rechazo Interno" />
+				<checkbox checked="@bind(vm.rechazoInterno)"></checkbox>
+			</hlayout>
+			<div height="5px" />
 			<button hflex="true" mold="bs" sclass="btn-danger btn-sm"
 				iconSclass="z-icon-check"
 				onClick="@command('registrarChequeRechazado')" 
@@ -304,6 +303,23 @@
     	</html>
 	</popup>
 	
+	<popup id="pop_btns" sclass="rounded">
+		<vlayout spacing="10px" style="margin:5px">
+			<button mold="bs" sclass="btn-danger btn-sm" width="170px"
+				iconSclass="z-icon-ban" disabled="@load(vm.selectedCheque eq null)"
+				onClick='pop_motivo.open(self, "start_before")'
+				label=" Cheque Rechazado" />
+			<button mold="bs" sclass="btn-success btn-sm" width="170px"
+				iconSclass="z-icon-plus-circle"
+				onClick="@command('registrarCheque')">
+				Registrar Cheque
+			</button>
+			<button mold="bs" sclass="btn-primary btn-sm" width="170px"
+				iconSclass="z-icon-print" onClick="@command('listadoCheques')"
+				label=" Imprimir Listado" />
+		</vlayout>
+	</popup>
+
 	<script>
 			function setImage(url) {
 				var imagen = document.getElementById("foto");

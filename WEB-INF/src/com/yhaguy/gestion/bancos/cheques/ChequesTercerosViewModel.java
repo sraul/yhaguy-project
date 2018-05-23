@@ -43,6 +43,7 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 	static final String FILTRO_DEPOSITADOS = "DEPOSITADOS";
 	static final String FILTRO_DESCONTADOS = "DESCONTADOS";
 	static final String FILTRO_RECHAZADOS = "RECHAZADOS";
+	static final String FILTRO_RECHAZOS_INTERNOS = "RECHAZOS INTERNOS";
 	static final String FILTRO_A_DEPOSITAR = "A DEPOSITAR";
 	
 	static final String ZUL_REGISTRAR_CHEQUE = "/yhaguy/gestion/bancos/registrarChequeTercero.zul";
@@ -74,6 +75,8 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 	private MyArray nvoCheque;
 	
 	private double totalImporte = 0;
+	private Date fechaRechazo = new Date();
+	private boolean rechazoInterno = false;
 	
 	@Wire
 	private Popup pop_img;
@@ -97,9 +100,16 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 		}
 		long idCheque = this.selectedCheque.getId();
 		String motivo = (String) this.selectedCheque.getPos21();
-		ControlBancoMovimiento.registrarChequeRechazado(idCheque, motivo, this.getLoginNombre());
+		if (this.rechazoInterno) {
+			ControlBancoMovimiento.registrarChequeRechazadoInterno(idCheque, motivo, this.fechaRechazo, this.getLoginNombre());
+		} else {
+			ControlBancoMovimiento.registrarChequeRechazado(idCheque, motivo, this.fechaRechazo, this.getLoginNombre());
+		}
+		
 		Clients.showNotification("Cheque registrado..");
 		this.selectedCheque = null;
+		this.fechaRechazo = new Date();
+		this.rechazoInterno = false;
 	}
 	
 	@Command
@@ -132,6 +142,8 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 			this.selectedFiltro = FILTRO_DESCONTADOS;
 		} else if (filter == 4) {
 			this.selectedFiltro = FILTRO_RECHAZADOS;
+		} else if (filter == 5) {
+			this.selectedFiltro = FILTRO_RECHAZOS_INTERNOS;
 		} else {
 			this.selectedFiltro = FILTRO_A_DEPOSITAR;
 		}
@@ -178,10 +190,12 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 		String depositado = null;
 		String descontado = null;
 		String rechazado = null;
+		String rechazoInterno = null;
 		if (this.selectedFiltro.equals(FILTRO_A_DEPOSITAR)) {
 			depositado = "false";
 			descontado = "false";
 			rechazado = "false";
+			rechazoInterno = "false";
 		}
 		if (this.selectedFiltro.equals(FILTRO_DEPOSITADOS)) {
 			depositado = "true";
@@ -192,13 +206,16 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 		if (this.selectedFiltro.equals(FILTRO_RECHAZADOS)) {
 			rechazado = "true";
 		}
+		if (this.selectedFiltro.equals(FILTRO_RECHAZOS_INTERNOS)) {
+			rechazoInterno = "true";
+		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<BancoChequeTercero> cheques = rr.getChequesTercero(
 				this.filterPlanilla, this.filterRecibo, this.filterVenta,
 				this.filterReembolso, this.filterDeposito, this.filterDescuento,
 				this.filterRazonSocial, this.filterRuc, this.filterBanco,
 				this.filterNumero, this.filterLibrador, this.filterVendedor, 
-				depositado, descontado, rechazado, null, null, null, null,
+				depositado, descontado, rechazado, rechazoInterno, null, null, null, null,
 				this.getFilterFecha(), this.filterImporteGs, true);
 		return this.chequesToMyArray(cheques);
 	}
@@ -229,10 +246,10 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 			my.setPos17(cheque.getVendedor());
 			my.setPos18(cheque.getNumeroReembolso().isEmpty() ? "- - -" : cheque.getNumeroReembolso());
 			my.setPos19(cheque.isReembolsado());
-			my.setPos20(cheque.isRechazado() ? (cheque.isReembolsado()? (cheque.isCancelado()? "color:green" : "color:orange") : "color:red") : "");
+			my.setPos20(cheque.isRechazado() || cheque.isRechazoInterno() ? (cheque.isReembolsado()? (cheque.isCancelado()? "color:green" : "color:orange") : "color:red") : "");
 			my.setPos21(cheque.getObservacion());
 			boolean added = false;
-			if (this.selectedFiltro.equals(FILTRO_RECHAZADOS)) {
+			if (this.selectedFiltro.equals(FILTRO_RECHAZADOS) || this.selectedFiltro.equals(FILTRO_RECHAZOS_INTERNOS)) {
 				if (this.isReembolsados() && this.isSin_reembolso() && this.isParcial()) {
 					out.add(my);
 					this.totalImporte += cheque.getMonto();
@@ -608,6 +625,22 @@ public class ChequesTercerosViewModel extends SimpleViewModel {
 
 	public void setParcial(boolean parcial) {
 		this.parcial = parcial;
+	}
+
+	public Date getFechaRechazo() {
+		return fechaRechazo;
+	}
+
+	public void setFechaRechazo(Date fechaRechazo) {
+		this.fechaRechazo = fechaRechazo;
+	}
+
+	public boolean isRechazoInterno() {
+		return rechazoInterno;
+	}
+
+	public void setRechazoInterno(boolean rechazoInterno) {
+		this.rechazoInterno = rechazoInterno;
 	}
 }
 

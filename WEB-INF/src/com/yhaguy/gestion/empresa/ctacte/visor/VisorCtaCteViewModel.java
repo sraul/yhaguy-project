@@ -1139,7 +1139,7 @@ public class VisorCtaCteViewModel extends SimpleViewModel {
 			List<BancoChequeTercero> cheques = rr.getChequesTercero("",
 					"", "", "", "", "",
 					(String) this.selectedItem.getPos3(), "", "", "", "",
-					"", "FALSE", null, "FALSE", null, null, null, null, "", "", true);
+					"", "FALSE", null, "FALSE", "FALSE", null, null, null, null, "", "", true);
 			for (BancoChequeTercero cheque : cheques) {
 				if (cheque.getFecha().compareTo(new Date()) > 0) {
 					MyArray my = new MyArray();

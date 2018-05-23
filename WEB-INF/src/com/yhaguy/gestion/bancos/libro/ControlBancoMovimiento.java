@@ -151,11 +151,26 @@ public class ControlBancoMovimiento extends Control {
 	/**
 	 * registra el cheque como rechazado..
 	 */
-	public static void registrarChequeRechazado(long idCheque, String motivo, String user) throws Exception {
+	public static void registrarChequeRechazado(long idCheque, String motivo, Date fechaRechazo, String user) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		BancoChequeTercero cheque = (BancoChequeTercero) rr.getObject(BancoChequeTercero.class.getName(), idCheque);
 		cheque.setRechazado(true);
 		cheque.setObservacion(motivo.toUpperCase());
+		cheque.setFechaRechazo(fechaRechazo);
+		rr.saveObject(cheque, user);
+		
+		ControlCuentaCorriente.addChequeRechazado(idCheque, user);
+	}
+	
+	/**
+	 * registra el cheque como rechazado interno..
+	 */
+	public static void registrarChequeRechazadoInterno(long idCheque, String motivo, Date fechaRechazo, String user) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		BancoChequeTercero cheque = (BancoChequeTercero) rr.getObject(BancoChequeTercero.class.getName(), idCheque);
+		cheque.setRechazoInterno(true);
+		cheque.setObservacion(motivo.toUpperCase());
+		cheque.setFechaRechazo(fechaRechazo);
 		rr.saveObject(cheque, user);
 		
 		ControlCuentaCorriente.addChequeRechazado(idCheque, user);
