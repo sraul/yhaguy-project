@@ -1,6 +1,6 @@
 <window height="151px" width="283px" border="none"
 	sclass="printable" position="center,center"
-	id="win_print">
+	id="${arg.id_win}">
 	
 	<timer delay="1500" repeats="false">
 		<attribute name="onTimer">
@@ -10,41 +10,35 @@
 	
 	<timer delay="1800" repeats="false">
 		<attribute name="onTimer">
-			win_print.detach();
+			self.getParent().detach();
 		</attribute>
 	</timer>
 	
 	<div height="10px"></div>
 	
 	<hlayout style="border-bottom: solid 1px">
-		<div width="20px"></div>
+		<div width="10px"></div>
 		<label value="@load(vm.empresa_)" sclass="det"></label>
-	</hlayout>
-	
-	<hlayout>
-		<div width="20px"></div>
-		<label value="@load(vm.selectedServicio.numero)" sclass="det"></label>
-		<label value="@load(vm.selectedServicio.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></label>
-	</hlayout>
-	
-	<hlayout style="border-bottom: solid 1px">
-		<div width="20px"></div>
-		<label value="@load(vm.selectedServicio.cliente.razonSocial)" sclass="det"></label>
 	</hlayout>
 	
 	<div height="5px"></div>
 	
-	<vbox children="@load(vm.selectedServicio.detalles)" spacing="0px">
-		<template name="children">
-			<hbox spacing="0px">
-				<div width="25px"></div>
-				<div width="100px">
-					<label value="@load(each.numeroFactura)" sclass="det"></label>
-				</div>	
-				<label value="@load(each.articulo.codigoInterno)" sclass="det"></label>	
-			</hbox>
-		</template>
-	</vbox>
+	<hlayout>
+		<div width="10px"></div>
+		<label value="@load(vm.selectedServicio.numero)" sclass="det"></label>
+		<label value="@load(vm.selectedServicio.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></label>
+	</hlayout>
+	
+	<hlayout>
+		<div width="10px"></div>
+		<label value="@load(vm.selectedServicio.cliente.razonSocial)" sclass="det"></label>
+	</hlayout>
+	
+	<hlayout>
+		<div width="10px"></div>
+		<label value="${arg.nro_fac}" sclass="det"></label>
+		<label value="${arg.cod}" sclass="det"></label>
+	</hlayout>
 	
 	<style media="print">
     	body > *:not(.printable) {

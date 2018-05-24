@@ -154,8 +154,14 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 	
 	@Command
 	public void imprimirEtiqueta() {
-		this.win = (Window) Executions.createComponents(ZUL_IMPRESION_ETIQUETA, this.mainComponent, null);
-		this.win.doModal();
+		for (ServicioTecnicoDetalle item : this.selectedServicio.getDetalles()) {
+			Map<String, String> args = new HashMap<>();
+			args.put("id_win", "win_" + item.getId());
+			args.put("nro_fac", item.getNumeroFactura());
+			args.put("cod", item.getArticulo().getCodigoInterno());
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_ETIQUETA, this.mainComponent, args);
+			this.win.doModal();
+		}		
 	}
 	
 	/**
