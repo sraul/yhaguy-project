@@ -14,14 +14,20 @@
 		</attribute>
 	</timer>
 	
-	<div height="20px"></div>
+	<div height="10px"></div>
+	
+	<hlayout style="border-bottom: solid 1px">
+		<div width="20px"></div>
+		<label value="@load(vm.empresa_)" sclass="det"></label>
+	</hlayout>
 	
 	<hlayout>
 		<div width="20px"></div>
 		<label value="@load(vm.selectedServicio.numero)" sclass="det"></label>
+		<label value="@load(vm.selectedServicio.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></label>
 	</hlayout>
 	
-	<hlayout>
+	<hlayout style="border-bottom: solid 1px">
 		<div width="20px"></div>
 		<label value="@load(vm.selectedServicio.cliente.razonSocial)" sclass="det"></label>
 	</hlayout>

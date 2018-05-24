@@ -23,6 +23,7 @@ import com.coreweb.control.SimpleViewModel;
 import com.coreweb.extras.reporte.DatosColumnas;
 import com.coreweb.util.AutoNumeroControl;
 import com.coreweb.util.MyArray;
+import com.yhaguy.Configuracion;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
@@ -409,6 +410,13 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 	@DependsOn("nvoDetalle.articulo")
 	public boolean isAddDetalleDisabled() {
 		return this.nvoDetalle.getArticulo() == null;
+	}
+	
+	/**
+	 * @return la empresa..
+	 */
+	public String getEmpresa_() {
+		return Configuracion.empresa.toUpperCase();
 	}
 	
 	/**
