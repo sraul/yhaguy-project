@@ -7781,6 +7781,14 @@ public class RegisterDomain extends Register {
 		return this.hql(query, params);
 	}
 	
+	/**
+	 * @return los registros promo 1..
+	 */
+	public List<VentaPromo1> getVentasPromo1() throws Exception {
+		String query = "select v from VentaPromo1 v order by v.nombreApellido";
+		return this.hql(query);
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			

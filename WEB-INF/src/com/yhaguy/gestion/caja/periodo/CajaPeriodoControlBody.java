@@ -1532,6 +1532,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("ImporteEnLetras", this.reciboDTO.getImporteEnLetras());
 		params.put("ImporteTotal",
 				FORMATTER.format(this.reciboDTO.getTotalImporteGs()));
+		params.put("Usuario", this.getUs().getNombre());
 		this.imprimirComprobante(source, params, dataSource);
 	}
 	
@@ -1551,6 +1552,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("ImporteEnLetra", this.reciboDTO.getImporteEnLetras());
 		params.put("TotalImporteGs",
 				FORMATTER.format(this.reciboDTO.getTotalImporteGs()));
+		params.put("Usuario", this.getUs().getNombre());
 		this.imprimirComprobante(source, params, dataSource);
 	}
 

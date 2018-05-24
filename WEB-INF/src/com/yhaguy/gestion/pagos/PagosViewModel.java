@@ -275,6 +275,7 @@ public class PagosViewModel extends SimpleViewModel {
 		params.put("NroRecibo", this.pagoDto.getNumero());
 		params.put("ImporteEnLetra", this.pagoDto.getImporteEnLetras());
 		params.put("TotalImporteGs", Utiles.getNumberFormat(this.pagoDto.getTotalImporteGs()));
+		params.put("Usuario", this.getUs().getNombre());
 		this.imprimirComprobante(source, params, dataSource, this.selectedFormato);
 	}
 	

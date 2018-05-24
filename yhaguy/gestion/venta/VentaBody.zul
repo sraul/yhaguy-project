@@ -325,7 +325,7 @@
 						<label value="@load(vm.labelIva10)"
 							sclass="label-moneda-footer" />
 						<guaranibox readonly="true"
-							style="background:#dddddd;text-align:right;font-weight:bold"
+							style="background:#EEF7FA;text-align:right;font-weight:bold"
 							value="@load(vm.dto.totalIva10)"
 							format="###,###,##0"/>
 						<label
@@ -335,7 +335,7 @@
 						<label value="@load(vm.labelIva5)"
 							sclass="label-moneda-footer" />
 						<guaranibox readonly="true"
-							style="background:#dddddd;text-align:right;font-weight:bold" 
+							style="background:#EEF7FA;text-align:right;font-weight:bold" 
 							value="@load(vm.dto.totalIva5)"
 							format="###,###,##0"/>
 						<label
@@ -344,14 +344,14 @@
 						<space />
 						<field value="Cant. Total:" />
 						<longbox width="50px" readonly="true"
-							style="background:#dddddd;text-align:right;font-weight:bold" 
+							style="background:#EEF7FA;text-align:right;font-weight:bold" 
 							value="@load(vm.dto.totalCantidad)" />
 						<space/>
 						<label value="@load(vm.labelDescuento_)"
 							sclass="label-moneda-footer" />
 						<guaranibox readonly="true"
 							value="@load(vm.dto.totalDescuentoGs)"
-							style="background:#dddddd;text-align:right;font-weight:bold" 
+							style="background:#EEF7FA;text-align:right;font-weight:bold" 
 							format="###,###,##0"/>
 						<label value="@load(vm.dto.moneda.pos2)"
 							sclass="small-font" />
@@ -360,7 +360,7 @@
 							sclass="label-moneda-footer" />
 						<guaranibox
 							readonly="true" value="@load(vm.dto.totalImporteGs)" width="105px" 
-							style="background:#dddddd;text-align:right;font-weight:bold"
+							style="background:#EEF7FA;text-align:right;font-weight:bold"
 							format="###,###,##0" />
 						<label value="@load(vm.dto.moneda.pos2)" sclass="small-font" />
 						<div width="10px"/>

@@ -21,6 +21,7 @@ import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
 import com.yhaguy.gestion.comun.ReservaDTO;
 import com.yhaguy.gestion.empresa.ClienteDTO;
+import com.yhaguy.util.Utiles;
 
 @SuppressWarnings("serial")
 public class VentaDTO extends DTO {
@@ -377,7 +378,7 @@ public class VentaDTO extends DTO {
 	 * @return la fecha formateada..
 	 */
 	public String getFechaEmision() {
-		return this.getMisc().dateToString(this.fecha, Misc.DD_MM_YYYY);
+		return Utiles.getDateToString(this.fecha, Misc.DD_MM_YYYY);
 	}
 	
 	/**
@@ -544,9 +545,9 @@ public class VentaDTO extends DTO {
 
 	public void setReserva(ReservaDTO reserva) {
 		this.reserva = reserva;
-	}
+	}	
 
-	public List<VentaDetalleDTO> getDetalles() {
+	public List<VentaDetalleDTO> getDetalles_() {
 		Collections.sort(this.detalles,
 				new Comparator<VentaDetalleDTO>() {
 					@Override
@@ -666,7 +667,7 @@ public class VentaDTO extends DTO {
 		String out = "";
 
 		out += this.numero + " - "
-				+ this.getMisc().dateToString(this.fecha, Misc.D_MMMM_YYYY2) + " - "
+				+ Utiles.getDateToString(this.fecha, Misc.D_MMMM_YYYY2) + " - "
 				+ this.cliente.getPos1();
 		return out;
 	}
@@ -789,5 +790,9 @@ public class VentaDTO extends DTO {
 
 	public void setTimbrado(String timbrado) {
 		this.timbrado = timbrado;
+	}
+
+	public List<VentaDetalleDTO> getDetalles() {
+		return detalles;
 	}
 }

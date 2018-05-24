@@ -97,6 +97,7 @@ import com.yhaguy.domain.Transferencia;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.domain.VentaDetalle;
 import com.yhaguy.domain.VentaPerdida;
+import com.yhaguy.domain.VentaPromo1;
 import com.yhaguy.gestion.articulos.buscador.BuscadorArticulosViewModel;
 import com.yhaguy.gestion.bancos.conciliacion.BeanConciliacion;
 import com.yhaguy.gestion.caja.periodo.CajaPeriodoResumenDataSource;
@@ -1309,6 +1310,7 @@ public class ReportesViewModel extends SimpleViewModel {
 		static final String VENTAS_RANKING_POR_FLIA_RES = "VEN-00029";
 		static final String VENTAS_HISTORIAL_MES = "VEN-00030";
 		static final String VENTAS_CLIENTES_ULTIMA_VTA = "VEN-00031";
+		static final String VENTAS_PROMO_1 = "VEN-00032";
 
 		/**
 		 * procesamiento del reporte..
@@ -1442,6 +1444,10 @@ public class ReportesViewModel extends SimpleViewModel {
 				
 			case VENTAS_CLIENTES_ULTIMA_VTA:
 				this.ventasClientesPorMes_ultimaVenta(mobile);
+				break;
+				
+			case VENTAS_PROMO_1:
+				this.ventasPromo1(mobile);
 				break;
 			}
 		}
@@ -4197,6 +4203,44 @@ public class ReportesViewModel extends SimpleViewModel {
 				e.printStackTrace();
 			}
 		}
+		
+		/**
+		 * reporte VEN-00032
+		 */
+		private void ventasPromo1(boolean mobile) {
+			try {
+
+				RegisterDomain rr = RegisterDomain.getInstance();
+				List<Object[]> data = new ArrayList<Object[]>();
+				
+				List<VentaPromo1> registros = rr.getVentasPromo1();
+				for (VentaPromo1 item : registros) {
+					data.add(new Object[] { 
+							item.getNombreApellido().toUpperCase(), 
+							item.getDireccion().toLowerCase(),
+							item.getCorreo().toLowerCase(),
+							item.getTelefono() + "(" + item.getAuxi() + ")",
+							Utiles.getDateToString(item.getNacimiento(), Utiles.DD_MM_YYYY)});
+				}
+
+				ReporteVentasPromo1 rep = new ReporteVentasPromo1();
+				rep.setApaisada();
+				rep.setDatosReporte(data);
+				
+				if (!mobile) {
+					ViewPdf vp = new ViewPdf();
+					vp.setBotonImprimir(false);
+					vp.setBotonCancelar(false);
+					vp.showReporte(rep, ReportesViewModel.this);
+				} else {
+					rep.ejecutar();
+					Filedownload.save("/reportes/" + rep.getArchivoSalida(), null);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
@@ -5341,6 +5385,9 @@ public class ReportesViewModel extends SimpleViewModel {
 			boolean ivaInc = filtro.isIvaIncluido();
 			boolean recInc = filtro.isIncluirREC();
 			boolean vtaInc = filtro.isIncluirVCT();
+			
+			if (desde == null) desde = new Date();
+			if (hasta == null) hasta = new Date();
 
 			RegisterDomain rr = RegisterDomain.getInstance();
 			List<Object[]> data = new ArrayList<Object[]>();
@@ -17199,5 +17246,51 @@ class VentasDesglosado implements JRDataSource {
 			return true;
 		}
 		return false;
+	}
+}
+
+/**
+ * Reporte de Ventas Promo 1 VEN-00032..
+ */
+class ReporteVentasPromo1 extends ReporteYhaguy {
+	
+	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
+	static DatosColumnas col1 = new DatosColumnas("Nombre y Apellido", TIPO_STRING);	
+	static DatosColumnas col2 = new DatosColumnas("Direccion", TIPO_STRING);
+	static DatosColumnas col3 = new DatosColumnas("Correo", TIPO_STRING);
+	static DatosColumnas col4 = new DatosColumnas("Teléfono", TIPO_STRING, 50);
+	static DatosColumnas col5 = new DatosColumnas("Fecha Nac.", TIPO_STRING, 30);
+	
+
+	public ReporteVentasPromo1() {
+	}
+
+	static {
+		cols.add(col1);
+		cols.add(col2);
+		cols.add(col3);
+		cols.add(col4);
+		cols.add(col5);
+	}
+
+	@Override
+	public void informacionReporte() {
+		this.setTitulo("Registro de clientes / Promocion 2000 Gs. por bateria");
+		this.setDirectorio("ventas");
+		this.setNombreArchivo("Promo1-");
+		this.setTitulosColumnas(cols);
+		this.setBody(this.getCuerpo());
+	}
+
+	/**
+	 * cabecera del reporte..
+	 */
+	@SuppressWarnings("rawtypes")
+	private ComponentBuilder getCuerpo() {
+
+		VerticalListBuilder out = cmp.verticalList();
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
+
+		return out;
 	}
 }
