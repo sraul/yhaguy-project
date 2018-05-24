@@ -18,16 +18,21 @@
 				disabled="@load(vm.selectedServicio eq null)" />
 		<space />
 		<button mold="bs" sclass="btn-info btn-sm" width="150px"
+				iconSclass="z-icon-tags"
+				label=" Etiqueta" onClick="@command('imprimirEtiqueta')"
+				disabled="@load(vm.selectedServicio eq null)" />
+		<space />
+		<button mold="bs" sclass="btn-success btn-sm" width="150px"
 				iconSclass="z-icon-print"
 				label=" Informe Técnico" onClick="@command('informeTecnico')"
 				disabled="@load(vm.selectedServicio eq null)" />
 		<space />
-		<button mold="bs" sclass="btn-primary btn-sm" width="150px"
+		<button mold="bs" sclass="btn-warning btn-sm" width="150px"
 				iconSclass="z-icon-check"
 				label=" Confirmar Entrega" onClick="@command('confirmarEntrega')"
 				disabled="@load(vm.selectedServicio eq null ? 'true' : (vm.selectedServicio.diagnosticado? 'false':'true'))" />
 		<space />
-		<button mold="bs" sclass="btn-success btn-sm" width="150px"
+		<button mold="bs" sclass="btn-primary btn-sm" width="150px"
 				iconSclass="z-icon-print"
 				label=" Imprimir Listado" onClick="@command('reporte')" />
 	</hlayout>

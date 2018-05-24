@@ -41,6 +41,8 @@ import net.sf.jasperreports.engine.JRField;
 
 public class ServicioTecnicoViewModel extends SimpleViewModel {
 	
+	static final String ZUL_IMPRESION_ETIQUETA = "/yhaguy/gestion/servicio/impresion_etiqueta.zul";
+	
 	private ServicioTecnico nvoServicio;
 	private ServicioTecnico selectedServicio;
 	private ServicioTecnicoDetalle nvoDetalle = new ServicioTecnicoDetalle();
@@ -147,6 +149,12 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 	@Command
 	public void reporte() throws Exception {
 		this.reporteServicios();
+	}
+	
+	@Command
+	public void imprimirEtiqueta() {
+		this.win = (Window) Executions.createComponents(ZUL_IMPRESION_ETIQUETA, this.mainComponent, null);
+		this.win.doModal();
 	}
 	
 	/**
