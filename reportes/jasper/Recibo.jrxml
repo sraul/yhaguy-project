@@ -85,7 +85,7 @@ from plancuenta where id = '1']]>
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="95" splitType="Stretch">
+		<band height="104" splitType="Stretch">
 			<image>
 				<reportElement x="1" y="0" width="152" height="31" uuid="429de492-610d-438e-ab36-c3bdc07e7cd4"/>
 				<imageExpression><![CDATA[$P{Logo}.toString()]]></imageExpression>
@@ -104,43 +104,43 @@ from plancuenta where id = '1']]>
 				<textFieldExpression><![CDATA[$P{title}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="Column header" x="450" y="36" width="37" height="15" forecolor="#736343" uuid="62c126f5-cdf9-4d6c-9c86-bc3619499149"/>
+				<reportElement style="Column header" x="450" y="44" width="37" height="15" forecolor="#736343" uuid="62c126f5-cdf9-4d6c-9c86-bc3619499149"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<text><![CDATA[Ruc:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="87" y="36" width="363" height="15" uuid="8e7208d3-13cd-4325-91dc-558fa7a82eba"/>
+				<reportElement x="87" y="44" width="363" height="15" uuid="8e7208d3-13cd-4325-91dc-558fa7a82eba"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{RazonSocial}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="487" y="36" width="83" height="15" uuid="495a0904-377b-445f-a1a1-bcd858e95480"/>
+				<reportElement x="487" y="44" width="83" height="15" uuid="495a0904-377b-445f-a1a1-bcd858e95480"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{Ruc}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="Column header" x="1" y="54" width="152" height="15" forecolor="#736343" uuid="979ef6ed-84d6-4fb9-8300-b2b1a2aef386"/>
+				<reportElement style="Column header" x="1" y="62" width="152" height="15" forecolor="#736343" uuid="979ef6ed-84d6-4fb9-8300-b2b1a2aef386"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<text><![CDATA[La cantidad de Guaraníes:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="153" y="54" width="417" height="15" uuid="c3e7a643-6e92-4de1-89a2-d41840ce3893"/>
+				<reportElement x="153" y="62" width="417" height="15" uuid="c3e7a643-6e92-4de1-89a2-d41840ce3893"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{ImporteEnLetra}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="Column header" x="1" y="74" width="25" height="15" forecolor="#736343" uuid="e915e7b9-bcb3-4fb7-9292-17607e1990b3"/>
+				<reportElement style="Column header" x="1" y="82" width="25" height="15" forecolor="#736343" uuid="e915e7b9-bcb3-4fb7-9292-17607e1990b3"/>
 				<textElement verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
 				</textElement>
 				<text><![CDATA[Gs.]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="26" y="74" width="111" height="15" uuid="81df9b6f-3166-489d-9a0a-b295e5cbefe1"/>
+				<reportElement x="26" y="82" width="111" height="15" uuid="81df9b6f-3166-489d-9a0a-b295e5cbefe1"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{TotalImporteGs}]]></textFieldExpression>
 			</textField>
@@ -152,7 +152,7 @@ from plancuenta where id = '1']]>
 				<textFieldExpression><![CDATA[$P{NroRecibo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="1" y="36" width="86" height="15" forecolor="#736343" uuid="e9b6c38c-5488-4b6f-917e-9e7598fa0da6"/>
+				<reportElement x="1" y="44" width="86" height="15" forecolor="#736343" uuid="e9b6c38c-5488-4b6f-917e-9e7598fa0da6"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
