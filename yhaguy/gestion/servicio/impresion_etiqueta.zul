@@ -14,31 +14,33 @@
 		</attribute>
 	</timer>
 	
-	<div height="10px"></div>
+	<vbox width="100%" height="100%" pack="center">
 	
 	<hlayout style="border-bottom: solid 1px">
-		<div width="10px"></div>
+		<div width="5px"></div>
 		<label value="@load(vm.empresa_)" sclass="det"></label>
 	</hlayout>
 	
 	<div height="5px"></div>
 	
 	<hlayout>
-		<div width="10px"></div>
+		<div width="5px"></div>
 		<label value="@load(vm.selectedServicio.numero)" sclass="det"></label>
 		<label value="@load(vm.selectedServicio.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></label>
 	</hlayout>
 	
 	<hlayout>
-		<div width="10px"></div>
+		<div width="5px"></div>
 		<label value="@load(vm.selectedServicio.cliente.razonSocial)" sclass="det"></label>
 	</hlayout>
 	
 	<hlayout>
-		<div width="10px"></div>
+		<div width="5px"></div>
 		<label value="${arg.nro_fac}" sclass="det"></label>
 		<label value="${arg.cod}" sclass="det"></label>
 	</hlayout>
+	
+	</vbox>
 	
 	<style media="print">
     	body > *:not(.printable) {
@@ -57,13 +59,13 @@
 	
 	<style>
 		.custom { font-size:10pt; font-family:Verdana }
-		.det { font-size:8pt; font-family:Verdana }
+		.det { font-size:10pt; font-family:Verdana }
 		.z-div { line-height:normal }
 		.z-hlayout-inner { line-height:normal }
 		.z-vlayout-inner { padding: 0px }
 		.z-hlayout z-valign-middle { line-height:normal; font-size:10px }
 		body *:not([class*="z-icon-"]) {
-    		font-size: 10px;
+    		font-size: 12px;
 		}
 	</style>
 </window>
