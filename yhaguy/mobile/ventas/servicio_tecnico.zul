@@ -15,15 +15,19 @@
 						style="text-align:right"></textbox>
 				</hlayout>				
 				<space></space>
-				<label value="Depósito Origen" sclass="mobile" style="font-weight:bold"></label>
+				<label value="Receptor" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true">
 				</combobox>
 				<space></space>
-				<label value="Depósito Destino" sclass="mobile" style="font-weight:bold"></label>
+				<label value="Técnico" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true">
 				</combobox>
 				<space></space>
-				<label value="Artículo" sclass="mobile" style="font-weight:bold" />
+				<label value="Cliente" sclass="mobile" style="font-weight:bold" />
+				<bandbox hflex="true" readonly="true">
+				</bandbox>
+				<space></space>
+				<label value="Facturas" sclass="mobile" style="font-weight:bold" />
 				<bandbox hflex="true" readonly="true">
 				</bandbox>
 			</vlayout>			
