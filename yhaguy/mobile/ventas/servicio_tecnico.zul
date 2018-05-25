@@ -1,6 +1,6 @@
 <div apply="org.zkoss.bind.BindComposer" vflex="true">
 		
-		<vlayout id="vlDet" height="100%" style="overflow:auto">
+		<vlayout id="vlCab" height="100%" style="overflow:auto">
 			<vlayout style="padding:50px">
 				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
 					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
@@ -33,6 +33,45 @@
 			</vlayout>
 			<space vflex="true"></space>
 			<button id="btnDetalles" mold="bs" sclass="btn-primary btn-lg"
+				hflex="true" iconSclass="z-icon-check"
+				label=" Agregar Detalle" height="150px" style="font-size:30pt"
+				dir="normal" onClick='vlCab.setVisible(false); vlDet.setVisible(true)'/>
+		</vlayout>
+		
+		<vlayout id="vlDet" height="100%" style="overflow:auto" visible="false">
+			<vlayout style="padding:50px">
+				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
+					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
+				</div>	
+				<space></space>			
+				<label value="Factura" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />			
+				<space></space>
+				<label value="Código" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true">
+				</combobox>
+				<space></space>
+				<label value="Estado" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true">
+				</combobox>
+				<space></space>
+				<label value="Carga" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />
+				<space></space>
+				<label value="Borne" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />
+				<space></space>
+				<label value="Celda" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />
+				<space></space>
+				<label value="Conexión" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />
+				<space></space>
+				<label value="Observación" sclass="mobile" style="font-weight:bold"></label>
+				<combobox hflex="true" />
+			</vlayout>
+			<space vflex="true"></space>
+			<button id="btnDetalle" mold="bs" sclass="btn-primary btn-lg"
 				hflex="true" iconSclass="z-icon-check"
 				label=" Agregar Detalle" height="150px" style="font-size:30pt"
 				dir="normal" />

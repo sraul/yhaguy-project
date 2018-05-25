@@ -884,7 +884,8 @@
 									</hlayout>
 								</row>
 								<row>
-									<field value="Coeficiente Gastos:" />									
+									<field value="Coeficiente Gastos:" 
+										tooltiptext="(Valor Flete + Valor Seguro + Total Gastos) / Valor FOB"/>									
 									<hlayout sclass="z-valign-middle">
 										<dolarbox
 											value="@load(vm.coeficienteGasto)" readonly="true"
