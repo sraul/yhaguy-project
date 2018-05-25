@@ -30,19 +30,11 @@
 				<label value="Facturas" sclass="mobile" style="font-weight:bold" />
 				<bandbox hflex="true" readonly="true">
 				</bandbox>
-			</vlayout>			
-			<space height="50px" />
-			<vlayout style="padding:50px">
-				<label value="Cantidad disponible" sclass="mobile" style="font-weight:bold" />
-				<intbox hflex="true" readonly="true"/>
-				<space></space>
-				<label value="Cantidad a transferir" sclass="mobile" style="font-weight:bold" />
-				<intbox hflex="true" />
 			</vlayout>
 			<space vflex="true"></space>
-			<button id="btnEnviar" mold="bs" sclass="btn-success btn-lg"
+			<button id="btnDetalles" mold="bs" sclass="btn-primary btn-lg"
 				hflex="true" iconSclass="z-icon-check"
-				label=" Enviar Servicio Técnico" height="150px" style="font-size:30pt"
+				label=" Agregar Detalle" height="150px" style="font-size:30pt"
 				dir="normal" />
 		</vlayout>		
 
