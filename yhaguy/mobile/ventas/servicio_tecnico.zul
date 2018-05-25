@@ -38,8 +38,8 @@
 				dir="normal" onClick='vlCab.setVisible(false); vlDet.setVisible(true)'/>
 		</vlayout>
 		
-		<vlayout id="vlDet" height="100%" style="overflow:auto" visible="false">
-			<vlayout style="padding:50px">
+		<vlayout id="vlDet" height="100%" visible="false">
+			<vlayout style="padding:50px" style="overflow:auto">
 				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
 					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
 				</div>	
