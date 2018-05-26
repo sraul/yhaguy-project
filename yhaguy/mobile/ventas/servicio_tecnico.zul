@@ -39,7 +39,7 @@
 		</vlayout>
 		
 		<vlayout id="vlDet" height="100%" visible="false">
-			<vlayout style="padding:50px" style="overflow:auto">
+			<vlayout style="padding:50px; overflow:auto">
 				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
 					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
 				</div>	
