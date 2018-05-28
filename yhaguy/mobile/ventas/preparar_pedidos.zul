@@ -52,6 +52,10 @@
 				<space></space>
 				<label value="@load(vm.selectedVenta.cliente.razonSocial)" style="font-size:30pt;font-weight:bold;color:#357ebd"></label>
 			</hlayout>
+			<hlayout>
+				<label value="OBS:" style="font-size:30pt;font-weight:bold;color:#357ebd"></label>
+				<label value="vm.selectedVenta.observacion.toUpperCase(s)"></label>
+			</hlayout>
 			<div height="20px"></div>
 			<listbox model="@load(vm.selectedVenta.detalles)" style="overflow:auto" vflex="2">
 				<listhead>
