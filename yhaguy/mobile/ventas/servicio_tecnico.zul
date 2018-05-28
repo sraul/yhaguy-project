@@ -1,11 +1,11 @@
 <div apply="org.zkoss.bind.BindComposer" vflex="true">
 		
-		<vlayout id="vlCab" height="100%" style="overflow:auto">
-			<vlayout style="padding:50px">
-				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
-					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
-				</div>	
-				<space></space>			
+		<vlayout id="vlCab" height="100%">
+			<space></space>
+			<div hflex="true" style="text-align:center; border-bottom:solid 1px">
+				<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
+			</div>
+			<vlayout style="padding:50px;overflow:auto" vflex="true">		
 				<label value="Fecha / Número" sclass="mobile" style="font-weight:bold"></label>
 				<hlayout>
 					<textbox readonly="true" hflex="true"
@@ -31,7 +31,6 @@
 				<bandbox hflex="true" readonly="true">
 				</bandbox>
 			</vlayout>
-			<space vflex="true"></space>
 			<button id="btnDetalles" mold="bs" sclass="btn-primary btn-lg"
 				hflex="true" iconSclass="z-icon-check"
 				label=" Agregar Detalle" height="150px" style="font-size:30pt"
@@ -39,11 +38,11 @@
 		</vlayout>
 		
 		<vlayout id="vlDet" height="100%" visible="false">
-			<vlayout style="padding:50px; overflow:auto">
-				<div hflex="true" style="text-align:center; border-bottom:solid 1px">
-					<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
-				</div>	
-				<space></space>			
+			<space></space>
+			<div hflex="true" style="text-align:center; border-bottom:solid 1px">
+				<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
+			</div>
+			<vlayout style="padding:50px; overflow:auto" vflex="true">				
 				<label value="Factura" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true" />			
 				<space></space>
@@ -70,10 +69,9 @@
 				<label value="Observación" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true" />
 			</vlayout>
-			<space vflex="true"></space>
-			<button id="btnDetalle" mold="bs" sclass="btn-primary btn-lg"
+			<button id="btnDetalle" mold="bs" sclass="btn-success btn-lg"
 				hflex="true" iconSclass="z-icon-check"
-				label=" Agregar Detalle" height="150px" style="font-size:30pt"
+				label=" Enviar transferencia" height="150px" style="font-size:30pt"
 				dir="normal" />
 		</vlayout>		
 
