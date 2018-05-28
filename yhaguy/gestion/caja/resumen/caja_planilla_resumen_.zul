@@ -456,7 +456,7 @@
 			
 				<div
 					style="margin:10px 10px 5px 10px;border-bottom: solid 1px #428bca">
-					<label sclass="title">REEMBOLSOS VALORES BATERÍAS</label>
+					<a sclass="title" onClick='pop_val_bat.open(self, "after_start"); tx_filter_val_bat.focus()'>REEMBOLSOS VALORES BATERÍAS</a>
 				</div>				
 				<hlayout visible="@load(vm.selectedResumen_.depositos_valores_bat.size() eq 0)">
 					<space></space>
@@ -1039,6 +1039,28 @@
 			<button mold="bs" sclass="btn-success btn-xs" iconSclass="z-icon-check"
 			 onClick="@command('saveResumen', comp=pop_obs_ch_nodep)"/>
 		</hlayout>
+	</popup>
+	<popup sclass="rounded" id="pop_val_bat">
+		<listbox sclass="small-list" width="300px" height="200px"
+			model="@load(vm.bancoDepositosValoresBaterias)"
+			emptyMessage="INGRESE UN CRITERIO DE BÚSQUEDA.."
+			selectedItem="@bind(vm.selectedDepositoValoresBaterias)"
+			onSelect="@command('asignarValoresBaterias', comp=pop_val_bat)">
+			<listhead>
+				<listheader>
+					<textbox hflex="true"
+						placeholder="Número Depósito.." sclass="filter"
+						value="@bind(vm.filterNumeroDepositoValoresBaterias)"
+						instant="true" id="tx_filter_val_bat">
+					</textbox>
+				</listheader>
+			</listhead>
+			<template name="model">
+				<listitem>
+					<listcell label="@load(each.numeroBoleta)"></listcell>
+				</listitem>
+			</template>
+		</listbox>
 	</popup>
 	<style>
 		.title { font-weight:bold;font-style:italic;font-size:11px }

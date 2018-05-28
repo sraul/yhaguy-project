@@ -61,6 +61,7 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 	
 	private CajaPeriodo selectedPlanilla;
 	private BancoBoletaDeposito selectedDeposito;
+	private BancoBoletaDeposito selectedDepositoValoresBaterias;
 	private BancoBoletaDeposito nvoDeposito = new BancoBoletaDeposito();
 	private BancoBoletaDeposito nvoDeposito_ = new BancoBoletaDeposito();
 	private BancoBoletaDeposito selectedDeposito_;
@@ -69,6 +70,7 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 	
 	private String filterNumeroDeposito = "";
 	private String filterNumeroDeposito_ = "";
+	private String filterNumeroDepositoValoresBaterias = "";
 	private String filterNumeroPlanilla = "";
 	private String filterFechaPlanilla = "";
 	
@@ -312,6 +314,14 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 		this.selectedCheque_ = null;
 	}
 	
+	@Command
+	@NotifyChange("*")
+	public void asignarValoresBaterias(@BindingParam("comp") Popup comp) throws Exception {
+		this.asignarValoresBaterias_();
+		comp.close();
+		Clients.showNotification("Depósito asignado..");
+	}
+	
 	/**
 	 * inicializa el resumen..
 	 */
@@ -375,6 +385,15 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 		if (this.filterFechaMM.isEmpty() && this.filterFechaDD.isEmpty())
 			return this.filterFechaAA;
 		return this.filterFechaAA + "-" + this.filterFechaMM + "-" + this.filterFechaDD;
+	}
+	
+	/**
+	 * asigna los valores de baterias..
+	 */
+	private void asignarValoresBaterias_() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		this.selectedResumen_.getDepositos_valores_bat().add(this.selectedDepositoValoresBaterias);
+		rr.saveObject(this.selectedResumen_, this.getLoginNombre());
 	}
 	
 	/**
@@ -650,6 +669,15 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 		return rr.getBancoDepositos(this.filterNumeroDeposito_);
 	}
 	
+	@DependsOn("filterNumeroDepositoValoresBaterias")
+	public List<BancoBoletaDeposito> getBancoDepositosValoresBaterias() throws Exception {
+		if (this.filterNumeroDepositoValoresBaterias.trim().isEmpty()) {
+			return new ArrayList<BancoBoletaDeposito>();
+		}
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getBancoDepositos(this.filterNumeroDepositoValoresBaterias);
+	}
+	
 	@DependsOn({ "filterNumeroPlanilla", "filterFechaPlanilla" })
 	public List<CajaPeriodo> getCajaPlanillas() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
@@ -860,5 +888,21 @@ public class CajaPlanillaResumenVM extends SimpleViewModel {
 
 	public void setSelectedCheque_(BancoChequeTercero selectedCheque_) {
 		this.selectedCheque_ = selectedCheque_;
+	}
+
+	public String getFilterNumeroDepositoValoresBaterias() {
+		return filterNumeroDepositoValoresBaterias;
+	}
+
+	public void setFilterNumeroDepositoValoresBaterias(String filterNumeroDepositoValoresBaterias) {
+		this.filterNumeroDepositoValoresBaterias = filterNumeroDepositoValoresBaterias;
+	}
+
+	public BancoBoletaDeposito getSelectedDepositoValoresBaterias() {
+		return selectedDepositoValoresBaterias;
+	}
+
+	public void setSelectedDepositoValoresBaterias(BancoBoletaDeposito selectedDepositoValoresBaterias) {
+		this.selectedDepositoValoresBaterias = selectedDepositoValoresBaterias;
 	}	
 }
