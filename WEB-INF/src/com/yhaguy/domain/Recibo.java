@@ -106,6 +106,7 @@ public class Recibo extends Domain {
 		return sigla.equals(Configuracion.SIGLA_TM_CANCELACION_CHEQ_RECHAZADO);
 	}
 	
+	
 	/**
 	 * @return true si es un reembolso de prestamo..
 	 */
@@ -295,6 +296,23 @@ public class Recibo extends Domain {
 		for (ReciboFormaPago item : this.formasPago) {
 			if ((item.isChequeTercero() == true) && (item.isChequeAlDia(fecha) == false))
 				return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @return true si es una cancelacion de cheque rechazado interno..
+	 */
+	public boolean isCancelacionChequeRechazadoInterno() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		for (ReciboDetalle item : this.detalles) {
+			if (item.getMovimiento().getTipoMovimiento().getSigla().equals(Configuracion.SIGLA_TM_CHEQUE_RECHAZADO)) {
+				List<BancoChequeTercero> cheques = (List<BancoChequeTercero>) rr.getChequesTercero(item.getMovimiento().getNroComprobante());
+				if (cheques.size() > 0) {
+					BancoChequeTercero cheque = cheques.get(0);
+					return cheque.isRechazoInterno();
+				}
+			}
 		}
 		return false;
 	}

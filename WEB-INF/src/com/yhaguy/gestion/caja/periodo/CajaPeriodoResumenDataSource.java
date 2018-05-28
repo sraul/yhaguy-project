@@ -387,7 +387,7 @@ public class CajaPeriodoResumenDataSource implements JRDataSource {
 			
 			// reembolso de cheques rechazados..
 			for (Recibo cobro : planilla.getRecibosOrdenado()) {
-				if (cobro.isCancelacionCheque() && !cobro.isAnulado()
+				if (cobro.isCancelacionCheque() && !cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado()
 						&& !cobro.isCobroExterno()) {
 					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
 						if (rfp.isEfectivo()) {
@@ -404,7 +404,7 @@ public class CajaPeriodoResumenDataSource implements JRDataSource {
 			
 			// reembolso de cheques rechazados..
 			for (Recibo cobro : planilla.getRecibosOrdenado()) {
-				if (cobro.isCancelacionCheque() && !cobro.isAnulado()
+				if (cobro.isCancelacionCheque() && !cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado()
 						&& !cobro.isCobroExterno()) {
 					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
 						if (rfp.isChequeTercero() && rfp.isChequeAlDia(fechaPlanilla)) {
@@ -421,7 +421,7 @@ public class CajaPeriodoResumenDataSource implements JRDataSource {
 			
 			// reembolso de cheques rechazados..
 			for (Recibo cobro : planilla.getRecibosOrdenado()) {
-				if (cobro.isCancelacionCheque() && !cobro.isAnulado()
+				if (cobro.isCancelacionCheque() && !cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado()
 						&& !cobro.isCobroExterno()) {
 					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
 						if ((!(rfp.isChequeTercero() && rfp.isChequeAlDia(fechaPlanilla)))
@@ -431,6 +431,56 @@ public class CajaPeriodoResumenDataSource implements JRDataSource {
 									.getDescripcion(), rfp.getDescripcion()
 									.toUpperCase(), rfp.getMontoGs(),
 									"REEMBOLSO DE CHEQUES RECHAZADOS", this.totalCancelacionCheque);
+							this.values.add(my);
+						}
+					}
+				}
+			}
+			
+			// reembolso de cheques rechazados internos..
+			for (Recibo cobro : planilla.getRecibosOrdenado()) {
+				if (cobro.isCancelacionCheque() && cobro.isCancelacionChequeRechazadoInterno() && !cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado()
+						&& !cobro.isCobroExterno()) {
+					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
+						if (rfp.isEfectivo()) {
+							this.totalCancelacionChequeEfectivo += rfp.getMontoGs();
+							MyArray my = new MyArray(cobro.getTipoMovimiento().getDescripcion(),
+									rfp.getDescripcion().toUpperCase() + " - CLIENTE: "
+											+ cobro.getCliente().getRazonSocial(),
+									rfp.getMontoGs(), "REEMBOLSO CHEQUES RECHAZADOS CON EFECTIVO (INTERNOS)",
+									this.totalCancelacionChequeEfectivo);
+							this.values.add(my);
+						}
+					}
+				}
+			}
+			
+			// reembolso de cheques rechazados internos..
+			for (Recibo cobro : planilla.getRecibosOrdenado()) {
+				if (cobro.isCancelacionCheque() && cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado() && !cobro.isCobroExterno()) {
+					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
+						if (rfp.isChequeTercero() && rfp.isChequeAlDia(fechaPlanilla)) {
+							this.totalCancelacionChequeAldia += rfp.getMontoGs();
+							MyArray my = new MyArray(cobro.getTipoMovimiento().getDescripcion(),
+									rfp.getDescripcion().toUpperCase() + " - CLIENTE: "
+											+ cobro.getCliente().getRazonSocial(),
+									rfp.getMontoGs(), "REEMBOLSO CHEQUES RECHAZADOS CON CHEQUE AL DÍA (INTERNOS)",
+									this.totalCancelacionChequeAldia);
+							this.values.add(my);
+						}
+					}
+				}
+			}
+			
+			// reembolso de cheques rechazados internos..
+			for (Recibo cobro : planilla.getRecibosOrdenado()) {
+				if (cobro.isCancelacionCheque() && cobro.isCancelacionChequeRechazadoInterno() && !cobro.isAnulado() && !cobro.isCobroExterno()) {
+					for (ReciboFormaPago rfp : cobro.getFormasPago()) {
+						if ((!(rfp.isChequeTercero() && rfp.isChequeAlDia(fechaPlanilla))) && (!rfp.isEfectivo())) {
+							this.totalCancelacionCheque += rfp.getMontoGs();
+							MyArray my = new MyArray(cobro.getTipoMovimiento().getDescripcion(),
+									rfp.getDescripcion().toUpperCase(), rfp.getMontoGs(),
+									"REEMBOLSO DE CHEQUES RECHAZADOS (INTERNOS)", this.totalCancelacionCheque);
 							this.values.add(my);
 						}
 					}

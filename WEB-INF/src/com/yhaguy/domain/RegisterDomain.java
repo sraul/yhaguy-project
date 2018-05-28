@@ -3397,7 +3397,7 @@ public class RegisterDomain extends Register {
 	public List<Venta> getPedidosPendientesAprobacion(Date desde, Date hasta) throws Exception {
 		String query = "select v from Venta v where (v.fecha between ? and ?)"
 				+ " and (v.estado.sigla = ? or v.estado.sigla = ?)"
-				+ " and v.tipoMovimiento.sigla = ?" + " order by v.numero";
+				+ " and v.tipoMovimiento.sigla = ?" + " order by v.fecha";
 
 		List<Object> listParams = new ArrayList<Object>();
 		listParams.add(desde);
