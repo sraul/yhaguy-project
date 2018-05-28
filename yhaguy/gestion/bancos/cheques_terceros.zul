@@ -56,7 +56,7 @@
 			<listheader label="Caja" width="140px" />
 			<listheader label="Cobro" width="110px" />
 			<listheader label="Venta" width="110px" />
-			<listheader label="Reembolso" width="110px" visible="@load(vm.selectedFiltro.equals('RECHAZADOS'))"/>
+			<listheader label="Reembolso" width="110px" visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')"/>
 			<listheader label="Depósito" width="75px" />
 			<listheader label="Descuento" width="105px" />
 			<listheader label="Vendedor" width="100px" visible="false"/>
@@ -238,7 +238,7 @@
 				<hlayout>
 					<field value="@load(vm.cheques.size())" />
 					<field value="ítems" />
-					<hlayout visible="@load(vm.selectedFiltro.equals('RECHAZADOS'))">
+					<hlayout visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')">
 						<space></space>
 						<label style="color:green;font-style:italic">
 							* Reembolsados
@@ -252,7 +252,7 @@
 							* Sin reembolso
 						</label>
 					</hlayout>
-					<hlayout visible="@load(vm.selectedFiltro.equals('RECHAZADOS'))">
+					<hlayout visible="@load(vm.selectedFiltro eq 'RECHAZADOS' or vm.selectedFiltro eq 'RECHAZOS INTERNOS' ? 'true':'false')">
 						<space></space>
 						<label style="font-style:italic">
 							Motivo Rechazo: 
