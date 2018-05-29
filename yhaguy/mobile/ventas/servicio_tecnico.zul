@@ -79,7 +79,25 @@
 					label=" Vista Previa" height="150px" style="font-size:30pt"
 					dir="normal" />
 			</hlayout>	
-		</vlayout>		
+		</vlayout>	
+		
+		<vlayout id="vlPreview" height="100%" visible="false">
+			<space></space>
+			<div hflex="true" style="text-align:center; border-bottom:solid 1px">
+				<label value="SERVICIO TÉCNICO" sclass="mobile" style="font-weight:bold"></label>	
+			</div>
+			<vlayout vflex="true" />
+			<hlayout>
+				<button mold="bs" sclass="btn-primary btn-lg"
+					hflex="true" iconSclass="z-icon-plus"
+					label=" Agregar Detalle" height="150px" style="font-size:30pt"
+					dir="normal" />
+				<button mold="bs" sclass="btn-success btn-lg"
+					hflex="true" iconSclass="z-icon-check"
+					label=" Enviar Serv.Técnico" height="150px" style="font-size:30pt"
+					dir="normal" />
+			</hlayout>
+		</vlayout>	
 
 	<style>
 		.z-listheader-content { padding: 15px 20px; }
