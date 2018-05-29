@@ -69,10 +69,16 @@
 				<label value="Observación" sclass="mobile" style="font-weight:bold"></label>
 				<combobox hflex="true" />
 			</vlayout>
-			<button id="btnDetalle" mold="bs" sclass="btn-success btn-lg"
-				hflex="true" iconSclass="z-icon-check"
-				label=" Enviar transferencia" height="150px" style="font-size:30pt"
-				dir="normal" />
+			<hlayout>
+				<button mold="bs" sclass="btn-primary btn-lg"
+					hflex="true" iconSclass="z-icon-plus"
+					label=" Agregar Detalle" height="150px" style="font-size:30pt"
+					dir="normal" />
+				<button mold="bs" sclass="btn-success btn-lg"
+					hflex="true" iconSclass="z-icon-search"
+					label=" Vista Previa" height="150px" style="font-size:30pt"
+					dir="normal" />
+			</hlayout>	
 		</vlayout>		
 
 	<style>
