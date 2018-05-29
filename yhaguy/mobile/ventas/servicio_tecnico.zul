@@ -77,7 +77,7 @@
 				<button mold="bs" sclass="btn-success btn-lg"
 					hflex="true" iconSclass="z-icon-search"
 					label=" Vista Previa" height="150px" style="font-size:30pt"
-					dir="normal" />
+					dir="normal" onClick='vlDet.setVisible(false); vlPreview.setVisible(true)' />
 			</hlayout>	
 		</vlayout>	
 		
