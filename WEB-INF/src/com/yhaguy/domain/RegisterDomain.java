@@ -6829,6 +6829,21 @@ public class RegisterDomain extends Register {
 	}
 	
 	/**
+	 * @return la lista de ventas segun numero y cliente..
+	 * [0]:id
+	 * [1]:numero
+	 */
+	public List<Object[]> getVentas_(String numero, long idCliente) throws Exception {
+		String query = "select v.id, v.numero from Venta v where v.numero like '%"
+				+ numero + "%' "
+				+ " and v.cliente.id = " + idCliente
+				+ " and (v.tipoMovimiento.sigla = '" + Configuracion.SIGLA_TM_FAC_VENTA_CONTADO + "'"
+				+ " or v.tipoMovimiento.sigla = '" + Configuracion.SIGLA_TM_FAC_VENTA_CREDITO + "')"
+				+ " order by v.numero";
+		return this.hqlLimit(query, 200);
+	}
+	
+	/**
 	 * @return los servicios tecnicos segun parametros..
 	 */
 	public List<ServicioTecnico> getServiciosTecnicos(String fecha, String numero, String razonSocial, 

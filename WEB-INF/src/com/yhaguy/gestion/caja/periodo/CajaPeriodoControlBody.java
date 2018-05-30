@@ -1769,6 +1769,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 								Misc.DD_MM_YYYY));
 		params.put("NroPlanilla", planilla.getNumero());
 		params.put("Cajero", planilla.getResponsable().getDescripcion());
+		params.put("Usuario", getUs().getNombre());
 
 		this.imprimirComprobante(source, params, dataSource);
 	}
