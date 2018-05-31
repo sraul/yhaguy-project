@@ -52,6 +52,24 @@ public class ServicioTecnico extends Domain {
 		return (this.numeroReparto == null || this.numeroReparto.trim().isEmpty()) ? "- - -" : 
 			this.numeroReparto.replace("REP-", "") + " - " + this.choferReparto;
 	}
+	
+	/**
+	 * @return las facturas..
+	 */
+	public List<Venta> getFacturasList() {
+		List<Venta> list = new ArrayList<>();
+		list.addAll(this.facturas);
+		return list;
+	}
+	
+	/**
+	 * @return los detalles..
+	 */
+	public List<ServicioTecnicoDetalle> getDetallesList() {
+		List<ServicioTecnicoDetalle> list = new ArrayList<>();
+		list.addAll(this.detalles);
+		return list;
+	}
 
 	@DependsOn("facturas")
 	public String getFacturas_() {

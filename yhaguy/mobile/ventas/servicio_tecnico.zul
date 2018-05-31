@@ -147,7 +147,7 @@
 		<button mold="bs" sclass="btn-primary btn-lg" hflex="true"
 			iconSclass="z-icon-check"
 			label=" Siguiente Paso" height="150px" style="font-size:30pt"
-			dir="normal" 
+			dir="normal" disabled="@load(vm.nvoServicio.facturasList.size() eq 0 ? 'true':'false')"
 			onClick="vl_facturas.setVisible(false); vl_detalle.setVisible(true)"/>		
 	</vlayout>
 	
@@ -233,11 +233,13 @@
 				iconSclass="z-icon-plus"
 				label=" Agregar ítem" height="150px" style="font-size:30pt"
 				dir="normal" 
+				disabled="@load(vm.insertarItemDisabled)"
 				onClick="@command('addDetalle')" />
 			<button mold="bs" sclass="btn-success btn-lg" hflex="true"
 				iconSclass="z-icon-search"
 				label=" Vista Previa" height="150px" style="font-size:30pt"
 				dir="normal" 
+				disabled="@load(vm.nvoServicio.detallesList.size() eq 0 ? 'true':'false')"
 				onClick="vl_detalle.setVisible(false); vl_preview.setVisible(true)" />
 		</hlayout>		
 	</vlayout>
@@ -271,13 +273,13 @@
 					value="@load(vm.nvoServicio.numero)"></textbox>
 			</hlayout>
 			<space></space>
-			<label value="Receptor / Técnico" sclass="mobile"></label>
-			<hlayout>
-				<textbox hflex="true" readonly="true"
+			<label value="Receptor" sclass="mobile"></label>
+			<textbox hflex="true" readonly="true"
 					value="@load(vm.nvoServicio.receptor)"></textbox>
-				<textbox hflex="true" readonly="true"
+			<space></space>
+			<label value="Técnico" sclass="mobile"></label>
+			<textbox hflex="true" readonly="true"
 					value="@load(vm.nvoServicio.tecnico)"></textbox>
-			</hlayout>
 			<space></space>
 			<label value="Cliente" sclass="mobile"></label>
 			<textbox hflex="true" readonly="true"
@@ -302,7 +304,8 @@
 			<button mold="bs" sclass="btn-primary btn-lg" hflex="true"
 				iconSclass="z-icon-plus"
 				label=" Agregar ítem" height="150px" style="font-size:30pt"
-				dir="normal"  />
+				dir="normal"  
+				onClick="vl_preview.setVisible(false); vl_detalle.setVisible(true)"/>
 			<button mold="bs" sclass="btn-success btn-lg" hflex="true"
 				iconSclass="z-icon-check"
 				label=" Enviar Serv.Técnico" height="150px" style="font-size:30pt"

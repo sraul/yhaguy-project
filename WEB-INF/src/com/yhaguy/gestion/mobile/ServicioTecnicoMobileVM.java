@@ -121,6 +121,12 @@ public class ServicioTecnicoMobileVM extends SimpleViewModel {
 		return rr.getVentas_(this.filterNumero, this.nvoServicio.getCliente().getId());
 	}
 	
+	@DependsOn({ "nvoDetalle.articulo", "nvoDetalle.numeroFactura" })
+	public boolean isInsertarItemDisabled() {
+		return this.nvoDetalle.getArticulo() == null || this.nvoDetalle.getNumeroFactura() == null
+				|| this.nvoDetalle.getNumeroFactura().isEmpty();
+	}
+	
 	/**
 	 * @return los preparadores de pedido..
 	 */

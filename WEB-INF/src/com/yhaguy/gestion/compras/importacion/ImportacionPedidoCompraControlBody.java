@@ -4129,9 +4129,7 @@ class ReporteImportacion extends ReporteYhaguy {
 				.add(this.textoParValor("Nro. Factura", factura))
 				.add(this.textoParValor("Tipo Cambio Gs.", tipoCambio))
 				.add(this.textoParValor("Coeficiente", coeficiente)));
-		out.add(cmp.horizontalFlowList().add(this.texto("")));
-		out.add(cmp.horizontalFlowList()
-				.add(this.textoParValor("Proveedor", proveedor)));
+		out.add(cmp.horizontalFlowList().add(this.textoParValor("Proveedor", proveedor)));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
 
 		return out;
