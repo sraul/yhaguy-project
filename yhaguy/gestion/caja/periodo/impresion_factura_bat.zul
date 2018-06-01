@@ -54,7 +54,7 @@
 	
 	<div height="75px"></div>
 	
-	<vbox children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0px" height="315px">
+	<vbox children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0px" height="215px">
 		<template name="children">
 			<hbox spacing="0px">
 				<div width="20px"></div>
@@ -82,6 +82,19 @@
 			</hbox>
 		</template>
 	</vbox>
+	
+	<div height="100px" width="530px" style="margin-left:18px; line-height:2px">
+		<label style="font-size:7pt; font-family:Verdana">
+			Pagaré(mos) la cantidad establecida en la fecha de vencimiento de ésta factura a YHAGUY BATERÍAS S.A. en su domicilio, 
+			por/ Requerimiento- La falta de pago de ésta factura a su vencimiento, constituirá en mora al deudor y generará en forma 
+			automática un interés moratorio a la tasa máxima permitida por las leyes, sin necesidad de intimación judicial o extra judicial. 
+			-El flete corre por cuenta del cliente, salvo acuerdo en contrario / Autorizo para en que caso de atraso superior a los 90 (noventa) 
+			días en el pago del presente crédito, incluyan mi nombre personal o razón social que represento en el registro de morosos de informconf. 
+			Conforme a la Ley nº 1682- El único comprobante de cancelación de l factura crédito, constituye nuestro recibo oficial. A todos los 
+			efectos legales y procesales emergentes de éste documento, las partes aceptan la jurisdicción y competencia de los jueces y tribunales 
+			de la ciudad de Asunción y declaran prorrogada cualquier otra que pudiera corresponder.
+		</label>
+	</div>
 	
 	<hlayout>
 		<div width="165px"></div>

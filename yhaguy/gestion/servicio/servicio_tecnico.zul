@@ -167,7 +167,7 @@
 						<vlayout spacing="0">
 							<field value="Receptor" />
 							<combobox hflex="true" value="@load(vm.nvoServicio.receptor)"
-								model="@load(vm.tecnicos)"
+								model="@load(vm.receptores)"
 								selectedItem="@bind(vm.nvoServicio.receptor)">
 								<template name="model">
 									<comboitem label="@load(each)"/>

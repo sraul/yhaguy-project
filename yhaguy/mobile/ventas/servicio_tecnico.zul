@@ -10,7 +10,7 @@
 		</hbox>
 		<listbox 
 			emptyMessage="INGRESE UN CRITERIO DE BÚSQUEDA.."
-			model="@load(vm.tecnicos)" style="overflow:auto" vflex="2"
+			model="@load(vm.receptores)" style="overflow:auto" vflex="2"
 			selectedItem="@bind(vm.nvoServicio.receptor)">
 			<template name="model">
 				<listitem>

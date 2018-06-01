@@ -1,5 +1,6 @@
 package com.yhaguy.util.migracion.mariano;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.FacturaVentaMRA;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Venta;
+import com.yhaguy.util.Utiles;
 
 public class MigracionFacturasVenta {
 
@@ -88,6 +90,7 @@ public class MigracionFacturasVenta {
 				System.out.println("CtaCte actualizada..");
 			}
 		}
+		System.out.println("Ejecucion terminada: " + Utiles.getDateToString(new Date(), Utiles.DD_MM_YYYY_HH_MM_SS));
 	}
 	
 	public static void main(String[] args) {

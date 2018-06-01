@@ -426,12 +426,24 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 	}
 	
 	/**
-	 * @return los preparadores de pedido..
+	 * @return funcionarios..
+	 */
+	public List<String> getReceptores() throws Exception {
+		List<String> out = new ArrayList<String>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		for (Funcionario func : rr.getFuncionariosDeposito()) {
+			out.add(func.getRazonSocial().toUpperCase());
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los tecnicos..
 	 */
 	public List<String> getTecnicos() throws Exception {
 		List<String> out = new ArrayList<String>();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosTecnicos()) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		return out;

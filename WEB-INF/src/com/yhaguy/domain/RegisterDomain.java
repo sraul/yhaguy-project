@@ -6816,6 +6816,17 @@ public class RegisterDomain extends Register {
 	}
 	
 	/**
+	 * 
+	 * @return los funcionarios tecnicos..
+	 */
+	public List<Funcionario> getFuncionariosTecnicos() throws Exception {
+		String query = "select f from Funcionario f where f.tecnico = 'TRUE'"
+				+ " order by f.empresa.razonSocial";
+		List<Funcionario> list = this.hql(query);
+		return list;
+	}
+	
+	/**
 	 * @return la lista de ventas segun numero y cliente..
 	 */
 	public List<Venta> getVentas(String numero, long idCliente) throws Exception {

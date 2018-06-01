@@ -1,6 +1,8 @@
 package com.yhaguy.gestion.mobile;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +69,7 @@ public class ServicioTecnicoMobileVM extends SimpleViewModel {
 			@BindingParam("comp3") Component comp3, @BindingParam("comp4") Component comp4) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		this.nvoServicio.setNumero("SER-TEC-" + AutoNumeroControl.getAutoNumero("SER-TEC-", 7));
-		rr.saveObject(this.nvoServicio, this.getLoginNombre());
+		rr.saveObject(this.nvoServicio, "mobile");
 		this.inicializarServicio();
 		this.inicializarDetalle();
 		comp1.setVisible(false);
@@ -128,14 +130,38 @@ public class ServicioTecnicoMobileVM extends SimpleViewModel {
 	}
 	
 	/**
-	 * @return los preparadores de pedido..
+	 * @return los tecnicos..
 	 */
 	public List<String> getTecnicos() throws Exception {
+		List<String> out = new ArrayList<String>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		for (Funcionario func : rr.getFuncionariosTecnicos()) {
+			out.add(func.getRazonSocial().toUpperCase());
+		}
+		return out;
+	}
+	
+	/**
+	 * @return funcionarios..
+	 */
+	public List<String> getReceptores() throws Exception {
 		List<String> out = new ArrayList<String>();
 		RegisterDomain rr = RegisterDomain.getInstance();
 		for (Funcionario func : rr.getFuncionariosDeposito()) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
+		for (Funcionario func : rr.getFuncionariosCobradores()) {
+			if (!out.contains(func.getRazonSocial().toUpperCase())) {
+				out.add(func.getRazonSocial().toUpperCase());
+			}
+		}		
+		Collections.sort(out, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				int compare = o1.compareTo(o2);				
+				return compare;
+			}
+		});		
 		return out;
 	}
 	

@@ -132,7 +132,7 @@ public class Configuracion extends Config {
 	public static final int IMPORTE_TIPO_EXENTA = 3;
 	
 	public static final int LIMITE_ITEMS_FACTURA_VENTA = 9;
-	public static final int LIMITE_ITEMS_FACTURA_VENTA_BAT = 15;
+	public static final int LIMITE_ITEMS_FACTURA_VENTA_BAT = 10;
 	public static final int LIMITE_ITEMS_RECIBO_COBRO = 10;
 
 	public static final double IMPORTE_LIMITE_GASTO_FONDO_FIJO = 500000;
