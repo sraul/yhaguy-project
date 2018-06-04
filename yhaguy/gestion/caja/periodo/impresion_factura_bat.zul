@@ -54,7 +54,7 @@
 	
 	<div height="75px"></div>
 	
-	<vbox children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0px" height="215px">
+	<vbox children="@load(vm.selectedVenta.detallesConDescuento)" spacing="0px" height="215px" >
 		<template name="children">
 			<hbox spacing="0px">
 				<div width="20px"></div>
