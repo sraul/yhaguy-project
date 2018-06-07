@@ -7677,16 +7677,14 @@ public class RegisterDomain extends Register {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
 		String query = "select (select descripcion from TipoMovimiento where sigla = '" + Configuracion.SIGLA_TM_EMISION_CHEQUE + "'),"
-				+ " b.fechaCobro, b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago, ' - ', b.beneficiario)"
+				+ " COALESCE(b.fechaCobro, b.fechaVencimiento), b.numero, b.monto, b.banco.banco.descripcion, concat(b.numeroCaja, ' - ', b.numeroOrdenPago, ' - ', b.beneficiario)"
 				+ " from BancoCheque b where"
 				+ " b.dbEstado != 'D' and b.estadoComprobante.sigla != '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
-				+ " and b.anulado = 'FALSE' and b.cobrado = 'TRUE'"
+				+ " and b.anulado = 'FALSE'"
 				+ " and b.banco.id = " + idBanco
-				+ " and (b.fechaCobro >= '"
-				+ desde_
-				+ "' and b.fechaCobro <= '"
-				+ hasta_
-				+ "')" + " order by b.fechaCobro desc";
+				+ " and ((b.fechaCobro >= '" + desde_ + "' and b.fechaCobro <= '" + hasta_ + "' and b.cobrado = 'TRUE')"
+				+ " or (b.fechaVencimiento >= '" + desde_ + "' and b.fechaVencimiento <= '" + hasta_ + "' and b.cobrado = 'FALSE'))" 
+				+ " order by b.fechaCobro desc";
 		return this.hql(query);
 	}
 	
