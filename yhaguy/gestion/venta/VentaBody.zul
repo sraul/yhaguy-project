@@ -313,7 +313,7 @@
 						<label
 							visible="@load(!vm.ventaMonedaLocal)" />
 					</listcell>
-					<listcell label="10%" />
+					<listcell label="@load(each.tipoIVA.sigla)" />
 				</listitem>
 			</template>
 			<listfoot>
