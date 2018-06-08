@@ -1311,6 +1311,7 @@ public class ReportesViewModel extends SimpleViewModel {
 		static final String VENTAS_HISTORIAL_MES = "VEN-00030";
 		static final String VENTAS_CLIENTES_ULTIMA_VTA = "VEN-00031";
 		static final String VENTAS_PROMO_1 = "VEN-00032";
+		static final String VENTAS_POR_FAMILIA = "VEN-00033";
 
 		/**
 		 * procesamiento del reporte..
@@ -1448,6 +1449,10 @@ public class ReportesViewModel extends SimpleViewModel {
 				
 			case VENTAS_PROMO_1:
 				this.ventasPromo1(mobile);
+				break;
+				
+			case VENTAS_POR_FAMILIA:
+				this.ventasPorFamilia(mobile);
 				break;
 			}
 		}
@@ -3637,7 +3642,9 @@ public class ReportesViewModel extends SimpleViewModel {
 						totalCosto += venta.getTotalCostoGsSinIva();
 					}
 				}
-				double promedio = Utiles.obtenerPorcentajeDelValor((totalImporte - totalCosto), totalCosto);
+				double utilidad = totalImporte - totalCosto;
+				double promedioSobreCosto = Utiles.obtenerPorcentajeDelValor(utilidad, totalCosto);
+				double promedioSobreVenta = Utiles.obtenerPorcentajeDelValor(utilidad, totalImporte);
 				String source = com.yhaguy.gestion.reportes.formularios.ReportesViewModel.SOURCE_VENTAS_UTILIDAD_DETALLADO;
 				if (!formato[0].equals("PDF")) {
 					source = com.yhaguy.gestion.reportes.formularios.ReportesViewModel.SOURCE_VENTAS_UTILIDAD_DETALLADO_SIN_CAB;
@@ -3648,7 +3655,12 @@ public class ReportesViewModel extends SimpleViewModel {
 				params.put("Usuario", getUs().getNombre());
 				params.put("Desde", Utiles.getDateToString(desde, Utiles.DD_MM_YYYY));
 				params.put("Hasta", Utiles.getDateToString(hasta, Utiles.DD_MM_YYYY));
-				params.put("Promedio", Utiles.getNumberFormat(promedio));
+				params.put("Promedio", Utiles.getNumberFormat(promedioSobreCosto));
+				params.put("TOT_VTA_NETA", Utiles.getNumberFormat(totalImporte));
+				params.put("TOT_COSTO", Utiles.getNumberFormat(totalCosto));
+				params.put("TOT_UTILIDAD", Utiles.getNumberFormat((totalImporte - totalCosto)));
+				params.put("TOT_MARGEN_VTA", Utiles.getNumberFormat(promedioSobreVenta));
+				params.put("TOT_MARGEN_COSTO", Utiles.getNumberFormat(promedioSobreCosto));
 				imprimirJasper(source, params, dataSource, formato);
 
 			} catch (Exception e) {
@@ -4224,6 +4236,88 @@ public class ReportesViewModel extends SimpleViewModel {
 				}
 
 				ReporteVentasPromo1 rep = new ReporteVentasPromo1();
+				rep.setApaisada();
+				rep.setDatosReporte(data);
+				
+				if (!mobile) {
+					ViewPdf vp = new ViewPdf();
+					vp.setBotonImprimir(false);
+					vp.setBotonCancelar(false);
+					vp.showReporte(rep, ReportesViewModel.this);
+				} else {
+					rep.ejecutar();
+					Filedownload.save("/reportes/" + rep.getArchivoSalida(), null);
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		/**
+		 * reporte VEN-00033
+		 */
+		private void ventasPorFamilia(boolean mobile) {
+			try {
+				
+				Date desde = filtro.getFechaDesde();
+				Date hasta = filtro.getFechaHasta();
+				
+				Map<String, Double> acum = new HashMap<String, Double>();
+				List<Object[]> data = new ArrayList<Object[]>();
+				
+				if (desde == null)
+					desde = new Date();
+
+				if (hasta == null)
+					hasta = new Date();
+
+				RegisterDomain rr = RegisterDomain.getInstance();
+				
+				List<Venta> ventas = rr.getVentas(desde, hasta, 0);
+				for (Venta venta : ventas) {
+					if (!venta.isAnulado()) {
+						for (VentaDetalle item : venta.getDetalles()) {
+							Tipo flia = item.getArticulo().getArticuloFamilia();
+							if (flia != null) {
+								String desc = flia.getDescripcion();
+								Double total = acum.get(desc);
+								if (total != null) {
+									total += Utiles.getRedondeo(item.getImporteGs());
+									acum.put(desc, total);
+								} else {
+									acum.put(desc, Utiles.getRedondeo(item.getImporteGs()));
+								}
+							}
+						}
+					}
+				}
+				
+				List<NotaCredito> ncs = rr.getNotasCreditoVenta(desde, hasta, 0);
+				for (NotaCredito nc : ncs) {
+					if (!nc.isAnulado()) {
+						for (NotaCreditoDetalle item : nc.getDetallesArticulos()) {
+							Tipo flia = item.getArticulo().getArticuloFamilia();
+							if (flia != null) {
+								String desc = flia.getDescripcion();
+								Double total = acum.get(desc);
+								if (total != null) {
+									total -= Utiles.getRedondeo(item.getImporteGs());
+									acum.put(desc, total);
+								} else {
+									acum.put(desc, Utiles.getRedondeo(item.getImporteGs()) * -1);
+								}
+							}
+						}
+					}				
+				}
+				
+				for (String key : acum.keySet()) {
+					double total = acum.get(key);
+					data.add(new Object[] { key, total });
+				}
+
+				ReporteVentasPorFamilia rep = new ReporteVentasPorFamilia(desde, hasta, getSucursal());
 				rep.setApaisada();
 				rep.setDatosReporte(data);
 				
@@ -17289,6 +17383,58 @@ class ReporteVentasPromo1 extends ReporteYhaguy {
 	private ComponentBuilder getCuerpo() {
 
 		VerticalListBuilder out = cmp.verticalList();
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
+
+		return out;
+	}
+}
+
+/**
+ * Reporte de Ventas Por Familia VEN-00033..
+ */
+class ReporteVentasPorFamilia extends ReporteYhaguy {
+	
+	Date desde;
+	Date hasta;
+	String sucursal = "";
+	
+	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
+	static DatosColumnas col1 = new DatosColumnas("Familia", TIPO_STRING);	
+	static DatosColumnas col2 = new DatosColumnas("Importe Gs.", TIPO_DOUBLE, true);
+	
+
+	public ReporteVentasPorFamilia(Date desde, Date hasta, String sucursal) {
+		this.desde = desde;
+		this.hasta = hasta;
+		this.sucursal = sucursal;
+	}
+
+	static {
+		cols.add(col1);
+		cols.add(col2);
+	}
+
+	@Override
+	public void informacionReporte() {
+		this.setTitulo("Ventas por Familia");
+		this.setDirectorio("ventas");
+		this.setNombreArchivo("VtaFlia-");
+		this.setTitulosColumnas(cols);
+		this.setBody(this.getCuerpo());
+	}
+
+	/**
+	 * cabecera del reporte..
+	 */
+	@SuppressWarnings("rawtypes")
+	private ComponentBuilder getCuerpo() {
+
+		VerticalListBuilder out = cmp.verticalList();
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
+		out.add(cmp.horizontalFlowList()
+				.add(this.textoParValor("Desde", Utiles.getDateToString(this.desde, Utiles.DD_MM_YYYY)))
+				.add(this.textoParValor("Hasta", Utiles.getDateToString(this.hasta, Utiles.DD_MM_YYYY)))
+				.add(this.textoParValor("Sucursal", this.sucursal)));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
 
 		return out;
