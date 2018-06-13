@@ -149,12 +149,13 @@ public class ReportesFiltros {
 	private SucursalApp sucursalDestino;
 	private SucursalApp selectedSucursal;
 
-	// Filtros de Ventas..	
 	private boolean incluirNCR = true;
 	private boolean incluirNCR_CRED = true;
 	private boolean incluirVCR = true;
 	private boolean incluirVCT = true;
 	private boolean incluirREC = true;
+	private boolean incluirCHQ_RECH = true;
+	private boolean incluirPRE = true;
 	
 	private Funcionario vendedor;
 	private String razonSocialVendedor = "";
@@ -1358,5 +1359,21 @@ public class ReportesFiltros {
 
 	public void setFechaHasta2(Date fechaHasta2) {
 		this.fechaHasta2 = fechaHasta2;
+	}
+
+	public boolean isIncluirCHQ_RECH() {
+		return incluirCHQ_RECH;
+	}
+
+	public void setIncluirCHQ_RECH(boolean incluirCHQ_RECH) {
+		this.incluirCHQ_RECH = incluirCHQ_RECH;
+	}
+
+	public boolean isIncluirPRE() {
+		return incluirPRE;
+	}
+
+	public void setIncluirPRE(boolean incluirPRE) {
+		this.incluirPRE = incluirPRE;
 	}
 }
