@@ -7813,6 +7813,23 @@ public class RegisterDomain extends Register {
 		return this.hql(query);
 	}
 	
+	/**
+	 * @return los reportes favoritos por usuario..
+	 */
+	public List<ReporteFavoritos> getReporteFavoritos(String usuario) throws Exception {
+		String query = "select r from ReporteFavoritos r where r.usuario = '" + usuario + "'";
+		return this.hql(query);	
+	}
+	
+	/**
+	 * @return reporte favorito por usuario..
+	 */
+	public ReporteFavoritos getReporteFavorito(String usuario, String codigo) throws Exception {
+		String query = "select r from ReporteFavoritos r where r.usuario = '" + usuario + "'";
+		List<ReporteFavoritos> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			

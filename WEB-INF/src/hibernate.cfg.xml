@@ -192,6 +192,7 @@
 		<mapping resource="com/yhaguy/domain/AjusteStockDetalle.hbm.xml" />
 		
 		<mapping resource="com/yhaguy/domain/Reporte.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/ReporteFavoritos.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/FacturaVentaMRA.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/LlamadaCobranza.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/TareaProgramada.hbm.xml" />

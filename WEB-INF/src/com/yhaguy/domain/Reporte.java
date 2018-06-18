@@ -5,6 +5,15 @@ import com.coreweb.domain.Domain;
 @SuppressWarnings("serial")
 public class Reporte extends Domain {
 	
+	public static final String KEY_TESORERIA = "TES";
+	public static final String KEY_COMPRAS = "COM";
+	public static final String KEY_VENTAS = "VEN";
+	public static final String KEY_STOCK = "STK";
+	public static final String KEY_LOGISTICA = "LOG";
+	public static final String KEY_CONTABILIDAD = "CON";
+	public static final String KEY_RRHH = "RRHH";
+	public static final String KEY_SISTEMA = "SIS";
+	
 	private int modulo;
 	private String codigo;
 	private String descripcion;

@@ -12,11 +12,11 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zul.Bandbox;
 
 import com.coreweb.Config;
-import com.coreweb.control.SoloViewModel;
+import com.coreweb.control.SimpleViewModel;
 import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.Deposito;
 
-public class ReportesSimpleVM extends SoloViewModel {
+public class ReportesSimpleVM extends SimpleViewModel {
 	
 	private ReportesViewModel dato;
 	

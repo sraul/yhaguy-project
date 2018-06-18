@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
+import org.zkoss.bind.annotation.GlobalCommand;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
@@ -32,7 +34,6 @@ import org.zkoss.zul.Window;
 
 import com.coreweb.Config;
 import com.coreweb.componente.ViewPdf;
-import com.coreweb.componente.WindowPopup;
 import com.coreweb.control.SimpleViewModel;
 import com.coreweb.domain.Perfil;
 import com.coreweb.domain.Tipo;
@@ -91,6 +92,7 @@ import com.yhaguy.domain.ReciboDetalle;
 import com.yhaguy.domain.ReciboFormaPago;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Reporte;
+import com.yhaguy.domain.ReporteFavoritos;
 import com.yhaguy.domain.SucursalApp;
 import com.yhaguy.domain.TipoMovimiento;
 import com.yhaguy.domain.Transferencia;
@@ -137,6 +139,7 @@ public class ReportesViewModel extends SimpleViewModel {
 	static final int ID_CONTABILIDAD = 6;
 	static final int ID_RRHH = 7;
 	static final int ID_SISTEMA = 8;
+	static final int ID_FAVORITOS = 9;
 
 	static final MyArray TESORERIA = new MyArray("Tesorería", ID_TESORERIA, "z-icon-briefcase");
 	static final MyArray COMPRAS = new MyArray("Compras", ID_COMPRAS, "z-icon-shopping-cart");
@@ -146,6 +149,7 @@ public class ReportesViewModel extends SimpleViewModel {
 	static final MyArray CONTABILIDAD = new MyArray("Contabilidad", ID_CONTABILIDAD, "z-icon-bar-chart-o");
 	static final MyArray RRHH = new MyArray("Recursos Humanos", ID_RRHH, "z-icon-user");
 	static final MyArray SISTEMA = new MyArray("Sistema", ID_SISTEMA, "z-icon-cog");
+	static final MyArray FAVORITOS = new MyArray("Favoritos", ID_FAVORITOS, "z-icon-star");
 	
 	static final String GRUPO_TESORERIA_CAJAS = " CAJAS";
 	static final String GRUPO_TESORERIA_BANCOS = " BANCOS";
@@ -170,6 +174,7 @@ public class ReportesViewModel extends SimpleViewModel {
 	static final String GRUPO_CONTABILIDAD_CIERRE_PERIODO = " CIERRE-PERIODO";
 	static final String GRUPO_RRHH_RRHH = " RR.HH";
 	static final String GRUPO_SISTEMA_SISTEMA = " SISTEMA";
+	static final String GRUPO_FAVORITOS_FAVORITOS = " FAVORITOS";
 
 	private MyArray selectedItem = TESORERIA;
 	private MyArray selectedReporte;
@@ -177,6 +182,7 @@ public class ReportesViewModel extends SimpleViewModel {
 
 	private ReportesFiltros filtro = new ReportesFiltros();
 	private List<MyArray> reportes = new ArrayList<MyArray>();
+	private Map<String, String> favoritos = new HashMap<String, String>();
 
 	private Window win;
 	
@@ -192,11 +198,13 @@ public class ReportesViewModel extends SimpleViewModel {
 				this.filtro.setFilterFechaMM("0" + this.filtro.getFilterFechaMM());
 			}
 			this.filtro.setFecha(Utiles.getDateToString(Utiles.agregarDias(new Date(), -1), "yyyy-MM-dd"));
+			
+			this.cargarFavoritos();
+			this.cargarReportes();
+				
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	
-		this.cargarReportes();
+		}	
 	}
 
 	@AfterCompose(superclass = true)
@@ -207,7 +215,9 @@ public class ReportesViewModel extends SimpleViewModel {
 		return (UtilDTO) this.getDtoUtil();
 	}
 
-	/****************** COMANDOS *******************/
+	/**
+	 * COMANDOS..
+	 */
 
 	@Command
 	@NotifyChange("*")
@@ -247,6 +257,10 @@ public class ReportesViewModel extends SimpleViewModel {
 		case ID_SISTEMA:
 			this.selectedGrupo = GRUPO_SISTEMA_SISTEMA;
 			break;
+			
+		case ID_FAVORITOS:
+			this.selectedGrupo = GRUPO_FAVORITOS_FAVORITOS;
+			break;
 		}
 	}
 	
@@ -260,6 +274,12 @@ public class ReportesViewModel extends SimpleViewModel {
 	@NotifyChange("*")
 	public void imprimirMobile() throws Exception {
 		this.imprimirMobile_();
+	}
+	
+	@GlobalCommand
+	@NotifyChange("*")
+	public void imprimirReporte() throws Exception {
+		this.imprimirReporte_();
 	}
 	
 	@Command
@@ -282,6 +302,13 @@ public class ReportesViewModel extends SimpleViewModel {
 		this.loguearse_(comp1, comp2);
 	}
 	
+	@Command
+	public void setFavoritos(@BindingParam("item") MyArray item) 
+		throws Exception {
+		this.setFavoritos_(item);
+		BindUtils.postNotifyChange(null, null, item, "*");
+	}
+	
 	/***********************************************/
 
 	/****************** FUNCIONES ******************/
@@ -289,7 +316,7 @@ public class ReportesViewModel extends SimpleViewModel {
 	/**
 	 * levanta los reportes de la bd..
 	 */
-	public void cargarReportes() {
+	private void cargarReportes() {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {
 			List<Reporte> reps = rr.getReportes();
@@ -300,10 +327,22 @@ public class ReportesViewModel extends SimpleViewModel {
 				m.setPos2(rep.getDescripcion().toUpperCase());
 				m.setPos3(rep.getModulo());
 				m.setPos4(rep.getAuxi());
+				m.setPos5(this.favoritos.get(rep.getCodigo()) != null);
 				this.reportes.add(m);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * levanta los favoritos de la bd..
+	 */
+	private void cargarFavoritos() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ReporteFavoritos> favs = rr.getReporteFavoritos(this.getLoginNombre());
+		for (ReporteFavoritos fav : favs) {
+			this.favoritos.put(fav.getCodigoReporte(), fav.getCodigoReporte());
 		}
 	}
 	
@@ -332,47 +371,66 @@ public class ReportesViewModel extends SimpleViewModel {
 	private void imprimir_() throws Exception {
 
 		this.inicializarFiltros();
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put(Config.DATO_SOLO_VIEW_MODEL, this);
+		this.win = (Window) Executions.createComponents(ZUL_PARAMETROS, this.mainComponent, params);
+		this.win.doModal();
+	}
+	
+	/**
+	 * despliega el reporte..
+	 */
+	private void imprimirReporte_() throws Exception {
 
-		WindowPopup wp = new WindowPopup();
-		wp.setDato(this);
-		wp.setHigth("475px");
-		wp.setWidth("430px");
-		wp.setModo(WindowPopup.NUEVO);
-		wp.setTitulo("Parámetros del Reporte..");
-		wp.show(ZUL_PARAMETROS);
+		switch (this.getIdModulo()) {
 
-		if (wp.isClickAceptar()) {
+		case ID_TESORERIA:
+			new ReportesTesoreria(this.getCodigoReporte(), this, false);
+			break;
 
-			switch (this.getIdModulo()) {
+		case ID_VENTAS:
+			new ReportesVentas(this.getCodigoReporte(), false);
+			break;
 
-			case ID_TESORERIA:
-				new ReportesTesoreria(this.getCodigoReporte(), this, false);
-				break;
+		case ID_STOCK:
+			new ReportesDeStock(this.getCodigoReporte());
+			break;
 
-			case ID_VENTAS:
-				new ReportesVentas(this.getCodigoReporte(), false);
-				break;
+		case ID_COMPRAS:
+			new ReportesDeCompras(this.getCodigoReporte());
+			break;
 
-			case ID_STOCK:
-				new ReportesDeStock(this.getCodigoReporte());
-				break;
+		case ID_LOGISTICA:
+			new ReportesDeLogistica(this.getCodigoReporte());
+			break;
 
-			case ID_COMPRAS:
-				new ReportesDeCompras(this.getCodigoReporte());
-				break;
-
-			case ID_LOGISTICA:
-				new ReportesDeLogistica(this.getCodigoReporte());
-				break;
-
-			case ID_CONTABILIDAD:
-				new ReportesDeContabilidad(this.getCodigoReporte(), false);
-				break;
-				
-			case ID_SISTEMA:
-				new ReportesDeSistema(this.getCodigoReporte());
-				break;
+		case ID_CONTABILIDAD:
+			new ReportesDeContabilidad(this.getCodigoReporte(), false);
+			break;
+			
+		case ID_SISTEMA:
+			new ReportesDeSistema(this.getCodigoReporte());
+			break;
+			
+		case ID_FAVORITOS:
+			String cod = this.getCodigoReporte();
+			if (cod.startsWith(Reporte.KEY_TESORERIA)) {
+				new ReportesTesoreria(cod, this, false);
+			} else if(cod.startsWith(Reporte.KEY_VENTAS)) {
+				new ReportesVentas(cod, false);
+			} else if(cod.startsWith(Reporte.KEY_STOCK)) {
+				new ReportesDeStock(cod);
+			} else if(cod.startsWith(Reporte.KEY_COMPRAS)) {
+				new ReportesDeCompras(cod);
+			} else if(cod.startsWith(Reporte.KEY_LOGISTICA)) {
+				new ReportesDeLogistica(cod);
+			} else if(cod.startsWith(Reporte.KEY_CONTABILIDAD)) {
+				new ReportesDeContabilidad(cod, false);
+			} else if(cod.startsWith(Reporte.KEY_SISTEMA)) {
+				new ReportesDeSistema(cod);
 			}
+			break;
 		}
 	}
 	
@@ -416,7 +474,7 @@ public class ReportesViewModel extends SimpleViewModel {
 	/**
 	 * Despliega el reporte en un pdf para su impresion..
 	 */
-	public void imprimirJasper(String source, Map<String, Object> parametros,
+	private void imprimirJasper(String source, Map<String, Object> parametros,
 			JRDataSource dataSource, Object[] format) {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("source", source);
@@ -429,6 +487,27 @@ public class ReportesViewModel extends SimpleViewModel {
 						com.yhaguy.gestion.reportes.formularios.ReportesViewModel.ZUL_REPORTES,
 						this.mainComponent, params);
 		this.win.doModal();
+	}
+	
+	/**
+	 * setea los favoritos..
+	 */
+	private void setFavoritos_(MyArray item) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		String cod = (String) item.getPos1();
+		if (this.favoritos.get(cod) != null) {
+			item.setPos5(false);
+			this.favoritos.remove(cod);
+			ReporteFavoritos fav = rr.getReporteFavorito(this.getLoginNombre(), cod);
+			if(fav != null) rr.deleteObject(fav);
+		} else {
+			item.setPos5(true);
+			this.favoritos.put(cod, cod);
+			ReporteFavoritos fav = new ReporteFavoritos();
+			fav.setUsuario(this.getLoginNombre());
+			fav.setCodigoReporte(cod);
+			rr.saveObject(fav, this.getLoginNombre());
+		}
 	}
 	
 	/**
@@ -485,6 +564,7 @@ public class ReportesViewModel extends SimpleViewModel {
 		out.add(CONTABILIDAD);
 		out.add(RRHH);
 		out.add(SISTEMA);
+		out.add(FAVORITOS);
 		return out;
 	}
 	
@@ -537,6 +617,10 @@ public class ReportesViewModel extends SimpleViewModel {
 		case ID_SISTEMA:
 			out.add(GRUPO_SISTEMA_SISTEMA);
 			break;
+			
+		case ID_FAVORITOS:
+			out.add(GRUPO_FAVORITOS_FAVORITOS);
+			break;
 		}
 		return out;
 	}
@@ -562,11 +646,19 @@ public class ReportesViewModel extends SimpleViewModel {
 	public List<MyArray> getReportesSistema() {
 		List<MyArray> out = new ArrayList<MyArray>();
 		int modulo = (int) this.selectedItem.getPos2();
-		for (MyArray reporte : this.reportes) {
-			int mod = (int) reporte.getPos3();
-			String grupo = (String) reporte.getPos4();
-			if (mod == modulo && (grupo.equals(this.selectedGrupo.trim())))
-				out.add(reporte);
+		if (modulo == ID_FAVORITOS) {
+			for (MyArray reporte : this.reportes) {
+				String cod = (String) reporte.getPos1();
+				if (this.favoritos.get(cod) != null)
+					out.add(reporte);
+			}
+		} else {
+			for (MyArray reporte : this.reportes) {
+				int mod = (int) reporte.getPos3();
+				String grupo = (String) reporte.getPos4();
+				if (mod == modulo && (grupo.equals(this.selectedGrupo.trim())))
+					out.add(reporte);
+			}
 		}
 		return out;
 	}

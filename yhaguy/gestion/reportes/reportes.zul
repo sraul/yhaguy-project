@@ -64,15 +64,20 @@
 				<listhead>
 					<listheader label="Código" width="150px"/>
 					<listheader label="Descripción"/>
+					<listheader label="Favoritos" width="150px" align="center"/>
 				</listhead>
 				<template name="model">
 					<listitem>
 						<listcell label="@load(each.pos1)"/>
 						<listcell label="@load(each.pos2)"/>
+						<listcell>
+							<a iconSclass="@load(each.pos5 ? 'z-icon-star' : 'z-icon-star-o')"
+								onClick="@command('setFavoritos', item=each)"></a>
+						</listcell>
 					</listitem>
 				</template>
 				<listfoot>
-					<listfooter span="2" align="left">
+					<listfooter span="3" align="left">
 						<hlayout>
 							<field value="ítems"/>
 						</hlayout>
