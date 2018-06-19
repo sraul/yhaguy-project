@@ -25,7 +25,9 @@ public class ReportesSimpleVM extends SimpleViewModel {
 	@Init(superclass = true)
 	public void init(@ExecutionArgParam(Config.DATO_SOLO_VIEW_MODEL) ReportesViewModel dato) {
 		this.dato = dato;		
+		String labelF = this.getUs().formLabel(dato.getAliasFormularioCorriente());
 		this.setAliasFormularioCorriente(dato.getAliasFormularioCorriente());	
+		this.setTextoFormularioCorriente(labelF);
 	}
 	
 	@AfterCompose(superclass = true)
