@@ -1679,10 +1679,11 @@ public class VentaControlBody extends BodyApp {
 			out.setId(cli.getListaPrecio().getId());
 			out.setPos1(cli.getListaPrecio().getDescripcion());
 			out.setPos2(cli.getListaPrecio().getMargen());
+			out.setPos3(cli.getListaPrecio().getFormula());
 		} else {
 			ArticuloListaPrecio lp = rr.getListaDePrecio(2);
 			if (lp != null) {
-				out = new MyArray(lp.getDescripcion(), lp.getMargen());
+				out = new MyArray(lp.getDescripcion(), lp.getMargen(), lp.getFormula());
 				out.setId(lp.getId());
 			}
 		}

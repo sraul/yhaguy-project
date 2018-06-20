@@ -200,6 +200,7 @@ public class VentaItemControl extends SoloViewModel {
 			this.det.setDescripcion(desc);
 			this.det.setStockDisponible(disp);
 			this.det.setPrecioGs(0);
+			this.det.setCantidad(0);
 			this.det.setCostoIvaIncluido(false);
 			this.det.setUbicacion(this.getUbicacion(idAr));
 			this.cant.focus();
@@ -268,7 +269,7 @@ public class VentaItemControl extends SoloViewModel {
 	 * Calcula los datos del Precio Final a partir del unitario
 	 * @param el precio unitario en moneda local..
 	 */
-	public void reCalcularPrecio(){
+	public void reCalcularPrecio() {
 		double precioUnitario = this.det.getPrecioVentaUnitarioGs();
 		
 		double descuentoGs = this.det.getDescuentoUnitarioGs();
