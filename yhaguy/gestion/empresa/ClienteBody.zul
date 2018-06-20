@@ -10,30 +10,27 @@
 				<field value="Tipo:" />
 				<combobox model="@load(vm.dtoUtil.tipoCliente)"
 					value="@load(vm.dto.tipoCliente)"
-					selectedItem="@bind(vm.dto.tipoCliente)" width="200px"
+					selectedItem="@bind(vm.dto.tipoCliente)" hflex="true"
 					constraint="${vm.check.noVacio}">
 					<template name="model">
 						<comboitem label="@load(each)" />
 					</template>
 				</combobox>
 			</row>
-
-
 			<row>
 				<field value="Categoria:" />
 				<combobox model="@load(vm.dtoUtil.categoriaCliente)"
 					value="@load(vm.dto.categoriaCliente)"
-					selectedItem="@bind(vm.dto.categoriaCliente)" width="200px"
+					selectedItem="@bind(vm.dto.categoriaCliente)" hflex="true"
 					constraint="${vm.check.noVacio}">
 					<template name="model">
 						<comboitem label="@load(each)" />
 					</template>
 				</combobox>
-			</row>
-			
+			</row>		
 			<row>
 				<field value="Cobrador:" />
-				<combobox  width="200px" model="@load(vm.cobradores)"
+				<combobox  hflex="true" model="@load(vm.cobradores)"
 					value="@load(vm.dto.cobrador.pos1)"
 					selectedItem="@bind(vm.dto.cobrador)"
 					instant="true">
@@ -42,10 +39,20 @@
 					</template>
 				</combobox>
 			</row>
-
+			<row>
+				<field value="Lista de Precio:" />
+				<combobox model="@load(vm.listasDePrecio)"
+					value="@load(vm.dto.listaPrecio.pos1.toString().toUpperCase())"
+					selectedItem="@bind(vm.dto.listaPrecio)" hflex="true"
+					instant="true">
+					<template name="model">
+						<comboitem label="@load(each.pos1.toString().toUpperCase())" />
+					</template>
+				</combobox>
+			</row>
 		</rows>
 	</grid>
-
+	<space></space>
 	<vlayout hflex="true" vflex="true">
 		<div style="border-bottom: solid 1px;margin-bottom:2px">
 			<label value="Cheques Rechazados.." style="font-style:italic"></label>

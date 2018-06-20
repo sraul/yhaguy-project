@@ -5,9 +5,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
-
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -45,6 +42,7 @@ import com.yhaguy.Configuracion;
 import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.ArticuloDeposito;
+import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.Deposito;
@@ -58,6 +56,9 @@ import com.yhaguy.gestion.comun.ReservaDTO;
 import com.yhaguy.gestion.comun.ReservaDetalleDTO;
 import com.yhaguy.gestion.empresa.ClienteDTO;
 import com.yhaguy.util.reporte.ReporteYhaguy;
+
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 
 public class VentaControlBody extends BodyApp {	
 	
@@ -816,7 +817,7 @@ public class VentaControlBody extends BodyApp {
 	public void insertarPedidoDetalle() throws Exception {		
 		VentaDetalleDTO det = new VentaDetalleDTO();
 		det.setTipoIVA(this.getIva10());
-		det.setListaPrecio(this.getListasDePrecio().get(0));
+		det.setListaPrecio(this.getListaPrecio());
 		det.getArticulo().setPos5(false);
 		boolean ok = this.abrirVentanaInsertarDetalle(det, true);
 		if (ok == true){
@@ -1665,6 +1666,27 @@ public class VentaControlBody extends BodyApp {
 		if (string.length() > max)
 			return string.substring(0, max) + "...";
 		return string;
+	}
+	
+	/**
+	 * @return la lista de precio definida al cliente..
+	 */
+	private MyArray getListaPrecio() throws Exception {
+		MyArray out = new MyArray();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Cliente cli = rr.getClienteById(this.dto.getCliente().getId());
+		if (cli.getListaPrecio() != null) {
+			out.setId(cli.getListaPrecio().getId());
+			out.setPos1(cli.getListaPrecio().getDescripcion());
+			out.setPos2(cli.getListaPrecio().getMargen());
+		} else {
+			ArticuloListaPrecio lp = rr.getListaDePrecio(2);
+			if (lp != null) {
+				out = new MyArray(lp.getDescripcion(), lp.getMargen());
+				out.setId(lp.getId());
+			}
+		}
+		return out;
 	}
 	
 	/**

@@ -25,8 +25,11 @@
 			<column name="limiteCredito" default="0" />
 		</property>
 		
+		<many-to-one name="listaPrecio" class="com.yhaguy.domain.ArticuloListaPrecio"
+			column="id_listaprecio" lazy="false" />
+		
 		<many-to-one name="empresa" class="com.yhaguy.domain.Empresa"
-			column="idempresa" lazy="false" cascade="all" />
+			column="idempresa" lazy="false" />
 
 		<many-to-one name="estadoCliente" class="com.coreweb.domain.Tipo"
 			column="idestado" lazy="false" />

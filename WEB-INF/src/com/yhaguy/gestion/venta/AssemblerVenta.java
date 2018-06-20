@@ -18,7 +18,6 @@ import com.yhaguy.domain.Venta;
 import com.yhaguy.domain.VentaDetalle;
 import com.yhaguy.domain.VentaFiscal;
 import com.yhaguy.gestion.caja.recibos.AssemblerReciboFormaPago;
-import com.yhaguy.gestion.comun.AssemblerReserva;
 import com.yhaguy.gestion.empresa.AssemblerCliente;
 import com.yhaguy.gestion.empresa.ClienteDTO;
 
@@ -73,9 +72,6 @@ public class AssemblerVenta extends Assembler {
 		this.listaDTOToListaDomain(dto, domain, "detalles", true, true,
 				new AssemblerVentaPedidoDetalle());
 
-		this.hijoDtoToHijoDomain(dto, domain, "reserva",
-				new AssemblerReserva(), true);
-
 		// genera la venta fiscal..
 		if ((dto.esNuevo() == true)
 				&& ((dto.isFacturaContado() == true) || (dto.isFacturaCredito() == true))) {
@@ -113,7 +109,6 @@ public class AssemblerVenta extends Assembler {
 				new AssemblerReciboFormaPago(dto.getNumero()));
 		this.listaDomainToListaDTO(dom, dto, "detalles",
 				new AssemblerVentaPedidoDetalle());
-		this.hijoDomainToHijoDTO(domain, dto, "reserva", new AssemblerReserva());
 
 		return dto;
 	}

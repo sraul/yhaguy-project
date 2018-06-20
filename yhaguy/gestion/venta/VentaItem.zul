@@ -88,9 +88,10 @@
 			</row>
 			<row visible="@load(vm.det.cantidad eq 0? 'false':'true')">
 				<field value="Lista de Precio:" />
+				<cell colspan="3">
 				<combobox
 					id="cmblistaPrecio"
-					model="@load(vm.listasDePrecio)"
+					model="@load(vm.listasDePrecioHabilitadas)"
 					selectedItem="@bind(vm.det.listaPrecio)"
 					value="@load(vm.det.listaPrecio.pos1)"
 					instant="true"
@@ -100,6 +101,7 @@
 						<comboitem label="@load(each.pos1)" />
 					</template>
 				</combobox>
+				</cell>
 			</row>
 			<row visible="@load(vm.det.cantidad eq 0? 'false':'true')">
 				<button label="Ver Historial" 
@@ -127,7 +129,8 @@
 				<hlayout>
 					<guaranibox id="dbxPrecio"
 						value="@bind(vm.det.precioGs)" 
-						onChange="@command('validarPrecio', comp=self)"/>
+						onChange="@command('validarPrecio', comp=self)"
+						readonly="true" />
 					<label value="@load(vm.utilDto.simboloMonedaLocal)"
 						sclass="label-moneda" />
 				</hlayout>

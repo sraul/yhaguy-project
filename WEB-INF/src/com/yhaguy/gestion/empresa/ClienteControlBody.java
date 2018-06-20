@@ -21,6 +21,7 @@ import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 import com.yhaguy.ID;
 import com.yhaguy.UtilDTO;
+import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.Funcionario;
@@ -198,8 +199,6 @@ public class ClienteControlBody extends EmpresaControlBody {
 			
 		}
 	}	
-	
-	//====================================================================================
 
 	@Command
 	public void ventana() throws Exception{
@@ -209,9 +208,6 @@ public class ClienteControlBody extends EmpresaControlBody {
 		w.show("/yhaguy/prueba/Prueba.zul");
 		
 	}
-
-	
-	//============================= VALIDAR FORMULARIO ===================================
 	
 	private String mensajeError = "";
 	
@@ -224,12 +220,14 @@ public class ClienteControlBody extends EmpresaControlBody {
 	public String textoErrorVerificarGrabar() {
 		return this.mensajeError;
 	}
-
-
 	
 	private boolean validarFormulario() {
 		return true;
 	}
+	
+	/**
+	 * GETS / SETS
+	 */
 	
 	public boolean isConsultaCtaCteDisabled() throws Exception{
 		if (this.operacionHabilitada("ConsultarCtaCteClientesABM", ID.F_CLIENTE_ABM_BODY))
@@ -247,6 +245,23 @@ public class ClienteControlBody extends EmpresaControlBody {
 			return false;
 		return true;
 		
+	}
+	
+	/**
+	 * @return las listas de precio..
+	 * pos1:descripcion
+	 * pos2:margen
+	 */
+	public List<MyArray> getListasDePrecio() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloListaPrecio> precios = rr.getListasDePrecio();
+		List<MyArray> out = new ArrayList<MyArray>();
+		for (ArticuloListaPrecio precio : precios) {
+			MyArray mprecio = new MyArray(precio.getDescripcion(), precio.getMargen(), precio.getFormula());
+			mprecio.setId(precio.getId());
+			out.add(mprecio);
+		}
+		return out;
 	}
 	
 	/**

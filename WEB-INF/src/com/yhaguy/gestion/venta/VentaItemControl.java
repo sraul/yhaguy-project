@@ -147,8 +147,8 @@ public class VentaItemControl extends SoloViewModel {
 				this.tipo));
 		wp.setModo(modo);
 		wp.setTitulo("Ítem de Venta");
-		wp.setWidth("540px");
-		wp.setHigth("510px");
+		wp.setWidth("600px");
+		wp.setHigth("550px");
 		wp.show(Configuracion.VENTA_ITEM_ZUL);
 	}
 
@@ -199,7 +199,6 @@ public class VentaItemControl extends SoloViewModel {
 			this.det.getArticulo().setPos4(desc);
 			this.det.setDescripcion(desc);
 			this.det.setStockDisponible(disp);
-			this.det.setListaPrecio(null);
 			this.det.setPrecioGs(0);
 			this.det.setCostoIvaIncluido(false);
 			this.det.setUbicacion(this.getUbicacion(idAr));
@@ -530,7 +529,6 @@ public class VentaItemControl extends SoloViewModel {
 			m.mensajePopupTemporal("Stock insuficiente", "error", comp);
 			this.det.setCantidad(cantInicial);
 		}
-		this.det.setListaPrecio(this.getListasDePrecio().get(0));
 		this.obtenerPrecioVenta();
 		this.dbxPrecio.focus();
 	}
@@ -638,7 +636,9 @@ public class VentaItemControl extends SoloViewModel {
 		}	
 	}
 	
-	/****************************************************************************/
+	/**
+	 * GETS / SETS 
+	 */
 	
 	/**
 	 * @return las listas de precio..
@@ -654,6 +654,17 @@ public class VentaItemControl extends SoloViewModel {
 			mprecio.setId(precio.getId());
 			out.add(mprecio);
 		}
+		return out;
+	}
+	
+	/**
+	 * @return las listas de precio habilitadas por cliente..
+	 * pos1:descripcion
+	 * pos2:margen
+	 */
+	public List<MyArray> getListasDePrecioHabilitadas() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		out.add(this.det.getListaPrecio());
 		return out;
 	}
 	

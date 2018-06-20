@@ -14,9 +14,9 @@ import com.yhaguy.util.Utiles;
 
 public class AssemblerCliente extends Assembler {
 
-	protected static String[] camposCtaCtb = AssemblerProveedor.camposCtaCtb;
-	
+	protected static String[] camposCtaCtb = AssemblerProveedor.camposCtaCtb;	
 	private static String[] attFuncionario = { "razonSocial" };
+	private static String[] attListaPrecio = { "descripcion" };
 
 	private static String[] attIgualesCliente = { "prioridad", "completo",
 			"idPersonaJedi", "observaciones", "limiteCredito", "ventaCredito" };
@@ -34,6 +34,7 @@ public class AssemblerCliente extends Assembler {
 		this.myPairToDomain(dto, domain, "tipoCliente");
 		this.myArrayToDomain(dto, domain, "cuentaContable");
 		this.myArrayToDomain(dto, domain, "cobrador");
+		this.myArrayToDomain(dto, domain, "listaPrecio");
 		this.hijoDtoToHijoDomain(dto, domain, "empresa", new AssemblerEmpresa(), true);
 		this.listaDTOToListaDomain(dto, domain, "contactosInternos", true,
 				true, new AssemblerContactoInterno());
@@ -52,6 +53,7 @@ public class AssemblerCliente extends Assembler {
 		this.domainToMyPair(domain, dto, "tipoCliente");
 		this.domainToMyArray(domain, dto, "cuentaContable", camposCtaCtb);
 		this.domainToMyArray(domain, dto, "cobrador", attFuncionario);
+		this.domainToMyArray(domain, dto, "listaPrecio", attListaPrecio);
 		this.hijoDomainToHijoDTO(domain, dto, "empresa", new AssemblerEmpresa());
 		this.listaDomainToListaDTO(domain, dto, "contactosInternos",
 				new AssemblerContactoInterno());

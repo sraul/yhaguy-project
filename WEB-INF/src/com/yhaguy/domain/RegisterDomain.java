@@ -2313,6 +2313,19 @@ public class RegisterDomain extends Register {
 		}
 		return null;
 	}
+	
+	/**
+	 * @return el Cliente segun razonsocial..
+	 */
+	public Cliente getClienteByRazonSocial(String razonsocial) throws Exception {
+		String query = "Select c from Cliente c where c.empresa.razonSocial = '"
+				+ razonsocial + "'";
+		List<Cliente> out = this.hql(query);
+		if (out.size() > 0) {
+			return out.get(0);
+		}
+		return null;
+	}
 
 	public Date getFechaUltimaMigracion(IiD caja) throws Exception {
 		String query = "select max(m.fechaHasta) from VentaMigracion m where m.idCaja = "
@@ -2421,6 +2434,15 @@ public class RegisterDomain extends Register {
 	public List<ArticuloListaPrecio> getListasDePrecio() throws Exception {
 		String query = "select l from ArticuloListaPrecio l where l.dbEstado != 'D' and l.activo = 'TRUE' order by l.id";
 		return this.hql(query);
+	}
+	
+	/**
+	 * @return la lista de precio segun id..
+	 */
+	public ArticuloListaPrecio getListaDePrecio(long id) throws Exception {
+		String query = "select l from ArticuloListaPrecio l where l.id = " + id + "";
+		List<ArticuloListaPrecio> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
 	}
 
 	/**

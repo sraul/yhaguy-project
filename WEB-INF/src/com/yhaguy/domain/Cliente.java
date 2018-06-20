@@ -25,6 +25,7 @@ public class Cliente extends Domain {
 	private Tipo estadoCliente;
 	private Tipo categoriaCliente;
 	private Tipo tipoCliente;
+	private ArticuloListaPrecio listaPrecio;
 	private CuentaContable cuentaContable;
 	private Set<ContactoInterno> contactosInternos = new HashSet<ContactoInterno>();
 	private Funcionario cobrador;
@@ -313,5 +314,13 @@ public class Cliente extends Domain {
 
 	public void setCobrador(Funcionario cobrador) {
 		this.cobrador = cobrador;
+	}
+
+	public ArticuloListaPrecio getListaPrecio() {
+		return listaPrecio;
+	}
+
+	public void setListaPrecio(ArticuloListaPrecio listaPrecio) {
+		this.listaPrecio = listaPrecio;
 	}
 }

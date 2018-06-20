@@ -15,8 +15,8 @@
 
 		<tabpanel vflex="true" style="padding:15px">
 			<hlayout valign="top">
-				<vlayout hflex="true">
-					<grid sclass="vgrid" hflex="true">
+				<vlayout hflex="true" style="padding:20px">
+					<grid sclass="vgrid" width="800px">
 						<columns>
 							<column width="30%" />
 							<column width="70%" />
@@ -25,15 +25,13 @@
 							<row>
 								<field value="Razon Social:" />
 								<textbox
-									value="@bind(vm.dtoEmp.razonSocial)"
-									constraint="${vm.check.noVacio}" id="t1"
+									value="@bind(vm.dtoEmp.razonSocial)" id="t1"
 									onChange="@command('copiarRazonSocial')" instant="true"
 									hflex="true" />
 							</row>
 							<row>
 								<field value="Nom. Fantasía:" />
-								<textbox value="@bind(vm.dtoEmp.nombre)"
-									constraint="${vm.check.noVacio}" id="copy" hflex="true" />
+								<textbox value="@bind(vm.dtoEmp.nombre)" id="copy" hflex="true" />
 							</row>
 							<row>
 								<field value="Rubro:" />
@@ -45,10 +43,8 @@
 											selectedItem="@bind(vm.selectedRubroEmpresa)">
 										</listbox>
 										<hlayout>
-											<button label="Agregar"
-												onClick="@command('agregarRubro')" />
-											<button label="Eliminar"
-												onClick="@command('eliminarRubro')" />
+											<button label="Agregar" onClick="@command('agregarRubro')" />
+											<button label="Eliminar" onClick="@command('eliminarRubro')" />
 										</hlayout>
 									</vlayout>
 									<textbox placeholder="Descripción.."
@@ -69,30 +65,6 @@
 													label="@load(mone.text)" />
 											</template>
 										</listbox>
-										<hlayout>
-											<button label="Default"
-												onClick="@command('defaultMoneda')" />
-											<button label="Eliminar"
-												onClick="@command('eliminarMoneda')" />
-										</hlayout>
-									</vlayout>
-									<vlayout>
-										<hlayout>
-											<field value="Def:" />
-											<label
-												value="@load(vm.dtoEmp.moneda)" />
-										</hlayout>
-										<combobox
-											model="@load(vm.dtoUtil.monedas)" width="100px"
-											value="@load(vm.selectedMoneda)"
-											selectedItem="@bind(vm.selectedMoneda)">
-											<template name="model">
-												<comboitem
-													label="@load(each)" />
-											</template>
-										</combobox>
-										<button label="Agregar"
-											onClick="@command('agregarMoneda')" />
 									</vlayout>
 								</hlayout>
 							</row>
@@ -105,18 +77,6 @@
 						</rows>
 					</grid>
 				</vlayout>
-				<space />
-				<div sclass="rounded" hflex="true" vflex="true">
-						<gmaps version="3.26" id="gmaps" hflex="true"
-							lat="-25.3054494" lng="-57.5351386"
-							zoom="9"
-							vflex="true" showSmallCtrl="true" protocol="https">
-							<gmarker id="marker" lat="@load(vm.dtoEmp.latitud)"
-								lng="@load(vm.dtoEmp.longitud)" 
-								open="@load(!vm.dtoEmp.esNuevo())"
-								content="@load(vm.dtoEmp.direccion)"/>
-						</gmaps>
-					</div>
 			</hlayout>
 		</tabpanel>
 

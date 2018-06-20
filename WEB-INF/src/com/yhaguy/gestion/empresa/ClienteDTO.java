@@ -15,7 +15,7 @@ public class ClienteDTO extends DTO {
 	private MyPair estadoCliente;
 	private MyPair categoriaCliente;
 	private MyPair tipoCliente;
-	List<ContactoInternoDTO> contactosInternos = new ArrayList<ContactoInternoDTO>();
+	
 	private MyArray cuentaContable;
 	private long prioridad = 0;
 	private boolean completo = false;
@@ -23,6 +23,9 @@ public class ClienteDTO extends DTO {
 	private boolean ventaCredito = false;
 	private double limiteCredito = 0;	
 	private MyArray cobrador;
+	private MyArray listaPrecio;
+	
+	private List<ContactoInternoDTO> contactosInternos = new ArrayList<ContactoInternoDTO>();
 	private List<MyArray> chequesRechazados = new ArrayList<MyArray>();
 	
 	/**
@@ -194,6 +197,14 @@ public class ClienteDTO extends DTO {
 
 	public void setCobrador(MyArray cobrador) {
 		this.cobrador = cobrador;
+	}
+
+	public MyArray getListaPrecio() {
+		return listaPrecio;
+	}
+
+	public void setListaPrecio(MyArray listaPrecio) {
+		this.listaPrecio = listaPrecio;
 	}
 
 }
