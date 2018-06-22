@@ -48,6 +48,7 @@ public class ReportesViewModel {
 	public static final String SOURCE_RESUMEN_ = "/reportes/jasper/ResumenCajaPlanilla_.jasper";
 	public static final String SOURCE_SALDO_DET = "/reportes/jasper/CtaCteSaldosDetallado.jasper";
 	public static final String SOURCE_SALDO_DET_DHS = "/reportes/jasper/CtaCteSaldosDetalladoDHS.jasper";
+	public static final String SOURCE_SALDO_DET_DHS_ = "/reportes/jasper/CtaCteSaldosDetalladoDHS_.jasper";
 	public static final String SOURCE_SALDO_CONSOLIDADO_DHS = "/reportes/jasper/CtaCteSaldosConsolidadoDHS.jasper";
 	public static final String SOURCE_SALDO_CONSOLIDADO = "/reportes/jasper/CtaCteSaldosConsolidado.jasper";
 	public static final String SOURCE_CTA_CTE_SALDOS_DESGLOSADO = "/reportes/jasper/CtaCteSaldosDesglosado.jasper";

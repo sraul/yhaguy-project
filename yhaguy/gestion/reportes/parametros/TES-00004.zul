@@ -1,6 +1,6 @@
 <grid sclass="vgrid">
 	<columns>
-		<column width="40%" />
+		<column width="50%" />
 		<column/>
 	</columns>
 	<rows>
@@ -90,8 +90,12 @@
 			</combobox>
 		</row>
 		<row>
-			<field value="Fraccionado en cuotas:" />
-			<checkbox checked="@bind(vm.dato.filtro.fraccionado)"></checkbox>
+			<field value="Incluir Cheques Rechazados:" />
+			<checkbox checked="@bind(vm.dato.filtro.incluirCHQ_RECH)"></checkbox>
+		</row>
+		<row>
+			<field value="Incluir Prestamos Internos:" />
+			<checkbox checked="@bind(vm.dato.filtro.incluirPRE)"></checkbox>
 		</row>
 		<row>
 			<field value="Formato:" />

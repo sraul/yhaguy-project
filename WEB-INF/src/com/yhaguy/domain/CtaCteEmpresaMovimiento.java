@@ -90,10 +90,7 @@ public class CtaCteEmpresaMovimiento extends Domain {
 	/**
 	 * @return true si el vto esta dentro del rango de dias..
 	 */
-	public boolean isDiasVencidosEntre(long desde, long hasta, boolean avencer) {
-		if (!avencer) {
-			return this.isDiasVencidosEntre(desde, hasta);
-		}
+	public boolean isDiasVencidosEntre_(long desde, long hasta) {
 		Misc misc = new Misc();
 		long vto = misc.diasEntreFechas(this.fechaVencimiento, new Date());
 		return (vto >= desde) && (vto <= hasta);

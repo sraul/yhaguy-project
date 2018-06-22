@@ -5034,6 +5034,8 @@ public class ReportesViewModel extends SimpleViewModel {
 			RegisterDomain rr = RegisterDomain.getInstance();
 			Date desde_ = Utiles.getFecha("01-01-2015 00:00:00");			
 			Date hasta_ = new Date();
+			boolean incluirChequesRechazados = filtro.isIncluirCHQ_RECH();
+			boolean incluirPrestamos = filtro.isIncluirPRE();
 			Funcionario vendedor = filtro.getVendedor();
 			Cliente cliente_ = filtro.getCliente();
 			Tipo rubro = filtro.getRubro();
@@ -5059,7 +5061,7 @@ public class ReportesViewModel extends SimpleViewModel {
 			Map<String, Object[]> data = new HashMap<String, Object[]>();
 			
 			if (!fraccionado) {
-				movims = rr.getSaldos(desde_, hasta_, caracter, idVendedor, idEmpresa, moneda.getId());	
+				movims = rr.getSaldos(desde_, hasta_, caracter, idVendedor, idEmpresa, moneda.getId(), incluirChequesRechazados, incluirPrestamos);	
 				for (Object[] movim : movims) {
 					List<Tipo> rubros = rr.getRubroEmpresas((long) movim[14]);
 					if ((rubro != null && this.isRubro(rubro.getId(), rubros)) || rubro == null) {
@@ -5496,17 +5498,13 @@ public class ReportesViewModel extends SimpleViewModel {
 				Object[] formato = filtro.getFormato();
 
 				RegisterDomain rr = RegisterDomain.getInstance();
-				List<CtaCteEmpresaMovimiento> movims = null;
+				List<CtaCteEmpresaMovimiento> movims = rr.getMovimientosConSaldo(
+						Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_CLIENTE, 
+						Configuracion.SIGLA_TM_FAC_VENTA_CREDITO);
 				List<CtaCteEmpresaMovimiento> values = new ArrayList<CtaCteEmpresaMovimiento>();
-				
-				if (desde < 0) {
-					movims = rr.getFacturasAvencer();
-				} else {
-					movims = rr.getFacturasVencidas();
-				}
 
 				for (CtaCteEmpresaMovimiento movim : movims) {
-					if (movim.isDiasVencidosEntre(desde, hasta, (desde < 0))) {
+					if (movim.isDiasVencidosEntre_(desde, hasta)) {
 						values.add(movim);
 					} 
 				}
