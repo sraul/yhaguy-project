@@ -5148,6 +5148,16 @@ public class RegisterDomain extends Register {
 				+ " order by a.codigoInterno";
 		return this.hqlLimit(query, limit);
 	}
+	
+	/**
+	 * @return la lista de articulos segun codigo..
+	 */
+	public List<Articulo> getArticulos_(String codigoInterno, int limit) throws Exception {
+		String query = "select a from Articulo a where lower(a.codigoInterno) like '%"
+				+ codigoInterno.toLowerCase() + "%'"
+				+ " order by a.codigoInterno";
+		return this.hqlLimit(query, limit);
+	}
 
 	/**
 	 * @return los bancos..
@@ -5391,6 +5401,17 @@ public class RegisterDomain extends Register {
 	/**
 	 * @return los saldos de clientes/proveedores..
 	 */
+	public List<CtaCteEmpresaMovimiento> getMovimientosConSaldo(String caracter, String siglaTm) throws Exception {
+		String query = "select c from CtaCteEmpresaMovimiento c where c.anulado = 'FALSE' and c.saldo > 0"
+				+ " and c.tipoCaracterMovimiento.sigla = '" + caracter + "'"
+				+ " and c.tipoMovimiento.sigla = '" + siglaTm + "'";
+		query += " order by c.idEmpresa, c.fechaEmision";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los saldos de clientes/proveedores..
+	 */
 	public List<CtaCteEmpresaMovimiento> getMovimientosConSaldo(Date desde,
 			Date hasta, String caracter, long idVendedor, long idEmpresa, long idMoneda) throws Exception {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
@@ -5465,6 +5486,50 @@ public class RegisterDomain extends Register {
 				+ "'"
 				+ " and c.moneda.id = " + idMoneda
 				+ " and (c.fechaEmision >= '"
+				+ desde_
+				+ "' and c.fechaEmision <= '" + hasta_ + "')";
+		if (idVendedor != 0) {
+			query += " and c.idVendedor = " + idVendedor;
+		}
+		if (idEmpresa != 0) {
+			query += " and c.idEmpresa = " + idEmpresa;
+		}
+		query += " order by c.fechaEmision";
+		List<Object[]> saldos = this.hql(query);
+		return saldos;
+	}
+	
+	/**
+	 * @return los movimientos con saldo acumulado el saldo..
+	 * [0]:idMovimientoOriginal [1]:tipoMovimiento.id
+	 * [2]:nrocomprobante [3]:tipoMovimiento.descripcion
+	 * [4]:telefono [5]:direccion
+	 * [6]:emision [7]:vencimiento
+	 * [8]:importe [9]:saldo acum
+	 * [10]:razonSocial [11]:ruc
+	 * [12]:saldo [13]:siglaTipomovimiento
+	 * [14]:idempresa
+	 */
+	public List<Object[]> getSaldos(Date desde, Date hasta, String caracter, long idVendedor, long idEmpresa, 
+			long idMoneda, boolean incluirChequesrechazados, boolean incluirPrestamos) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select c.idMovimientoOriginal, c.tipoMovimiento.id, c.nroComprobante, c.tipoMovimiento.descripcion, e.telefono_, e.direccion_, c.fechaEmision, c.fechaVencimiento, c.importeOriginal, "
+				+ " (select sum(saldo) from CtaCteEmpresaMovimiento m where m.idMovimientoOriginal = c.idMovimientoOriginal and m.tipoMovimiento.id = c.tipoMovimiento.id ),"
+				+ " e.razonSocial, e.ruc, c.saldo, c.tipoMovimiento.sigla, e.id"
+				+ " from CtaCteEmpresaMovimiento c, Empresa e"
+				+ " where c.idEmpresa = e.id and c.anulado = 'FALSE' and c.saldo > 0 and"
+				+ " c.tipoCaracterMovimiento.sigla = '"
+				+ caracter
+				+ "'"
+				+ " and c.moneda.id = " + idMoneda;
+				if (!incluirChequesrechazados) {
+					query += " and c.tipoMovimiento.sigla != '" + Configuracion.SIGLA_TM_CHEQUE_RECHAZADO + "'";
+				}
+				if (!incluirPrestamos) {
+					query += " and c.tipoMovimiento.sigla != '" + Configuracion.SIGLA_TM_PRESTAMO_CASA_CENTRAL + "'";
+				}
+				query += " and (c.fechaEmision >= '"
 				+ desde_
 				+ "' and c.fechaEmision <= '" + hasta_ + "')";
 		if (idVendedor != 0) {
@@ -7317,20 +7382,24 @@ public class RegisterDomain extends Register {
 	 * [1]:fecha 
 	 * [2]:numero 
 	 * [3]:importe
+	 * [4]:importe
 	 */
 	public List<Object[]> getVentasCreditoPorCliente(long idCliente, Date desde, Date hasta) throws Exception {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
-		String query = "select v.tipoMovimiento.descripcion, v.fecha, v.numero, v.totalImporteGs"
-				+ " from Venta v where v.cliente.id = " + idCliente
-				+ " and (v.tipoMovimiento.sigla = '"
+		String query = "select v.tipoMovimiento.descripcion, v.fecha, v.numero, v.totalImporteGs, v.id"
+				+ " from Venta v where (v.tipoMovimiento.sigla = '"
 				+ Configuracion.SIGLA_TM_FAC_VENTA_CREDITO
 				+ "') and v.dbEstado != 'D' and v.estadoComprobante IS NULL";
 				query += " and (v.fecha >= '"
 				+ desde_
 				+ "' and v.fecha <= '"
 				+ hasta_
-				+ "')" + " order by v.fecha desc";
+				+ "')";
+				if (idCliente != 0) {
+					query += " and v.cliente.id = " + idCliente;
+				}
+				query += " order by v.fecha desc";
 		return this.hql(query);
 	}
 	
@@ -7855,10 +7924,13 @@ public class RegisterDomain extends Register {
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
-			long idCliente = 15575;
-			List<Date> test = rr.getUltimaVenta(idCliente);
-			for (Date obj : test) {
-				System.out.println(obj);
+			List<Object[]> vtas = rr.getVentasCreditoPorCliente(0, Utiles.getFecha("01-01-2016 00:00:00"), Utiles.getFecha("21-06-2018 00:00:00"));
+			for (Object[] vta : vtas) {
+				long idvta = (long) vta[4];
+				List<CtaCteEmpresaMovimiento> list = rr.getCtaCteEmpresaMovimientoPorMovimientoOriginal(idvta, 19);
+				if (list.size() == 0) {
+					System.out.println(vta[2]);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
