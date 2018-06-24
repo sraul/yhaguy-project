@@ -130,7 +130,7 @@
 					<guaranibox id="dbxPrecio"
 						value="@bind(vm.det.precioGs)" 
 						onChange="@command('validarPrecio', comp=self)"
-						readonly="true" />
+						/>
 					<label value="@load(vm.utilDto.simboloMonedaLocal)"
 						sclass="label-moneda" />
 				</hlayout>
