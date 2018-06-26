@@ -18,8 +18,7 @@ import com.yhaguy.domain.Venta;
 
 public class AssemblerReparto extends Assembler {
 
-	static String[] attIgualesReparto = { "numero", "fechaCreacion",
-			"fechaRecepcion", "observaciones", "costo" };
+	static String[] attIgualesReparto = { "numero", "fechaCreacion", "fechaRecepcion", "observaciones", "costo" };
 	
 	static String[] attServicioTecnico = { "numero" };
 
@@ -38,9 +37,7 @@ public class AssemblerReparto extends Assembler {
 		this.myArrayToDomain(dto, domain, "proveedor");
 		this.listaMyArrayToListaDomain(dto, domain, "serviciosTecnicos");
 
-		this.listaDTOToListaDomain(dto, domain, "detalles", true, true,
-				new AssemblerRepartoDetalle());
-		
+		this.listaDTOToListaDomain(dto, domain, "detalles", true, true, new AssemblerRepartoDetalle());		
 		this.setEstadoMovimientos((RepartoDTO) dto);
 		
 		return domain;

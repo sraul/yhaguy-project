@@ -59,6 +59,8 @@ public class NotaCredito extends Domain {
 	/** La sucursal en la que se confecciono la N.C. **/
 	private SucursalApp sucursal;
 	
+	private Funcionario vendedor;
+	
 	/** Los detalles de las N.C pueden hacer referencia a facturas ó articulos segun el tipo **/
 	private Set<NotaCreditoDetalle> detalles = new HashSet<NotaCreditoDetalle>();
 	
@@ -194,7 +196,7 @@ public class NotaCredito extends Domain {
 	/**
 	 * @return el vendedor de la factura aplicada..
 	 */
-	public Funcionario getVendedor() {
+	public Funcionario getVendedor_() {
 		for (NotaCreditoDetalle item : this.detalles) {
 			if (item.getVenta() != null)
 				return item.getVenta().getVendedor();
@@ -268,9 +270,6 @@ public class NotaCredito extends Domain {
 			}
 		}		
 		return out;
-	}
-	
-	public void setVendedor(Funcionario vendedor) {
 	}
 
 	public String getNumero() {
@@ -447,5 +446,13 @@ public class NotaCredito extends Domain {
 
 	public void setServiciosTecnicos(Set<ServicioTecnico> serviciosTecnicos) {
 		this.serviciosTecnicos = serviciosTecnicos;
+	}
+
+	public Funcionario getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Funcionario vendedor) {
+		this.vendedor = vendedor;
 	}
 }

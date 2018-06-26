@@ -266,7 +266,7 @@ public class VentasMobileViewModel extends SimpleViewModel {
 			return new ArrayList<Articulo>();
 		}
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<Articulo> out = rr.getArticulos(this.codigoInterno, 50);
+		List<Articulo> out = rr.getArticulos_(this.codigoInterno, 50);
 		for (Articulo art : out) {
 			art.setStock(rr.getStockDisponible(art.getId(), this.selectedDeposito.getId()));
 		}

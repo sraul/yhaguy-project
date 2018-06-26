@@ -2934,6 +2934,49 @@ public class RegisterDomain extends Register {
 
 		return this.hql(query, params);
 	}
+	
+	/**
+	 * @return las ventas segun fecha..
+	 * [0]:id
+	 * [1]:fecha
+	 * [2]:idCliente
+	 * [3]:razonSocial
+	 * [4]:vendedor
+	 * [5]:rubro
+	 * [6]:totalImporteGs
+	 */
+	public List<Object[]> get_Ventas(Date desde, Date hasta, long idCliente, long idVendedor) throws Exception {		
+		String query = "select v.id, v.fecha, v.cliente.id, v.cliente.empresa.razonSocial, v.vendedor.empresa.razonSocial, '', v.totalImporteGs"
+				+ " from Venta v where v.dbEstado != 'D' and v.estadoComprobante is null"
+				+ " and (v.tipoMovimiento.sigla = ? or v.tipoMovimiento.sigla = ?)"
+				+ " and v.fecha between ? and ?";
+		if (idCliente != 0) {
+			query += " and v.cliente.id = ?";
+		}		
+		if (idVendedor != 0) {
+			query += " and v.vendedor.id = ?";
+		}
+		query += " order by v.numero";
+
+		List<Object> listParams = new ArrayList<Object>();
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CONTADO);
+		listParams.add(Configuracion.SIGLA_TM_FAC_VENTA_CREDITO);
+		listParams.add(desde);
+		listParams.add(hasta);
+		if (idCliente != 0) {
+			listParams.add(idCliente);
+		}
+		if (idVendedor != 0) {
+			listParams.add(idVendedor);
+		}
+
+		Object[] params = new Object[listParams.size()];
+		for (int i = 0; i < listParams.size(); i++) {
+			params[i] = listParams.get(i);
+		}
+
+		return this.hql(query, params);
+	}
 
 	/**
 	 * @return las ventas segun fecha y vendedor..
@@ -3145,6 +3188,46 @@ public class RegisterDomain extends Register {
 		listParams.add(hasta);
 		if (idCliente != 0) {
 			listParams.add(idCliente);
+		}
+
+		Object[] params = new Object[listParams.size()];
+		for (int i = 0; i < listParams.size(); i++) {
+			params[i] = listParams.get(i);
+		}
+		return this.hql(query, params);
+	}
+	
+	/**
+	 * @return las notas de credito de venta segun fecha
+	 * [0]:id
+	 * [1]:fecha
+	 * [2]:idCliente
+	 * [3]:razonSocial
+	 * [4]:totalImporteGs
+	 */
+	public List<Object[]> getNotasCredito_Venta_(Date desde, Date hasta, long idCliente, long idVendedor) throws Exception {
+		String query = "select n.id, n.fechaEmision, n.cliente.id, n.cliente.empresa.razonSocial, n.importeGs"
+				+ " from NotaCredito n where n.dbEstado != 'D' and n.estadoComprobante.sigla !="
+				+ " '" + Configuracion.SIGLA_ESTADO_COMPROBANTE_ANULADO + "'"
+				+ " and n.tipoMovimiento.sigla = ?"
+				+ " and (n.fechaEmision between ? and ?)";
+		if (idCliente != 0) {
+			query += " and n.cliente.id = ?";
+		}
+		if (idVendedor != 0) {
+			query += " and n.vendedor.id = ?";
+		}
+		query += " order by n.numero";
+
+		List<Object> listParams = new ArrayList<Object>();
+		listParams.add(Configuracion.SIGLA_TM_NOTA_CREDITO_VENTA);
+		listParams.add(desde);
+		listParams.add(hasta);
+		if (idCliente != 0) {
+			listParams.add(idCliente);
+		}
+		if (idVendedor != 0) {
+			listParams.add(idVendedor);
 		}
 
 		Object[] params = new Object[listParams.size()];
@@ -5473,6 +5556,43 @@ public class RegisterDomain extends Register {
 	 * [12]:saldo [13]:siglaTipomovimiento
 	 * [14]:idempresa
 	 */
+	public List<Object[]> getSaldosByVencimiento(Date desde, Date hasta, String caracter, long idVendedor, long idEmpresa, long idMoneda) throws Exception {
+		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select c.idMovimientoOriginal, c.tipoMovimiento.id, c.nroComprobante, c.tipoMovimiento.descripcion, e.telefono_, e.direccion_, c.fechaEmision, c.fechaVencimiento, c.importeOriginal, "
+				+ " (select sum(saldo) from CtaCteEmpresaMovimiento m where m.idMovimientoOriginal = c.idMovimientoOriginal and m.tipoMovimiento.id = c.tipoMovimiento.id ),"
+				+ " e.razonSocial, e.ruc, c.saldo, c.tipoMovimiento.sigla, e.id"
+				+ " from CtaCteEmpresaMovimiento c, Empresa e"
+				+ " where c.idEmpresa = e.id and c.anulado = 'FALSE' and c.saldo > 0 and"
+				+ " c.tipoCaracterMovimiento.sigla = '"
+				+ caracter
+				+ "'"
+				+ " and c.moneda.id = " + idMoneda
+				+ " and (c.fechaVencimiento >= '"
+				+ desde_
+				+ "' and c.fechaVencimiento <= '" + hasta_ + "')";
+		if (idVendedor != 0) {
+			query += " and c.idVendedor = " + idVendedor;
+		}
+		if (idEmpresa != 0) {
+			query += " and c.idEmpresa = " + idEmpresa;
+		}
+		query += " order by c.fechaEmision";
+		List<Object[]> saldos = this.hql(query);
+		return saldos;
+	}
+	
+	/**
+	 * @return los movimientos con saldo acumulado el saldo..
+	 * [0]:idMovimientoOriginal [1]:tipoMovimiento.id
+	 * [2]:nrocomprobante [3]:tipoMovimiento.descripcion
+	 * [4]:telefono [5]:direccion
+	 * [6]:emision [7]:vencimiento
+	 * [8]:importe [9]:saldo acum
+	 * [10]:razonSocial [11]:ruc
+	 * [12]:saldo [13]:siglaTipomovimiento
+	 * [14]:idempresa
+	 */
 	public List<Object[]> getSaldos(Date desde, Date hasta, String caracter, long idVendedor, long idEmpresa, long idMoneda) throws Exception {
 		String desde_ = Utiles.getDateToString(desde, Misc.YYYY_MM_DD) + " 00:00:00";
 		String hasta_ = Utiles.getDateToString(hasta, Misc.YYYY_MM_DD) + " 23:59:00";
@@ -6964,11 +7084,21 @@ public class RegisterDomain extends Register {
 	 * @return los servicios tecnicos segun parametros..
 	 * [0]:id
 	 * [1]:numero
+	 * [2]:fecha
+	 * [3]:numeroReclamo
+	 * [4]:numeroReparto
+	 * [5]:receptor
+	 * [6]:tecnico
+	 * [7]:razonSocial
+	 * [8]:observaciones
+	 * [9]:diagnostico
+	 * [10]:entregado
 	 */
 	public List<Object[]> getServiciosTecnicos_(String fecha, String numero, String razonSocial, 
 			String receptor, String tecnico, String entregado) throws Exception {
 		boolean entregado_ = entregado.equals("S") ? true : false;
-		String query = "select s.id, s.numero from ServicioTecnico s where "
+		String query = "select s.id, s.numero, s.fecha, COALESCE(s.numeroReclamo, '- - -'), COALESCE(s.numeroReparto, '- - -'),"
+				+ " s.receptor, s.tecnico, s.cliente.empresa.razonSocial, d.observacion, d.diagnostico, s.entregado from ServicioTecnico s join s.detalles d where "
 				+ " s.numero like '%" + numero + "%'"
 				+ " and cast (s.fecha as string) like '%" + fecha + "%'"
 				+ " and upper(s.receptor) like '%" + receptor.toUpperCase() + "%'"
@@ -7924,12 +8054,12 @@ public class RegisterDomain extends Register {
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
-			List<Object[]> vtas = rr.getVentasCreditoPorCliente(0, Utiles.getFecha("01-01-2016 00:00:00"), Utiles.getFecha("21-06-2018 00:00:00"));
-			for (Object[] vta : vtas) {
-				long idvta = (long) vta[4];
-				List<CtaCteEmpresaMovimiento> list = rr.getCtaCteEmpresaMovimientoPorMovimientoOriginal(idvta, 19);
-				if (list.size() == 0) {
-					System.out.println(vta[2]);
+			List<NotaCredito> ncs = rr.getObjects(NotaCredito.class.getName());
+			for (NotaCredito nc : ncs) {
+				if (nc.isNotaCreditoVenta()) {
+					nc.setVendedor(nc.getVendedor_());
+					rr.saveObject(nc, nc.getUsuarioMod());
+					System.out.println(nc.getVendedor().getRazonSocial());
 				}
 			}
 		} catch (Exception e) {

@@ -63,7 +63,9 @@ public class NotaCreditoAssembler extends Assembler {
 				rr.saveObject(caja, this.getLogin());
 			}
 		}
-
+		
+		domain.setVendedor(domain.getVendedor_());
+		
 		return domain;
 	}
 

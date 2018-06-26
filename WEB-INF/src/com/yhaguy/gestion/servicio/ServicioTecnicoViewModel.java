@@ -48,6 +48,7 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 	private ServicioTecnico selectedServicio;
 	private ServicioTecnicoDetalle nvoDetalle = new ServicioTecnicoDetalle();
 	private Venta selectedVenta;
+	private Object[] selectedItem;
 	
 	private String filterRazonSocial = "";
 	private String filterRuc = "";
@@ -162,6 +163,14 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_ETIQUETA, this.mainComponent, args);
 			this.win.doModal();
 		}		
+	}
+	
+	@Command
+	@NotifyChange("selectedServicio")
+	public void selectItem() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ServicioTecnico serv = (ServicioTecnico) rr.getObject(ServicioTecnico.class.getName(), (long) this.selectedItem[0]);
+		this.selectedServicio = serv;
 	}
 	
 	/**
@@ -390,6 +399,45 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 		return out;
 	}
 	
+	@DependsOn({ "filterFechaDD", "filterFechaMM", "filterFechaAA", "filterNumeroServicio", "filterRazonSocial_",
+			"filterReceptor", "filterTecnico", "filterDiagnosticado", "filterEntregado" })
+	public List<Object[]> getServiciosTecnicos_() throws Exception {
+		Map<String, Object[]> data = new HashMap<String, Object[]>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<Object[]> out = new ArrayList<Object[]>();
+		List<Object[]> list = rr.getServiciosTecnicos_(this.getFilterFecha(), this.filterNumeroServicio,
+				this.filterRazonSocial_, this.filterReceptor, this.filterTecnico, this.filterEntregado);
+		
+		for (Object[] serv : list) {
+			String key = (String) serv[1];
+			String diag = (String) serv[9];
+			boolean diagnostico = !(diag == null || diag.isEmpty());
+			Object[] item = data.get(key);
+			if (item != null) {
+				String obs = (String) item[8];
+				obs += " " + serv[8];
+				item[8] = obs;
+				item[9] = ((boolean) item[9]) && diagnostico;
+				data.put(key, item);
+			} else {
+				serv[9] = diagnostico;
+				data.put(key, serv);
+			}
+		}		
+		for (String key : data.keySet()) {
+			Object[] serv = data.get(key);
+			boolean diagnostico = (boolean) serv[9];
+			if (this.filterDiagnosticado.isEmpty()) {
+				out.add(serv);
+			} else if (this.filterDiagnosticado.equals("S") && diagnostico) {
+				out.add(serv);
+			} else if (this.filterDiagnosticado.equals("N") && !diagnostico) {
+				out.add(serv);
+			}
+		}
+		return out;
+	}
+	
 	@DependsOn({ "filterRazonSocial", "filterRuc" })
 	public List<Cliente> getClientes() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
@@ -590,6 +638,14 @@ public class ServicioTecnicoViewModel extends SimpleViewModel {
 
 	public void setFilterEntregado(String filterEntregado) {
 		this.filterEntregado = filterEntregado;
+	}
+
+	public Object[] getSelectedItem() {
+		return selectedItem;
+	}
+
+	public void setSelectedItem(Object[] selectedItem) {
+		this.selectedItem = selectedItem;
 	}
 }
 

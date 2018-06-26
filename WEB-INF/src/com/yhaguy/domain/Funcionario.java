@@ -97,19 +97,13 @@ public class Funcionario extends Domain {
 	public double getTotalVentas(Date desde, Date hasta) throws Exception {
 		double out = 0;
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<NotaCredito> ncs = rr.getNotasCreditoVenta(desde, hasta, 0);
-		List<Venta> vtas = rr.getVentasPorVendedor(this.getId(), desde, hasta);
-		for (NotaCredito nc : ncs) {
-			long idVen = this.getId().longValue();
-			long idVen_ = nc.getVendedor().getId().longValue();
-			if ((!nc.isAnulado()) && idVen == idVen_ ) {
-				out -= nc.getTotalImporteGsSinIva();
-			}
+		List<Object[]> ncs = rr.getNotasCredito_Venta_(desde, hasta, 0, this.getId().longValue());
+		List<Object[]> vtas = rr.get_Ventas(desde, hasta, 0, this.getId().longValue());
+		for (Object[] nc : ncs) {
+			out -= ((double) nc[4] - Utiles.getIVA((double) nc[4], 10));
 		}
-		for (Venta vta : vtas) {
-			if (!vta.isAnulado()) {
-				out += vta.getTotalImporteGsSinIva();
-			}
+		for (Object[] vta : vtas) {
+			out += ((double) vta[6] - Utiles.getIVA((double) vta[6], 10));
 		}		
 		return out;
 	}

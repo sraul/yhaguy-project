@@ -586,6 +586,9 @@ public class RepartoViewModel extends BodyApp {
 	
 	@DependsOn("filter_numero")
 	public List<MyArray> getServiciosTecnicos() throws Exception {
+		if (this.filter_numero.trim().isEmpty()) {
+			return new ArrayList<MyArray>();
+		}		
 		List<MyArray> out = new ArrayList<MyArray>();
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Object[]> list = rr.getServiciosTecnicos_("", this.filter_numero, "", "", "", "");

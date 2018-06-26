@@ -39,8 +39,9 @@
 	
 	<listbox sclass="small-list" vflex="true"
 		emptyMessage="INGRESE UN CRITERIO DE BÚSQUEDA.."
-		model="@load(vm.serviciosTecnicos)"
-		selectedItem="@bind(vm.selectedServicio)">
+		model="@load(vm.serviciosTecnicos_)"
+		selectedItem="@bind(vm.selectedItem)"
+		onSelect="@command('selectItem')">
 		<listhead menupopup="auto">
 			<listheader label="Fecha" width="150px" />
 			<listheader label="Número" width="150px" />
@@ -122,20 +123,20 @@
 		</auxhead>
 		<template name="model">
 			<listitem>
-				<listcell label="@load(each.fecha) @converter('formattedDate', format='dd-MM-yyyy')" />
-				<listcell label="@load(each.numero)" />
-				<listcell label="@load(each.numeroReclamo_)" />
-				<listcell label="@load(each.numeroReparto_)" />
-				<listcell label="@load(each.receptor)" />
-				<listcell label="@load(each.tecnico)" />
-				<listcell label="@load(each.cliente.razonSocial)" />
-				<listcell label="@load(each.observaciones)" />
+				<listcell label="@load(each[2]) @converter('formattedDate', format='dd-MM-yyyy')" />
+				<listcell label="@load(each[1])" />
+				<listcell label="@load(each[3])" />
+				<listcell label="@load(each[4])" />
+				<listcell label="@load(each[5])" />
+				<listcell label="@load(each[6])" />
+				<listcell label="@load(each[7])" />
+				<listcell label="@load(each[8])" />
 				<listcell>
-					<image vflex="true" src="@load(each.diagnosticado? '/core/images/tick.png' : '/core/images/exclamation.png')"
-						tooltiptext="@load(each.diagnosticado? 'Diagnosticado' : 'Pendiente' )"></image>
+					<image vflex="true" src="@load(each[9]? '/core/images/tick.png' : '/core/images/exclamation.png')"
+						tooltiptext="@load(each[9]? 'Diagnosticado' : 'Pendiente' )"></image>
 				</listcell>
 				<listcell>
-					<image vflex="true" src="@load(each.entregado? '/core/images/tick.png' : '')"
+					<image vflex="true" src="@load(each[10]? '/core/images/tick.png' : '')"
 						tooltiptext="Entregado.."></image>
 				</listcell>
 			</listitem>
