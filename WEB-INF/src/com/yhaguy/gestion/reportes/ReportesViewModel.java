@@ -3901,7 +3901,7 @@ public class ReportesViewModel extends SimpleViewModel {
 				double totalImporte = 0;
 
 				// Notas de Credito..
-				List<NotaCredito> ncs = rr.getNotasCreditoVenta(desde, hasta, 0);
+				List<NotaCredito> ncs = rr.getNotasCreditoVenta(desde, hasta, 0, idVendedor);
 				for (NotaCredito notacred : ncs) {
 					int length = notacred.getCliente().getRazonSocial().length();
 					int maxlength = length > 25 ? 25 : length;
@@ -3913,12 +3913,8 @@ public class ReportesViewModel extends SimpleViewModel {
 							notacred.getCliente().getRuc(),
 							notacred.isNotaCreditoVentaContado() ? "NC-CO " + motivo : "NC-CR " + motivo,
 							notacred.isAnulado() ? 0.0 : notacred.getImporteGs() * -1 };
-
-					if (notacred.getVendedor() != null
-							&& notacred.getVendedor().getId().longValue() == idVendedor) {
-						data.add(nc);
-						totalImporte += (notacred.isAnulado() ? 0.0 : notacred.getImporteGs() * -1);
-					}
+					data.add(nc);
+					totalImporte += (notacred.isAnulado() ? 0.0 : notacred.getImporteGs() * -1);
 				}
 
 				// Ventas..
