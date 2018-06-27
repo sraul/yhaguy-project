@@ -1573,6 +1573,12 @@ public class VentaControlBody extends BodyApp {
 		}
 		
 		// verifica el saldo disponible..
+		double importeVenta = this.dto.getTotalImporteGs();
+		double disponible = this.dto.getCreditoDisponible();
+		if ((!this.dto.isCondicionContado()) && (importeVenta > disponible)) {
+			out = false;
+			mensajeError += "\n - LINEA DE CREDITO INSUFICIENTE..";
+		}
 		
 		return out;
 	}

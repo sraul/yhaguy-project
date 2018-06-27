@@ -220,9 +220,8 @@ public class InventarioViewModel extends BodyApp {
 		List<Object[]> data = new ArrayList<Object[]>();
 
 		for (InventarioDetalleDTO item : this.dto.getDetalles()) {
-			Object[] obj1 = new Object[] { item.getArticulo().getPos1(),
-					item.getArticulo().getPos2(), item.getArticulo().getPos3(),
-					item.getArticulo().getPos4(), item.getCantidad() };
+			Object[] obj1 = new Object[] { item.getArticulo().getPos1(), item.getCantidad(), item.getCantidadSistema(),
+					item.getDiferencia() };
 			data.add(obj1);
 		}
 
@@ -475,11 +474,10 @@ class InventarioReporte extends ReporteYhaguy {
 	private InventarioDTO ajuste;	
 	
 	static List<DatosColumnas> cols = new ArrayList<DatosColumnas>();
-	static DatosColumnas col1 = new DatosColumnas("Código", TIPO_STRING, 50);
-	static DatosColumnas col2 = new DatosColumnas("Código Proveedor", TIPO_STRING, 50);
-	static DatosColumnas col3 = new DatosColumnas("Código Original", TIPO_STRING, 50);
-	static DatosColumnas col4 = new DatosColumnas("Descripción", TIPO_STRING);
-	static DatosColumnas col5 = new DatosColumnas("Cantidad", TIPO_INTEGER, 30, false);
+	static DatosColumnas col1 = new DatosColumnas("Código", TIPO_STRING);
+	static DatosColumnas col2 = new DatosColumnas("Cantidad", TIPO_INTEGER, 30, false);
+	static DatosColumnas col3 = new DatosColumnas("Sistema", TIPO_INTEGER, 30, false);
+	static DatosColumnas col4 = new DatosColumnas("Diferencia", TIPO_INTEGER, 30, false);
 	
 	public InventarioReporte(InventarioDTO ajuste) {
 		this.ajuste = ajuste;
@@ -490,7 +488,6 @@ class InventarioReporte extends ReporteYhaguy {
 		cols.add(col2);
 		cols.add(col3);
 		cols.add(col4);
-		cols.add(col5);
 	}
 
 	@Override
@@ -509,27 +506,12 @@ class InventarioReporte extends ReporteYhaguy {
 	private ComponentBuilder getCuerpo() {
 
 		String numero = this.ajuste.getNumero();
-		String sucursal = this.ajuste.getSucursal().getText();
-		String tipo = (String) this.ajuste.getTipoMovimiento().getPos1();
 		String autorizadoPor = this.ajuste.getAutorizadoPor();
 
 		VerticalListBuilder out = cmp.verticalList();
 
-		out.add(cmp.horizontalFlowList().add(this.texto("")));
-
-		out.add(cmp.horizontalFlowList().add(
-				this.textoParValor("Número", numero)));
-
-		out.add(cmp.horizontalFlowList().add(
-				this.textoParValor("Sucursal", sucursal)));
-
-		out.add(cmp.horizontalFlowList().add(
-				this.textoParValor("Tipo Movimiento", tipo)));
-		
-		out.add(cmp.horizontalFlowList().add(
-				this.textoParValor("Autorizado por", autorizadoPor)));
-
-		out.add(cmp.horizontalFlowList().add(this.texto("")));
+		out.add(cmp.horizontalFlowList().add(this.textoParValor("Número", numero))
+				.add(this.textoParValor("Autorizado por", autorizadoPor)));
 
 		return out;
 	}

@@ -110,6 +110,10 @@ public class VentasMobileViewModel extends SimpleViewModel {
 			Clients.showNotification("STOCK INSUFICIENTE..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
 			return;
 		}
+		if (!this.validarLineaCredito()) {
+			Clients.showNotification("LINEA DE CREDITO INSUFICIENTE..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+			return;
+		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		Venta venta = new Venta();
 		venta.setAtendido(this.selectedVendedor);
@@ -239,6 +243,20 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	}
 	
 	/**
+	 * 
+	 * @return true si la linea de credito es valida..
+	 */
+	private boolean validarLineaCredito() throws Exception {
+		boolean out = true;
+		double importeVenta = this.getTotalImporteGs();
+		double disponible = this.getCreditoDisponible();
+		if ((!this.selectedCondicion.isCondicionContado()) && (importeVenta > disponible)) {
+			out = false;
+		}
+		return out;
+	}
+	
+	/**
 	 * GETS / SETS
 	 */
 	
@@ -282,14 +300,6 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	}
 	
 	/**
-	 * @return las listas de precio..
-	 */
-	public List<ArticuloListaPrecio> getListaPrecio() throws Exception {
-		RegisterDomain rr = RegisterDomain.getInstance();
-		return rr.getListasDePrecio();
-	}
-	
-	/**
 	 * @return las condiciones..
 	 */
 	@DependsOn("selectedEmpresa")
@@ -307,6 +317,49 @@ public class VentasMobileViewModel extends SimpleViewModel {
 			}
 		}
 		return out;
+	}
+	
+	/**
+	 * @return la lista de precio definida al cliente..
+	 */
+	@DependsOn("selectedEmpresa")
+	public List<ArticuloListaPrecio> getListaPrecio() throws Exception {
+		if (this.selectedEmpresa == null) {
+			return new ArrayList<ArticuloListaPrecio>();
+		}
+		List<ArticuloListaPrecio> out = new ArrayList<ArticuloListaPrecio>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Cliente cli = rr.getClienteByEmpresa(this.selectedEmpresa.getId());
+		if (cli.getListaPrecio() != null) {
+			out.add(cli.getListaPrecio());
+		} else {
+			ArticuloListaPrecio lp = rr.getListaDePrecio(2);
+			if (lp != null) {
+				out.add(lp);
+			}
+		}
+		return out;
+	}
+	
+	/**
+	 * @return el importe en gs.
+	 */
+	private double getTotalImporteGs() {
+		double out = 0;
+		for (VentaDetalle item : this.detalles) {
+			out += item.getImporteGs();
+		}
+		return out;
+	}
+	
+	/**
+	 * @return el credito disponible..
+	 */
+	public double getCreditoDisponible() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Cliente cli = rr.getClienteByEmpresa(this.selectedEmpresa.getId());
+		double saldo = rr.getSaldoCtaCte(this.selectedEmpresa.getId());
+		return (cli.getLimiteCredito() + Utiles.obtenerValorDelPorcentaje(cli.getLimiteCredito(), Venta.MARGEN_LINEA_CREDITO)) - saldo;
 	}
 
 	public String getRazonSocial() {

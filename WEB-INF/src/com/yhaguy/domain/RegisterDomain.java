@@ -2999,7 +2999,6 @@ public class RegisterDomain extends Register {
 		for (int i = 0; i < listParams.size(); i++) {
 			params[i] = listParams.get(i);
 		}
-
 		return this.hql(query, params);
 	}
 
@@ -3396,9 +3395,7 @@ public class RegisterDomain extends Register {
 	/**
 	 * @return el precio minimo habilitado..
 	 */
-	public ArticuloPrecioMinimo getArticuloPrecioMinimo(long idArticulo)
-			throws Exception {
-
+	public ArticuloPrecioMinimo getArticuloPrecioMinimo(long idArticulo) throws Exception {
 		String query = "select a from ArticuloPrecioMinimo a where a.fecha = ?"
 				+ " and a.idArticulo = ?" + " order by a.id";
 
@@ -6606,6 +6603,7 @@ public class RegisterDomain extends Register {
 	public double getSaldoCtaCte(long idEmpresa) throws Exception {
 		double out = 0;
 		String query = "select e from CtaCteEmpresaMovimiento e where e.anulado = 'FALSE'"
+				+ " and e.tipoCaracterMovimiento.sigla = '" + Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_CLIENTE + "'"
 				+ " and e.saldo > 0 and e.idEmpresa = " + idEmpresa;
 		List<CtaCteEmpresaMovimiento> list = this.hql(query);
 		for (CtaCteEmpresaMovimiento item : list) {

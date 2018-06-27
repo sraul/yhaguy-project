@@ -24,36 +24,6 @@
 						disabled="@load(!vm.editarArticulo)" />
 				</hlayout>
 				</cell>
-			</row>
-			<row>
-				<field value="Código Proveedor:" />
-				<cell colspan="3">
-				<hlayout>
-					<textbox value="@bind(vm.det.articulo.pos2)"
-						onOK="@command('buscarArticulo', filtro=1)"
-						readonly="@load(!vm.editarArticulo)"
-						hflex="true"
-						placeholder="Código Proveedor.." />
-					<button iconSclass="z-icon-search"
-						onClick="@command('buscarArticulo', filtro=1)"
-						disabled="@load(!vm.editarArticulo)" />
-				</hlayout>
-				</cell>
-			</row>
-			<row>
-				<field value="Código Original:" />
-				<cell colspan="3">
-				<hlayout>
-					<textbox value="@bind(vm.det.articulo.pos3)"
-						onOK="@command('buscarArticulo', filtro=2)"
-						readonly="@load(!vm.editarArticulo)"
-						hflex="true"
-						placeholder="Código Original.." />
-					<button iconSclass="z-icon-search"
-						onClick="@command('buscarArticulo', filtro=2)"
-						disabled="@load(!vm.editarArticulo)" />
-				</hlayout>
-				</cell>
 			</row>			
 			<row>
 				<field value="Descripción:" />
@@ -130,7 +100,7 @@
 					<guaranibox id="dbxPrecio"
 						value="@bind(vm.det.precioGs)" 
 						onChange="@command('validarPrecio', comp=self)"
-						/>
+						readonly="${!vm.operacionHabilitada('ModificarPrecio')}" />
 					<label value="@load(vm.utilDto.simboloMonedaLocal)"
 						sclass="label-moneda" />
 				</hlayout>

@@ -601,7 +601,8 @@ public class CajaPeriodoControlBody extends BodyApp {
 	
 	@Command
 	public void mostrarObservacion(@BindingParam("ref") Component ref) {
-		Clients.showNotification(this.selectedVenta.getObservacion().toUpperCase(), Clients.NOTIFICATION_TYPE_INFO, ref, "overlap_after", 0);
+		Clients.showNotification(this.selectedVenta.getObservacion().toUpperCase(), 
+				Clients.NOTIFICATION_TYPE_INFO, ref, "overlap_after", 0);
 	}
 
 	/**
@@ -621,6 +622,15 @@ public class CajaPeriodoControlBody extends BodyApp {
 					"NO SE PUEDE FACTURAR EL PEDIDO CON IMPORTE 0 GS.",
 					Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
 			return;
+		}
+		
+		// verifica el saldo disponible..
+		double importeVenta = pedido.getTotalImporteGs();
+		double disponible = pedido.getCreditoDisponible();
+		if ((!pedido.isCondicionContado()) && (importeVenta > disponible)) {
+			Clients.showNotification(
+					"LINEA DE CREDITO INSUFICIENTE",
+					Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
 		}
 		
 		if (!this.mensajeSiNo("EL NRO. DE FACTURA A GENERAR ES EL: "

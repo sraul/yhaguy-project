@@ -18,6 +18,7 @@ import com.yhaguy.Configuracion;
 import com.yhaguy.domain.CajaPeriodo;
 import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
 import com.yhaguy.gestion.comun.ReservaDTO;
 import com.yhaguy.gestion.empresa.ClienteDTO;
@@ -92,12 +93,12 @@ public class VentaDTO extends DTO {
 			return;
 		}
 		try {
-			/*if ((!this.isCondicionContado()) && (this.getCreditoDisponible() < this.getTotalImporteGs())) {
+			if ((!this.isCondicionContado()) && (this.getCreditoDisponible() < this.getTotalImporteGs())) {
 				this.condicionPago = this.getCondicionContado();
 				Clients.showNotification(
 						"SALDO INSUFICIENTE PARA VENTA CRÉDITO..",
 						Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
-			}*/
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -186,8 +187,17 @@ public class VentaDTO extends DTO {
 	@DependsOn("cliente")
 	public double getCreditoDisponible() throws Exception {
 		if (!this.cliente.esNuevo()) {
+			double lineaCredito = this.getLimiteCredito();
+			return (lineaCredito + Utiles.obtenerValorDelPorcentaje(lineaCredito, Venta.MARGEN_LINEA_CREDITO)) - this.getSaldoCtaCte();
+		}
+		return 0;
+	}
+	
+	@DependsOn("cliente")
+	public double getSaldoCtaCte() throws Exception {
+		if (!this.cliente.esNuevo()) {
 			RegisterDomain rr = RegisterDomain.getInstance();
-			return this.getLimiteCredito() - rr.getSaldoCtaCte((long) this.cliente.getPos4());
+			return rr.getSaldoCtaCte((long) this.cliente.getPos4());
 		}
 		return 0;
 	}

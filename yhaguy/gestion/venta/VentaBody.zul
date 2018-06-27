@@ -27,7 +27,7 @@
 					<vlayout spacing="0">
 						<field value="Fecha" />
 						<datebox value="@load(vm.dto.fecha)"
-							readonly="true" />
+							readonly="true" hflex="true" />
 					</vlayout>
 					<vlayout spacing="0">
 						<field value="Sucursal" />
@@ -123,9 +123,9 @@
 				</row>
 				<row>
 					<vlayout spacing="0">
-						<field value="Límite de Crédito" />
+						<field value="Línea de Crédito" />
 						<hlayout>
-							<guaranibox
+							<guaranibox hflex="true"
 								value="@load(vm.dto.limiteCredito)" readonly="true" />
 							<label
 								value="@load(vm.dtoUtil.simboloMonedaLocal)"
@@ -133,20 +133,25 @@
 						</hlayout>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Disponible" />
+						<field value="Saldo Pendiente" />
 						<hlayout>
-							<guaranibox readonly="true" 
-								value="@load(vm.dto.creditoDisponible)"/>
+							<guaranibox hflex="true"
+								value="@load(vm.dto.saldoCtaCte)" readonly="true" />
 							<label
 								value="@load(vm.dtoUtil.simboloMonedaLocal)"
 								sclass="label-moneda" />
 						</hlayout>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Descuento" />
 						<hlayout>
-							<guaranibox readonly="true"/>
-							<label value="@load(vm.dto.moneda.pos2)"
+							<field value="Disponible" />
+							<label style="font-style:italic" value="(Línea + 30%) - Saldo"></label>
+						</hlayout>
+						<hlayout>
+							<guaranibox readonly="true" hflex="true"
+								value="@load(vm.dto.creditoDisponible)"/>
+							<label
+								value="@load(vm.dtoUtil.simboloMonedaLocal)"
 								sclass="label-moneda" />
 						</hlayout>
 					</vlayout>
