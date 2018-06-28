@@ -157,7 +157,8 @@
 			<label value="Descuento" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold;color:red"
 				format="###,###,###,##0" hflex="true" 
-				value="@bind(vm.selectedDetalle.descuentoUnitarioGs)"/>
+				value="@bind(vm.selectedDetalle.descuentoUnitarioGs)"
+				readonly="true"/>
 			<space></space>
 			<label value="Importe" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold"
