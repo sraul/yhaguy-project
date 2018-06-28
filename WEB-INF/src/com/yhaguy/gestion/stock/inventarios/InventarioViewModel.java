@@ -514,6 +514,10 @@ class InventarioReporte extends ReporteYhaguy {
 		out.add(cmp.horizontalFlowList().add(this.textoParValor("Número", numero))
 				.add(this.textoParValor("Depósito", this.ajuste.getDeposito().getText().toUpperCase())));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
+		
+		out.add(cmp.horizontalFlowList().add(this.textoParValor("Contador", this.ajuste.getOrden().toUpperCase()))
+				.add(this.textoParValor("Confirmado por", this.ajuste.getAutorizadoPor().toUpperCase())));
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
 
 		return out;
 	}
