@@ -228,7 +228,6 @@ public class InventarioViewModel extends BodyApp {
 		ReporteYhaguy rep = new InventarioReporte(this.dto);
 		rep.setTitulo("Inventario de Mercaderías");
 		rep.setDatosReporte(data);
-		rep.setApaisada();
 
 		ViewPdf vp = new ViewPdf();
 		vp.setBotonImprimir(false);
@@ -512,6 +511,7 @@ class InventarioReporte extends ReporteYhaguy {
 
 		out.add(cmp.horizontalFlowList().add(this.textoParValor("Número", numero))
 				.add(this.textoParValor("Autorizado por", autorizadoPor)));
+		out.add(cmp.horizontalFlowList().add(this.texto("")));
 
 		return out;
 	}
