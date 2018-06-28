@@ -1,6 +1,7 @@
 package com.yhaguy.gestion.stock.inventarios;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
@@ -29,6 +30,7 @@ import com.yhaguy.domain.AjusteStock;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.util.Utiles;
 import com.yhaguy.util.reporte.ReporteYhaguy;
 
 public class InventarioViewModel extends BodyApp {
@@ -413,9 +415,10 @@ class InventarioBrowser extends Browser {
 		
 		fecha.setCampo("fecha");
 		fecha.setTitulo("Fecha");
+		fecha.setWidthColumna("130px");
 		fecha.setTipo(Config.TIPO_DATE);
 		fecha.setComponente(Browser.LABEL_DATE);
-		fecha.setWidthColumna("130px");
+		fecha.setValue(Utiles.getDateToString(new Date(), "yyyy-MM-"));
 		
 		tipo.setCampo("tipoMovimiento.descripcion");
 		tipo.setTitulo("Tipo Movimiento");
@@ -505,12 +508,11 @@ class InventarioReporte extends ReporteYhaguy {
 	private ComponentBuilder getCuerpo() {
 
 		String numero = this.ajuste.getNumero();
-		String autorizadoPor = this.ajuste.getAutorizadoPor();
 
 		VerticalListBuilder out = cmp.verticalList();
 
 		out.add(cmp.horizontalFlowList().add(this.textoParValor("Número", numero))
-				.add(this.textoParValor("Autorizado por", autorizadoPor)));
+				.add(this.textoParValor("Depósito", this.ajuste.getDeposito().getText().toUpperCase())));
 		out.add(cmp.horizontalFlowList().add(this.texto("")));
 
 		return out;
