@@ -17,6 +17,7 @@ import com.coreweb.util.MyPair;
 import com.yhaguy.Configuracion;
 import com.yhaguy.domain.CajaPeriodo;
 import com.yhaguy.domain.Empresa;
+import com.yhaguy.domain.HistoricoLineaCredito;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
@@ -185,9 +186,23 @@ public class VentaDTO extends DTO {
 	}
 	
 	@DependsOn("cliente")
+	public double getLineaCreditoTemporal() throws Exception {
+		double out = 0;
+		if (!this.cliente.esNuevo()) {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			List<HistoricoLineaCredito> temp = rr.getHistoricoLineaCredito(this.cliente.getId(), true);
+			for (HistoricoLineaCredito linea : temp) {
+				out = linea.getImporteGs();
+			}
+		}
+		return out;
+	}
+	
+	@DependsOn("cliente")
 	public double getCreditoDisponible() throws Exception {
 		if (!this.cliente.esNuevo()) {
-			double lineaCredito = this.getLimiteCredito();
+			double lineaTemporal = this.getLineaCreditoTemporal();
+			double lineaCredito = lineaTemporal > 0 ? lineaTemporal : this.getLimiteCredito();
 			return (lineaCredito + Utiles.obtenerValorDelPorcentaje(lineaCredito, Venta.MARGEN_LINEA_CREDITO)) - this.getSaldoCtaCte();
 		}
 		return 0;

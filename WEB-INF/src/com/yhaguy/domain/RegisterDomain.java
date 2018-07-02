@@ -6601,15 +6601,33 @@ public class RegisterDomain extends Register {
 	 * @return el saldo en cta cte..
 	 */
 	public double getSaldoCtaCte(long idEmpresa) throws Exception {
+		return this.getSaldoCtaCte(idEmpresa, Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_CLIENTE);
+	}
+	
+	/**
+	 * @return el saldo en cta cte..
+	 */
+	public double getSaldoCtaCte(long idEmpresa, String caracter) throws Exception {
 		double out = 0;
 		String query = "select e from CtaCteEmpresaMovimiento e where e.anulado = 'FALSE'"
-				+ " and e.tipoCaracterMovimiento.sigla = '" + Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_CLIENTE + "'"
+				+ " and e.tipoCaracterMovimiento.sigla = '" + caracter + "'"
 				+ " and e.saldo > 0 and e.idEmpresa = " + idEmpresa;
 		List<CtaCteEmpresaMovimiento> list = this.hql(query);
 		for (CtaCteEmpresaMovimiento item : list) {
 			out += item.getSaldoFinal();
 		}
 		return out;
+	}
+	
+	/**
+	 * @return el saldo en cta cte..
+	 */
+	public List<CtaCteEmpresaMovimiento> getSaldosCtaCte(long idEmpresa, String caracter) throws Exception {
+		String query = "select e from CtaCteEmpresaMovimiento e where e.anulado = 'FALSE'"
+				+ " and e.tipoCaracterMovimiento.sigla = '" + caracter + "'"
+				+ " and e.saldo > 0 and e.idEmpresa = " + idEmpresa;
+		List<CtaCteEmpresaMovimiento> list = this.hql(query);
+		return list;
 	}
 	
 	/**
@@ -6750,6 +6768,14 @@ public class RegisterDomain extends Register {
 	 */
 	public List<Funcionario> getVendedores() throws Exception {
 		String query = "select f from Funcionario f where f.vendedor = 'TRUE' order by f.empresa.razonSocial";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return las importaciones marcadas como en curso..
+	 */
+	public List<ImportacionPedidoCompra> getImportacionesPendientes() throws Exception {
+		String query = "select i from ImportacionPedidoCompra i where i.dbEstado != 'R'";
 		return this.hql(query);
 	}
 	
@@ -8081,6 +8107,70 @@ public class RegisterDomain extends Register {
 		String query = "select r from ReporteFavoritos r where r.usuario = '" + usuario + "'";
 		List<ReporteFavoritos> list = this.hql(query);
 		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return los gastos segun importacion.. 
+	 * [0]:id
+	 * [1]:fecha 
+	 * [2]:vencimiento 
+	 * [3]:numeroFactura 
+	 * [4]:concepto 
+	 * [5]:proveedor
+	 * [6]:importe
+	 */
+	public List<Object[]> getGastosDeImportacion(long idImportacion) throws Exception {
+		if (idImportacion < 0) {
+			return new ArrayList<Object[]>();
+		}
+		String query = "select g.id, g.fecha, g.vencimiento, g.numeroFactura, g.tipoMovimiento.descripcion, g.proveedor.empresa.razonSocial, g.importeGs"
+				+ " from Gasto g where g.idImportacion = " + idImportacion
+				+ " order by g.fecha desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return los gastos segun importacion.. 
+	 * [0]:id
+	 * [1]:numeroFactura 
+	 * [2]:d.cuenta 
+	 * [3]:d.montoGs
+	 */
+	public List<Object[]> getGastosDeImportacionDetallado(long idImportacion) throws Exception {
+		if (idImportacion < 0) {
+			return new ArrayList<Object[]>();
+		}
+		String query = "select g.id, g.numeroFactura, d.articuloGasto.cuentaContable.descripcion, d.montoGs"
+				+ " from Gasto g join g.detalles d where g.idImportacion = " + idImportacion
+				+ " order by d.articuloGasto.cuentaContable.descripcion desc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return la linea de credito temporal..
+	 */
+	public List<HistoricoLineaCredito> getHistoricoLineaCredito(long idCliente, boolean temporal) throws Exception {
+		Date fecha = new Date();
+		String desde = Utiles.getDateToString(fecha, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta = Utiles.getDateToString(fecha, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select l from HistoricoLineaCredito l where l.idCliente = " + idCliente
+				+ " and l.activo = true"
+				+ " and l.temporal = " + temporal
+				+ " and (l.fecha > '" + desde + "' and l.fecha < '" + hasta + "') order by l.fecha asc";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return la linea de credito..
+	 */
+	public List<HistoricoLineaCredito> getHistoricoLineaCredito(long idCliente) throws Exception {
+		Date fecha = new Date();
+		String desde = Utiles.getDateToString(fecha, Misc.YYYY_MM_DD) + " 00:00:00";
+		String hasta = Utiles.getDateToString(fecha, Misc.YYYY_MM_DD) + " 23:59:00";
+		String query = "select l from HistoricoLineaCredito l where l.idCliente = " + idCliente
+				+ " and l.activo = true"
+				+ " and (l.fecha > '" + desde + "' and l.fecha < '" + hasta + "') order by l.fecha asc";
+		return this.hql(query);
 	}
 	
 	public static void main(String[] args) {

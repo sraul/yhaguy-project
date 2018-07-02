@@ -546,7 +546,7 @@
 							</listitem>
 						</template>
 
-						<!-- template for footer -->
+						<!-- template para el footer -->
 						<template name="model:groupfoot">
 							<listgroupfoot>
 								<listcell span="5"
@@ -583,11 +583,27 @@
 					</label>
 				</row>
 				<row>
-					<field value="Límite de Crédito:" />
+					<a label="Línea de Crédito:" 
+						onClick="@command('verHistoricoLineaCredito', popup=pop_historico_linea, parent=self)"/>
 					<hlayout>
-						<guaranibox value="@bind(vm.cliente.pos1)" />
+						<guaranibox value="@bind(vm.cliente.pos1)" 
+							onChange="@command('notificarCambioLineaCredito', comp=rw_motivo)"
+							instant="true" />
 						<label value="Gs."></label>
 					</hlayout>
+				</row>
+				<row>
+					<a label=" Línea Temporal:" iconSclass="z-icon-clock-o" 
+						onClick="@command('habilitarLineaTemporal', comp1=dbx_temp, comp2=rw_motivo)" />
+					<hlayout>
+						<guaranibox id="dbx_temp" value="@bind(vm.lineaTemporalGs)" readonly="true" />
+						<label value="Gs."></label>
+					</hlayout>
+				</row>
+				<row id="rw_motivo" visible="false">
+					<cell colspan="2">
+						<textbox hflex="true" value="@bind(vm.motivo)" placeholder="Ingrese el motivo.."></textbox>
+					</cell>
 				</row>
 				<row>
 					<field value="Venta Crédito:" />
@@ -718,6 +734,34 @@
 			<button mold="bs" sclass="btn-primary btn-sm" hflex="true"
 				onClick="@command('imprimirDHS')"
 				label=" Formato D.H.S" />
+		</vlayout>
+	</popup>
+	
+	<popup id="pop_historico_linea">
+		<vlayout width="650px">
+			<listbox sclass="small-list" height="250px"
+				emptyMessage="SIN REGISTROS.."
+				model="@load(vm.historicoLineaCredito)">
+				<auxhead>
+					<auxheader colspan="5" label="Historial Línea de Crédito"></auxheader>
+				</auxhead>
+				<listhead>
+					<listheader label="Fecha" width="100px"></listheader>
+					<listheader label="Usuario"></listheader>
+					<listheader label="Motivo"></listheader>
+					<listheader label="Línea Gs." width="100px" align="right"></listheader>
+					<listheader label="Temp." align="center" width="60px"></listheader>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
+						<listcell label="@load(each.usuarioMod.toUpperCase())"></listcell>
+						<listcell label="@load(each.motivo)"></listcell>
+						<listcell label="@load(each.importeGs) @converter(vm.cnv.monedaLocal)"></listcell>
+						<listcell label="@load(each.temporal ? 'SI' : 'NO')"></listcell>
+					</listitem>
+				</template>
+			</listbox>
 		</vlayout>
 	</popup>
 

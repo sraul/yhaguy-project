@@ -29,6 +29,7 @@ import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.GroupComparator;
 import org.zkoss.zul.GroupsModelArray;
@@ -52,6 +53,7 @@ import com.yhaguy.domain.BancoChequeTercero;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.Empresa;
+import com.yhaguy.domain.HistoricoLineaCredito;
 import com.yhaguy.domain.NotaCredito;
 import com.yhaguy.domain.NotaCreditoDetalle;
 import com.yhaguy.domain.Proveedor;
@@ -108,6 +110,12 @@ public class VisorCtaCteViewModel extends SimpleViewModel {
 	private int sizeCheques = 0;
 	private double totalCheques = 0;
 	private boolean fraccionado = false;
+	
+	private boolean habilitarLinea = false;
+	private boolean updateLineaCredito = false;
+	private double lineaTemporalGs = 0;
+	private String motivo = "";
+	private List<HistoricoLineaCredito> historicoLineaCredito;
 	
 	private Component view;
 	private Window win;
@@ -323,14 +331,62 @@ public class VisorCtaCteViewModel extends SimpleViewModel {
 	}
 	
 	@Command
+	public void notificarCambioLineaCredito(@BindingParam("comp") Component comp) {
+		this.updateLineaCredito = true;
+		comp.setVisible(true);
+	}
+	
+	@Command
+	public void habilitarLineaTemporal(@BindingParam("comp1") Doublebox comp1, @BindingParam("comp2") Component comp2) {
+		this.habilitarLinea = true;
+		comp1.setReadonly(false);
+		comp2.setVisible(true);
+	}
+	
+	@Command
+	@NotifyChange("historicoLineaCredito")
+	public void verHistoricoLineaCredito(@BindingParam("popup") Popup popup, @BindingParam("parent") Component parent) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Cliente cli = rr.getClienteByIdEmpresa(this.selectedItem.getId());
+		this.historicoLineaCredito = rr.getHistoricoLineaCredito(cli.getId());
+		popup.open(parent, "start_before");
+	}
+	
+	@Command
 	@NotifyChange("cliente")
 	public void actualizarDatos() {
+		if ((this.habilitarLinea || this.updateLineaCredito) && this.motivo.trim().isEmpty()) {
+			Clients.showNotification("ERROR: DEBE INGRESAR EL MOTIVO..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+			return;
+		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {
 			Cliente cli = rr.getClienteByIdEmpresa(this.selectedItem.getId());
 			cli.setLimiteCredito((double) this.cliente.getPos1());
 			cli.setVentaCredito((boolean) this.cliente.getPos2());
 			rr.saveObject(cli, this.getLoginNombre());
+			if (this.habilitarLinea) {
+				HistoricoLineaCredito hist = new HistoricoLineaCredito();
+				hist.setActivo(true);
+				hist.setFecha(new Date());
+				hist.setIdCliente(cli.getId());
+				hist.setImporteGs(this.lineaTemporalGs);
+				hist.setMotivo(this.motivo.toUpperCase());
+				hist.setTemporal(true);
+				rr.saveObject(hist, this.getLoginNombre());
+				this.habilitarLinea = false;
+			}
+			if (this.updateLineaCredito) {
+				HistoricoLineaCredito hist = new HistoricoLineaCredito();
+				hist.setActivo(true);
+				hist.setFecha(new Date());
+				hist.setIdCliente(cli.getId());
+				hist.setImporteGs((double) this.cliente.getPos1());
+				hist.setMotivo(this.motivo.toUpperCase());
+				hist.setTemporal(false);
+				rr.saveObject(hist, this.getLoginNombre());
+				this.updateLineaCredito = false;
+			}
 			Clients.showNotification("Datos actualizados..");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1805,6 +1861,38 @@ public class VisorCtaCteViewModel extends SimpleViewModel {
 
 	public void setSelectedMoneda(String selectedMoneda) {
 		this.selectedMoneda = selectedMoneda;
+	}
+
+	public boolean isHabilitarLinea() {
+		return habilitarLinea;
+	}
+
+	public void setHabilitarLinea(boolean habilitarLinea) {
+		this.habilitarLinea = habilitarLinea;
+	}
+
+	public double getLineaTemporalGs() {
+		return lineaTemporalGs;
+	}
+
+	public void setLineaTemporalGs(double lineaTemporalGs) {
+		this.lineaTemporalGs = lineaTemporalGs;
+	}
+
+	public String getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
+	}
+
+	public List<HistoricoLineaCredito> getHistoricoLineaCredito() {
+		return historicoLineaCredito;
+	}
+
+	public void setHistoricoLineaCredito(List<HistoricoLineaCredito> historicoLineaCredito) {
+		this.historicoLineaCredito = historicoLineaCredito;
 	}	
 }
 
