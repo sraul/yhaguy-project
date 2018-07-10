@@ -149,7 +149,7 @@
 				nombreFormulario.value="Bienvenido" ' 
 				iconSclass="z-icon-caret-right"/>
 				<menuitem label="SALIR"
-					href="/sistema.zul"
+					href="http://10.25.1.250/yhaguy"
 					iconSclass="z-icon-caret-right"/>
 			</menupopup>
 		</menu>
