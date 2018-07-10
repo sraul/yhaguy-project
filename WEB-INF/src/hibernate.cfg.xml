@@ -82,6 +82,7 @@
 		<mapping resource="com/yhaguy/domain/ImportacionResumenGastosDespacho.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/ImportacionGastoImprevisto.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/ImportacionAplicacionAnticipo.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/ImportacionTrazabilidad.hbm.xml" />
 
 		<mapping resource="com/yhaguy/domain/Gasto.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/GastoDetalle.hbm.xml" />
@@ -122,6 +123,10 @@
 		<mapping resource="com/yhaguy/domain/Recibo.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/ReciboDetalle.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/ReciboFormaPago.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/AnticipoUtilidad.hbm.xml" />
+		
+		<mapping resource="com/yhaguy/domain/RRHHLiquidacionSalario.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/RRHHAnticipoSalario.hbm.xml" />
 
 		<mapping resource="com/yhaguy/domain/Caja.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/CajaPeriodo.hbm.xml" />
@@ -143,6 +148,7 @@
 		<mapping resource="com/yhaguy/domain/BancoDebito.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/BancoPrestamo.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/BancoTransferencia.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/BancoChequera.hbm.xml" />
 
 		<mapping resource="com/yhaguy/domain/CompraFiscal.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/CompraLocalOrden.hbm.xml" />
@@ -216,6 +222,7 @@
 		<mapping resource="com/yhaguy/domain/HistoricoVentaDiaria.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/HistoricoCobranzaVendedor.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/HistoricoCobranzaDiaria.hbm.xml" />
+		<mapping resource="com/yhaguy/domain/HistoricoLineaCredito.hbm.xml" />
 		
 		<mapping resource="com/yhaguy/domain/Tarea_Programada.hbm.xml" />
 		<mapping resource="com/yhaguy/domain/ControlTalonario.hbm.xml" />

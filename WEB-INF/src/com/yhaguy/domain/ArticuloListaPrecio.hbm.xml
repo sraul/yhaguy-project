@@ -16,6 +16,9 @@
 		<property name="activo" />
 		<property name="desde" />
 		<property name="hasta" />
+		<property name="rango_descuento_1" />
+		<property name="rango_descuento_2" />
+		<property name="rango_descuento_3" />
 		
 		<set name="detalles" table="articulolistapreciodetalle"
 			inverse="false" lazy="false" fetch="join"

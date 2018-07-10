@@ -57,6 +57,15 @@ public class OrdenPedidoGastoDTO extends DTO{
 		}
 		return out;
 	}
+	
+	@DependsOn("ordenPedidoGastoDetalle")
+	public double getTotalImporteGs() {
+		double out = 0;
+		for (OrdenPedidoGastoDetalleDTO item : this.ordenPedidoGastoDetalle) {
+			out += item.getTotalImporteGs();
+		}
+		return out;
+	}
 		
 	public String getNumero() {
 		return numero;

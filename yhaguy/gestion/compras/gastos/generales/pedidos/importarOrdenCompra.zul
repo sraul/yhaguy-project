@@ -9,23 +9,27 @@
 		selectedItems="@bind(vm.dato.selectedItemsImportar)">
 		<listhead>
 			<listheader width="40px" align="center"/>
-			<listheader label="Código Cuenta" width="120px"/>
-			<listheader label="Descripción Cuenta"/>
-			<listheader label="Descripción Gasto"/>
-			<listheader label="Importe Gs." 
-				width="100px" align="right" style="text-align:center"/>
+			<listheader label="Cuenta" />
+			<listheader label="Centro de Costo" />
+			<listheader label="Cantidad" width="100px" align="right"
+				style="text-align:center" />
+			<listheader label="Importe Gs." width="120px"
+				align="right" style="text-align:center" />
+			<listheader label="Total Importe Gs." 
+				width="130px" align="right" style="text-align:center" />
 		</listhead>
 		<template name="model">
 			<listitem>
 				<listcell />
-				<listcell label="@load(each.articuloGasto.cuentaContable.pos1)"/>
-				<listcell label="@load(each.articuloGasto.cuentaContable.pos2)"/>
-				<listcell label="@load(each.descripcion)"/>
-				<listcell label="@load(each.importe) @converter('formattedNumber', format='###,###,##0')"/>
+				<listcell label="@load(each.articuloGasto.cuentaContable.pos2)" />
+				<listcell label="@load(each.departamento.pos1)" />
+				<listcell label="@load(each.cantidad)" />
+				<listcell label="@load(each.importe) @converter('formattedNumber', format='###,###,##0')" />
+				<listcell label="@load(each.totalImporteGs) @converter('formattedNumber', format='###,###,##0')" />
 			</listitem>
 		</template>
 		<listfoot>
-			<listfooter span="5" align="left">
+			<listfooter span="6" align="left">
 				<hlayout>
 					<field value="@load(vm.dato.dto.ordenPedidoGastoDetalle.size())" />
 					<field value="ítems" />

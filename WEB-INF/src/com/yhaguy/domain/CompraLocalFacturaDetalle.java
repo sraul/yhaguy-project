@@ -21,6 +21,13 @@ public class CompraLocalFacturaDetalle extends Domain {
 	private Tipo tipoDescuento;
 	private int cantidad;
 	private int cantidadRecibida;
+	private int volcadoPendiente;
+	
+	private int conteo1;
+	private int conteo2;
+	private int conteo3;
+	
+	private boolean controlCarga;
 	
 	private Articulo articulo;	
 	private Tipo iva;
@@ -171,5 +178,45 @@ public class CompraLocalFacturaDetalle extends Domain {
 
 	public void setIva(Tipo iva) {
 		this.iva = iva;
+	}
+
+	public boolean isControlCarga() {
+		return controlCarga;
+	}
+
+	public void setControlCarga(boolean controlCarga) {
+		this.controlCarga = controlCarga;
+	}
+
+	public int getConteo1() {
+		return conteo1;
+	}
+
+	public void setConteo1(int conteo1) {
+		this.conteo1 = conteo1;
+	}
+
+	public int getConteo2() {
+		return conteo2;
+	}
+
+	public void setConteo2(int conteo2) {
+		this.conteo2 = conteo2;
+	}
+
+	public int getConteo3() {
+		return conteo3;
+	}
+
+	public void setConteo3(int conteo3) {
+		this.conteo3 = conteo3;
+	}
+
+	public int getVolcadoPendiente() {
+		return volcadoPendiente;
+	}
+
+	public void setVolcadoPendiente(int volcadoPendiente) {
+		this.volcadoPendiente = volcadoPendiente;
 	}
 }

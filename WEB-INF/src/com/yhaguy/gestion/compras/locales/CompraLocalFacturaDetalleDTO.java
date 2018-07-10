@@ -25,14 +25,66 @@ public class CompraLocalFacturaDetalleDTO extends DTO {
 	private MyPair tipoDescuento;
 	private int cantidad = 0;
 	private int cantidadRecibida = 0;
+	private int volcadoPendiente = 0;
+	
+	private boolean controlCarga = false;
+	private int conteo1 = 0;
+	private int conteo2 = 0;
+	private int conteo3 = 0;
 	
 	private MyArray articulo = new MyArray();	
 	private MyPair iva;
 	
-	@DependsOn({"costoGs", "cantidad"})
+	/**
+	 * @return la cantidad recepcionada..
+	 */
+	public int getCantidadRecepcionada(CompraLocalFacturaDTO cab) {
+		if (cab.isConteo3()) {
+			return this.conteo3;
+		} else if (cab.isConteo2()) {
+			return this.conteo2;
+		} else {
+			return this.conteo1;
+		}
+	}
+	
+	@DependsOn({ "cantidad", "conteo1" })
+	public double getDiferencia1() {
+		return this.cantidad - this.conteo1;
+	}
+	
+	@DependsOn({ "cantidad", "conteo2" })
+	public double getDiferencia2() {
+		return this.cantidad - this.conteo2;
+	}
+	
+	@DependsOn({ "cantidad", "conteo3" })
+	public double getDiferencia3() {
+		return this.cantidad - this.conteo3;
+	}
+	
+	@DependsOn({ "costoGs", "cantidad", "descuentoGs" })
 	public double getImporteGs(){
 		int signo = this.isDescuento()? -1 : 1;
-		return (costoGs * cantidad) * signo;
+		double desc = this.isDescuento() ? 0 : this.getImporteDescuentoGs_();
+		return ((costoGs * cantidad) * signo) - desc;
+	}
+	
+	@DependsOn({ "costoDs", "cantidad", "descuentoDs" })
+	public double getImporteDs(){
+		int signo = this.isDescuento()? -1 : 1;
+		double desc = this.isDescuento() ? 0 : this.getImporteDescuentoDs_();
+		return ((costoDs * cantidad) * signo) - desc;
+	}
+	
+	@DependsOn({ "cantidad", "descuentoGs" })
+	public double getImporteDescuentoGs_() { 
+		return ( this.descuentoGs * cantidad );
+	}
+	
+	@DependsOn({ "cantidad", "descuentoDs" })
+	public double getImporteDescuentoDs_() {
+		return ( this.descuentoDs * cantidad );
 	}
 	
 	@DependsOn({"iva", "costoGs", "cantidad"})
@@ -210,6 +262,46 @@ public class CompraLocalFacturaDetalleDTO extends DTO {
 
 	public void setIva(MyPair iva) {
 		this.iva = iva;
+	}
+
+	public boolean isControlCarga() {
+		return controlCarga;
+	}
+
+	public void setControlCarga(boolean controlCarga) {
+		this.controlCarga = controlCarga;
+	}
+
+	public int getConteo1() {
+		return conteo1;
+	}
+
+	public void setConteo1(int conteo1) {
+		this.conteo1 = conteo1;
+	}
+
+	public int getConteo2() {
+		return conteo2;
+	}
+
+	public void setConteo2(int conteo2) {
+		this.conteo2 = conteo2;
+	}
+
+	public int getConteo3() {
+		return conteo3;
+	}
+
+	public void setConteo3(int conteo3) {
+		this.conteo3 = conteo3;
+	}
+
+	public int getVolcadoPendiente() {
+		return volcadoPendiente;
+	}
+
+	public void setVolcadoPendiente(int volcadoPendiente) {
+		this.volcadoPendiente = volcadoPendiente;
 	}
 	
 }

@@ -1,0 +1,192 @@
+<zk>
+<grid sclass="vgrid" vflex="true" hflex="true">
+	<columns>
+		<column width="10%" />
+		<column />
+		<column width="10%" />
+		<column />
+	</columns>
+	<rows>
+		
+		<row>
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Familia:" />
+			</hlayout>			
+			<hlayout>
+				<combobox model="@load(vm.dtoUtil.articuloFamilia)"
+					value="@load(vm.dto.articuloFamilia)"
+					selectedItem="@bind(vm.dto.articuloFamilia)" hflex="true"
+					style="margin-right:20px"
+					visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'true' : 'false')">
+					<template name="model">
+						<comboitem label="@load(each)" />
+					</template>
+				</combobox>
+				<textbox value="@load(vm.dto.articuloFamilia.text)" readonly="true"
+					visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'false' : 'true')"
+					hflex="true" style="margin-right:20px"></textbox>
+			</hlayout>
+			<field value="Peso:" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')" />
+			<doublespinner hflex="true" value="@bind(vm.dto.peso)"
+				style="margin-right:20px" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			</doublespinner>
+		</row>
+		
+		<row visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'false' : 'true')">
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Grupo:" />
+			</hlayout>
+			<combobox model="@load(vm.grupoFiltros)"
+				value="@load(vm.dto.articuloGrupo.text)"
+				selectedItem="@bind(vm.dto.articuloGrupo)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.articuloGrupo.text)">
+				<template name="model">
+					<comboitem label="@load(each)" />
+				</template>
+			</combobox>
+			<field value="CBM:" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')" />
+			<combobox hflex="true" style="margin-right:20px"
+				visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloGrupo.esNuevo() ? 'false' : 'true')">
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Marca:" />
+			</hlayout>			
+			<combobox model="@load(vm.marcasFiltros)"
+				value="@load(vm.dto.articuloMarca)"
+				selectedItem="@bind(vm.dto.articuloMarca)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.articuloMarca.text)">
+				<template name="model">
+					<comboitem label="@load(each)" />
+				</template>
+			</combobox>
+			<field value="Volúmen:" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')" />
+			<combobox hflex="true" style="margin-right:20px"
+				visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')"></combobox>
+		</row>
+		
+		<row visible="@load(vm.dto.articuloMarca.esNuevo() ? 'false' : 'true')">
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Aplicación:" />
+			</hlayout>
+			<combobox model="@load(vm.datos)"
+				value="@load(vm.dto.articuloAplicacion)"
+				selectedItem="@bind(vm.dto.articuloAplicacion)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.articuloAplicacion.text)">
+				<template name="model">
+					<comboitem label="@load(each)" />
+				</template>
+			</combobox>
+			<field value="Arancel:" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')" />
+			<combobox hflex="true" style="margin-right:20px"
+				visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')"></combobox>
+		</row>
+		
+		<row visible="@load(vm.dto.articuloAplicacion.esNuevo() ? 'false' : 'true')">
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Modelo:" />
+			</hlayout>
+			<combobox model="@load(vm.datos)"
+				value="@load(vm.dto.articuloModelo)"
+				selectedItem="@bind(vm.dto.articuloModelo)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.articuloModelo.text)">
+				<template name="model">
+					<comboitem label="@load(each)" />
+				</template>
+			</combobox>
+			<field value="NCM:" visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')"/>
+			<combobox hflex="true" style="margin-right:20px"
+				visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Sub Grupo:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+			<field value="Proveedor:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Línea:" />
+			<combobox model="@load(vm.lineaFiltros)"
+				value="@load(vm.dto.articuloLinea.text.toUpperCase())"
+				selectedItem="@bind(vm.dto.articuloLinea)" hflex="true"
+				style="margin-right:20px" instant="true">
+				<template name="model">
+					<comboitem label="@load(each.text.toUpperCase())" />
+				</template>
+			</combobox>
+			<field value="Mínimo:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Sub Línea:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+			<field value="Máximo:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Unidad por Caja:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+			<field value="Remate:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Presentación:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+			<field value="Descontinuado:" />
+			<combobox hflex="true" style="margin-right:20px"></combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="SKU:" />
+			<textbox hflex="true" style="margin-right:20px" />
+			<field value="80 / 20:" />
+			<textbox hflex="true" style="margin-right:20px" />
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Volúmen:" />
+			<textbox style="margin-right:20px" hflex="true"></textbox>
+			<field value="Estado:" />
+			<combobox model="@load(vm.dtoUtil.articuloEstado)"
+				value="@load(vm.dto.articuloEstado.text.toUpperCase())"
+				selectedItem="@bind(vm.dto.articuloEstado)" hflex="true"
+				style="margin-right:20px" instant="true">
+				<template name="model">
+					<comboitem label="@load(each.text.toUpperCase())" />
+				</template>
+			</combobox>
+		</row>
+
+		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+			<field value="Ítem de Servicio:" />
+			<hlayout>
+				<checkbox checked="@bind(vm.dto.servicio)" />
+				<label value="@load(vm.dto.servicio? 'SI':'NO')" />
+			</hlayout>
+			<field value="FOB/CIF Local:" />
+			<textbox style="margin-right:20px" hflex="true"></textbox>
+		</row>
+
+	</rows>
+</grid>
+
+<style>
+	.requerido { color:red; font-weight:bold; font-size:11pt }
+</style>
+
+</zk>

@@ -23,11 +23,21 @@ public class CompraLocalFactura extends Domain {
 	private double totalAsignadoDs;	
 	private boolean recepcionConfirmada;
 	private boolean ivaRetenido;
+	private String recepcionConfirmadaPor;
+	
+	private boolean conteo1;
+	private boolean conteo2;
+	private boolean conteo3;
+	
+	private String tiempoConteo1;
+	private String tiempoConteo2;
+	private String tiempoConteo3;
 	
 	private double importeGs;
 	private double importeDs;
 	private double importeIva10;
 	private double importeIva5;
+	private int condicionPagoDias;
 	
 	private Proveedor proveedor;
 	private CondicionPago condicionPago;
@@ -239,5 +249,69 @@ public class CompraLocalFactura extends Domain {
 
 	public void setImporteIva5(double importeIva5) {
 		this.importeIva5 = importeIva5;
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
+	}
+
+	public String getRecepcionConfirmadaPor() {
+		return recepcionConfirmadaPor;
+	}
+
+	public void setRecepcionConfirmadaPor(String recepcionConfirmadaPor) {
+		this.recepcionConfirmadaPor = recepcionConfirmadaPor;
+	}
+
+	public boolean isConteo1() {
+		return conteo1;
+	}
+
+	public void setConteo1(boolean conteo1) {
+		this.conteo1 = conteo1;
+	}
+
+	public boolean isConteo2() {
+		return conteo2;
+	}
+
+	public void setConteo2(boolean conteo2) {
+		this.conteo2 = conteo2;
+	}
+
+	public boolean isConteo3() {
+		return conteo3;
+	}
+
+	public void setConteo3(boolean conteo3) {
+		this.conteo3 = conteo3;
+	}
+
+	public String getTiempoConteo1() {
+		return tiempoConteo1;
+	}
+
+	public void setTiempoConteo1(String tiempoConteo1) {
+		this.tiempoConteo1 = tiempoConteo1;
+	}
+
+	public String getTiempoConteo2() {
+		return tiempoConteo2;
+	}
+
+	public void setTiempoConteo2(String tiempoConteo2) {
+		this.tiempoConteo2 = tiempoConteo2;
+	}
+
+	public String getTiempoConteo3() {
+		return tiempoConteo3;
+	}
+
+	public void setTiempoConteo3(String tiempoConteo3) {
+		this.tiempoConteo3 = tiempoConteo3;
 	}	
 }

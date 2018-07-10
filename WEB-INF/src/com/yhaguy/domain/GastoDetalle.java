@@ -13,6 +13,7 @@ public class GastoDetalle extends Domain{
 	private double montoIva;
 	
 	private ArticuloGasto articuloGasto;
+	private DepartamentoApp departamento;
 	private CentroCosto centroCosto;
 	private Tipo tipoIva;
 	
@@ -92,6 +93,14 @@ public class GastoDetalle extends Domain{
 		} else {
 			return -1;
 		}		
+	}
+
+	public DepartamentoApp getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(DepartamentoApp departamento) {
+		this.departamento = departamento;
 	}
 
 }

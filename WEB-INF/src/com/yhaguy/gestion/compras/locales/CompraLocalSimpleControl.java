@@ -162,21 +162,35 @@ public class CompraLocalSimpleControl extends SoloViewModel {
 	private Doublebox porcDesc;
 	
 	@Command
-	public void dolarizar(){
+	public void dolarizar() {
 		double costoGs = this.dato.getNvoDetalle().getCostoGs();
 		this.dato.getNvoDetalle().setCostoDs(m.redondeoDosDecimales(costoGs / this.dato.getDto().getTipoCambio()));
 		BindUtils.postNotifyChange(null, null, this.dato.getNvoDetalle(), "costoDs");
 	}
 	
 	@Command
-	public void guaranizar(){
+	public void guaranizar() {
 		double costoDs = this.dato.getNvoDetalle().getCostoDs();
 		this.dato.getNvoDetalle().setCostoGs(costoDs * this.dato.getDto().getTipoCambio());
 		BindUtils.postNotifyChange(null, null, this.dato.getNvoDetalle(), "costoGs");
 	}
 	
 	@Command
-	public void dolarizarFactura(){
+	public void guaranizarDescuento_() {
+		double descuentoDs = this.dato.getNvoDetalle().getDescuentoDs();
+		this.dato.getNvoDetalle().setDescuentoGs(descuentoDs * this.dato.getDto().getTipoCambio());
+		BindUtils.postNotifyChange(null, null, this.dato.getNvoDetalle(), "descuentoGs");
+	}
+	
+	@Command
+	public void dolarizarDescuento_() {
+		double descuentoGs = this.dato.getNvoDetalle().getDescuentoGs();
+		this.dato.getNvoDetalle().setDescuentoDs(m.redondeoDosDecimales(descuentoGs / this.dato.getDto().getTipoCambio()));
+		BindUtils.postNotifyChange(null, null, this.dato.getNvoDetalle(), "descuentoDs");
+	}
+	
+	@Command
+	public void dolarizarFactura() {
 		double costoGs = this.dato.getNvoItem().getCostoGs();
 		this.dato.getNvoItem().setCostoDs(m.redondeoDosDecimales(costoGs / this.dato.getDto().getTipoCambio()));
 		BindUtils.postNotifyChange(null, null, this.dato.getNvoItem(), "costoDs");
@@ -231,7 +245,7 @@ public class CompraLocalSimpleControl extends SoloViewModel {
 	}
 	
 	@Command
-	public void calcularDescuento(@BindingParam("porc") double porc){
+	public void calcularDescuento(@BindingParam("porc") double porc) {
 		double descGs = (this.dato.getImporteFactura()[2] * porc) / 100;
 		this.dato.getNvoItem().setCostoGs(descGs);
 		BindUtils.postNotifyChange(null, null, this.dato.getNvoItem(), "costoGs");
@@ -246,6 +260,15 @@ public class CompraLocalSimpleControl extends SoloViewModel {
 			}
 		}
 		BindUtils.postNotifyChange(null, null, this.dato.getNvoItem(), "cantidad");
+	}
+	
+	@Command @NotifyChange("*") 
+	public void descontarPorcentaje() {
+		double precioGs = this.dato.getNvoDetalle().getCostoGs();
+		double precioDs = this.dato.getNvoDetalle().getCostoDs();
+		double porcDescuento = this.dato.getNvoDetalle().getPorcDescuento();
+		this.dato.getNvoDetalle().setDescuentoGs(this.m.obtenerValorDelPorcentaje(precioGs, porcDescuento));
+		this.dato.getNvoDetalle().setDescuentoDs(this.m.obtenerValorDelPorcentaje(precioDs, porcDescuento));
 	}
 	
 	//Adjunto de los mails

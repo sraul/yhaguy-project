@@ -18,6 +18,8 @@
 		<property name="cantidadRecibida"/>
 		<property name="presupuesto"/>
 		<property name="ordenCompra"/>
+		<property name="descuentoGs"/>
+		<property name="descuentoDs"/>
 
 		<many-to-one name="articulo" class="com.yhaguy.domain.Articulo"
 			column="idArticulo" lazy="false"/>

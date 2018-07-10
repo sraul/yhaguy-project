@@ -7,7 +7,9 @@ import com.coreweb.domain.Tipo;
 public class OrdenPedidoGastoDetalle extends Domain {
 	
 	private double importe;
+	private int cantidad;
 	private String descripcion;
+	
 	private DepartamentoApp departamento;
 	private CentroCosto centroCosto;	
 	private ArticuloGasto articuloGasto;
@@ -64,5 +66,13 @@ public class OrdenPedidoGastoDetalle extends Domain {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}	
 }

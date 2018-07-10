@@ -4,26 +4,51 @@
 		<column />
 	</columns>
 	<rows>
-		<row>			
-			<field value="Tipo:" />
+		<row>	
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Tipo:" />
+			</hlayout>		
 			<combobox model="@load(vm.dtoUtil.proveedorTipo)"
-				value="@load(vm.dto.tipoProveedor)"
-				selectedItem="@bind(vm.dto.tipoProveedor)" width="200px"
-				constraint="${vm.check.noVacio}">
+				value="@load(vm.dto.tipoProveedor.text.toUpperCase())"
+				selectedItem="@bind(vm.dto.tipoProveedor)" width="250px">
 				<template name="model">
-					<comboitem label="@load(each)" />
+					<comboitem label="@load(each.text.toUpperCase())" />
 				</template>
 			</combobox>
 		</row>
+		<row>
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Condición de Compra:" />
+			</hlayout>			
+			<hlayout>
+				<combobox width="250px" model="@load(vm.condicionPagos)"
+					selectedItem="@bind(vm.dto.condicionPago)"
+					value="@load(vm.dto.condicionPago.pos1.toString().toUpperCase())"
+					onSelect="@command('sugerirDiasCredito')">
+					<template name="model">
+						<comboitem
+							label="@load(each.pos1.toString().toUpperCase())" />
+					</template>
+				</combobox>
+				<hlayout visible="@load(vm.dto.condicionPago.id eq 2)">
+					<spinner value="@bind(vm.dto.condicionPagoDias)" ></spinner>
+					<label value="Días"></label>
+				</hlayout>				
+			</hlayout>
+		</row>
 		<row>			
-			<field value="Estado:" />
-			<radiogroup selectedItem="@bind(vm.dto.estadoProveedor)"
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Estado:" />
+			</hlayout>
+			<combobox width="250px" selectedItem="@bind(vm.dto.estadoProveedor)"
 				model="@load(vm.dtoUtil.proveedorEstado)">
 				<template name="model">
-					<radio label="@load(each.text)" value="@load(each)" 
-						style="margin-right:10px"/>
+					<comboitem label="@load(each.text)" />
 				</template>
-			</radiogroup>
+			</combobox>
 		</row>
 	</rows>
 </grid>

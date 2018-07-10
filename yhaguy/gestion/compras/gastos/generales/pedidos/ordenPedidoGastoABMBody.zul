@@ -30,19 +30,7 @@
 										value="@load(vm.dto.fechaCarga) @converter('formatedDate', format='dd-MM-yyyy')"
 										readonly="true" 
 										hflex="true"/>
-								</vlayout>								
-								<vlayout spacing="0">
-									<field value="Departamento" />
-									<textbox
-										value="@load(vm.dto.departamento.pos1)" readonly="true" 
-										hflex="true"/>
-								</vlayout>
-								<vlayout spacing="0">
-									<field value="Sucursal" />
-									<textbox
-										value="@load(vm.dto.sucursal.text)" readonly="true" 
-										hflex="true"/>
-								</vlayout>
+								</vlayout>						
 								<vlayout spacing="0">
 									<field value="Estado" />
 									<textbox
@@ -51,8 +39,7 @@
 								</vlayout>
 							</row>
 							<row>
-								<cell colspan="2">
-									<vlayout>
+								<vlayout>
 										<field value="Proveedor" />
 										<hlayout>
 											<buscadorProveedor
@@ -62,29 +49,24 @@
 												value="@load(vm.dto.proveedor.pos2)"
 												visible="@load(vm.dto.autorizado)" />
 										</hlayout>
-									</vlayout>
-								</cell>
-								<cell>
-									<vlayout>
+								</vlayout>
+								<vlayout>
 										<field value="Ruc" />
 										<hlayout>
 											<buscadorProveedor
-												value="@bind(vm.dto)" campo="ruc"
+												value="@bind(vm.dto)" campo="ruc" hflex="true"
 												visible="@load(!vm.dto.autorizado)" />
 											<label
 												value="@load(vm.dto.proveedor.pos3)"
 												visible="@load(vm.dto.autorizado)" />
 										</hlayout>
-									</vlayout>
-								</cell>
-								<cell colspan="2">
-									<vlayout>
+								</vlayout>
+								<vlayout>
 										<field value="Descripción" />
 										<textbox hflex="true"
 											value="@bind(vm.dto.descripcion)"
 											readonly="@load(vm.insertarItemDisabled)" />
-									</vlayout>
-								</cell>
+								</vlayout>
 							</row>
 						</rows>
 					</grid>
@@ -128,12 +110,16 @@
 						sclass="small-list" visible="@load(vm.detalleVisible)">
 						<listhead>
 							<listheader width="50px" align="center" />
-							<listheader label="Código Cuenta"
+							<listheader label="Código"
 								width="130px" />
-							<listheader label="Descripción Cuenta" />
-							<listheader label="Descripción Gasto" />
-							<listheader label="Importe"
+							<listheader label="Cuenta" />
+							<listheader label="Observación" />
+							<listheader label="Centro de Costo" />
+							<listheader label="Cantidad" width="80px" align="right" />
+							<listheader label="Importe Gs."
 								style="text-align:center" align="right" width="120px" />
+							<listheader label="Total Importe Gs."
+								style="text-align:center" align="right" width="140px" />
 							<listheader label="Iva"
 								style="text-align:center" width="90px" />
 						</listhead>
@@ -147,12 +133,18 @@
 								<listcell
 									label="@load(each.descripcion)" />
 								<listcell
+									label="@load(each.departamento.pos1)" />
+								<listcell
+									label="@load(each.cantidad)" />
+								<listcell
 									label="@load(each.importe) @converter(vm.cnv.monedaLocal)" />
+								<listcell
+									label="@load(each.totalImporteGs) @converter(vm.cnv.monedaLocal)" />
 								<listcell label="@load(each.iva.text)" />
 							</listitem>
 						</template>
 						<listfoot>
-							<listfooter span="6">
+							<listfooter span="8">
 								<hlayout>
 									<field
 										value="@load(vm.dto.ordenPedidoGastoDetalle.size())" />
@@ -172,7 +164,7 @@
 									<space/>
 									<field value="Importe Gs." />
 									<guaranibox
-										value="@load(vm.totalImporte)" readonly="true"
+										value="@load(vm.dto.totalImporteGs)" readonly="true"
 										style="background:#EEF7FA;text-align:right;font-weight:bold" />
 								</hlayout>
 							</listfooter>
@@ -295,10 +287,6 @@
 							onClick="@command('deleteItemFac')"
 							disabled="@load(vm.eliminarItemFacDisabled)" label=" Eliminar" />
 						<space />
-						<button mold="bs" sclass="btn-success btn-sm"
-							width="115px" iconSclass="z-icon-plus-circle"
-							onClick="@command('insertItemFactura')" label=" Insertar" />
-						<space />
 						<button mold="bs" sclass="btn-info btn-sm"
 							width="115px" iconSclass="z-icon-share"
 							onClick="@command('importarOrdenCompra')" label=" Importar O.C." 
@@ -369,11 +357,16 @@
 						visible="@load(vm.detalleFacturaVisible)">
 						<listhead>
 							<listheader width="50px" align="center" />
-							<listheader label="Código Cuenta" width="130px" />
-							<listheader label="Descripción Cuenta" />
-							<listheader label="Descripción Gasto" />
-							<listheader label="Importe"
+							<listheader label="Código" width="130px" />
+							<listheader label="Cuenta" />
+							<listheader label="Observación" />
+							<listheader label="Departamento" />
+							<listheader label="Cantidad"
+								style="text-align:center" align="right" width="90px" />
+							<listheader label="Importe Gs."
 								style="text-align:center" align="right" width="120px" />
+							<listheader label="Total Importe Gs."
+								style="text-align:center" align="right" width="130px" />
 							<listheader label="Iva"
 								style="text-align:center" width="90px" />
 						</listhead>
@@ -387,13 +380,19 @@
 								<listcell
 									label="@load(each.observacion)" />
 								<listcell
+									label="@load(each.departamento.pos1)" />
+								<listcell
+									label="@load(each.cantidad)" />
+								<listcell
+									label="@load(each.montoGs) @converter('formattedNumber', format='###,###,##0')" />
+								<listcell
 									label="@load(each.importeGs) @converter('formattedNumber', format='###,###,##0')" />
 								<listcell
 									label="@load(each.tipoIva.pos1)" />
 							</listitem>
 						</template>
 						<listfoot>
-							<listfooter span="6">
+							<listfooter span="8">
 								<hlayout>
 									<field
 										value="@load(vm.dtoGasto.detalles.size())" />

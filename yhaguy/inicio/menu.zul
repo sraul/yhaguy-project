@@ -9,21 +9,22 @@
 				<zk forEach="${vm.menuItem(self,'CajaPlanillaResumen')}" />
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'CuentasCobrar')}" />
-				<zk forEach="${vm.menuItem(self,'CuentasPagar')}" />
+				<zk forEach="${vm.menuItem(self,'Recibos')}" />
 				<zk forEach="${vm.menuItem(self,'GestionCobro')}" />
 				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'Recibos')}" />
+				<zk forEach="${vm.menuItem(self,'CuentasPagar')}" />
 				<zk forEach="${vm.menuItem(self,'Pagos')}" />
+				<zk forEach="${vm.menuItem(self,'PagoMasivo')}" />
+				<zk forEach="${vm.menuItem(self,'AnticipoUtilidad')}" />
+				<zk forEach="${vm.menuItem(self,'AnticipoHonorario')}" />
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'Cheques')}" />
 				<zk forEach="${vm.menuItem(self,'ChequesTerceros')}" />	
 				<zk forEach="${vm.menuItem(self,'BancoBoletaDeposito') }" />				
-				<zk forEach="${vm.menuItem(self,'BancoDebito') }" />
-				<zk forEach="${vm.menuItem(self,'BancoDescuentoCheque', 'tipo=descuento') }" />	
-				<zk forEach="${vm.menuItem(self,'BancoAnticipoUtilidad', 'tipo=anticipo') }" />		
+				<zk forEach="${vm.menuItem(self,'BancoChequera') }" />
+				<zk forEach="${vm.menuItem(self,'BancoDescuentoCheque', 'tipo=descuento') }" />			
 				<zk forEach="${vm.menuItem(self,'BancoPrestamos') }" />	
 				<zk forEach="${vm.menuItem(self,'BancoPrestamoCheque', 'tipo=prestamo') }" />	
-				<zk forEach="${vm.menuItem(self,'BancoEnvioCheques', 'tipo=envio') }" />
 				<zk forEach="${vm.menuItem(self,'BancoTransferencias') }" />
 				<zk forEach="${vm.menuItem(self,'BancoConciliacion') }" />
 				<zk forEach="${vm.menuItem(self,'LibroBanco')}" />
@@ -36,8 +37,8 @@
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'CompraLocal')}" />
 				<zk forEach="${vm.menuItem(self,'Importacion')}" />
-				<zk
-					forEach="${vm.menuItem(self, 'NotaCreditoCompra', 'tipo=compra')}" />
+				<zk forEach="${vm.menuItem(self,'ImportacionSeguimiento')}" />
+				<zk	forEach="${vm.menuItem(self, 'NotaCreditoCompra', 'tipo=compra')}" />
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'OrdenPedidoGasto')}" />
 				<zk forEach="${vm.menuItem(self,'ExploradorGastos')}" />
@@ -111,6 +112,7 @@
 				<zk forEach="${vm.menuItem(self,'PremiosVentas')}" />
 				<menuitem label="EVALUACIÓN DEL PERSONAL" iconSclass="z-icon-caret-right"
 					disabled="true"/>
+				<zk forEach="${vm.menuItem(self,'LiquidacionSalario')}" />
 			</menupopup>
 		</menu>
 
@@ -161,6 +163,7 @@
 		.z-menu-content, .z-menuitem-content {color:black;margin-left:5px}
 		.z-menuitem-text {margin-left:5px}
 		.z-menu, .z-menuitem { margin: 5px}
+		.requerido { color:red; font-weight:bold; font-size:11pt }
 	</style>
 
 </zk>

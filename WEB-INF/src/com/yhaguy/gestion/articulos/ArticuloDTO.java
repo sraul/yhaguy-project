@@ -28,12 +28,23 @@ public class ArticuloDTO extends DTO {
 	private boolean importado = true;
 	private boolean servicio = false;
 	
+	private String medida = "";
+	
 	private MyPair articuloEstado = new MyPair();
 	private MyPair articuloFamilia = new MyPair();
 	private MyPair articuloMarca = new MyPair();
 	private MyPair articuloParte = new MyPair();
 	private MyPair articuloLinea = new MyPair();
 	private MyPair articuloUnidadMedida = new MyPair();
+	
+	private MyPair articuloGrupo = new MyPair();
+	private MyPair articuloSubGrupo = new MyPair();
+	private MyPair articuloModelo = new MyPair();
+	private MyPair articuloAplicacion = new MyPair();
+	private MyPair articuloAPI = new MyPair();
+	private MyPair articuloProcedencia = new MyPair();
+	private MyPair articuloIndiceCarga = new MyPair();
+	private MyPair articuloLado = new MyPair();
 
 	private List<MyArray> articuloInformacionExtras = new ArrayList<MyArray>();
 	private List<ProveedorArticuloDTO> proveedorArticulos = new ArrayList<ProveedorArticuloDTO>();
@@ -298,6 +309,78 @@ public class ArticuloDTO extends DTO {
 
 	public void setServicio(boolean servicio) {
 		this.servicio = servicio;
+	}
+
+	public MyPair getArticuloGrupo() {
+		return articuloGrupo;
+	}
+
+	public void setArticuloGrupo(MyPair articuloGrupo) {
+		this.articuloGrupo = articuloGrupo;
+	}
+
+	public MyPair getArticuloModelo() {
+		return articuloModelo;
+	}
+
+	public void setArticuloModelo(MyPair articuloModelo) {
+		this.articuloModelo = articuloModelo;
+	}
+
+	public MyPair getArticuloAplicacion() {
+		return articuloAplicacion;
+	}
+
+	public void setArticuloAplicacion(MyPair articuloAplicacion) {
+		this.articuloAplicacion = articuloAplicacion;
+	}
+
+	public MyPair getArticuloSubGrupo() {
+		return articuloSubGrupo;
+	}
+
+	public void setArticuloSubGrupo(MyPair articuloSubGrupo) {
+		this.articuloSubGrupo = articuloSubGrupo;
+	}
+
+	public MyPair getArticuloAPI() {
+		return articuloAPI;
+	}
+
+	public void setArticuloAPI(MyPair articuloAPI) {
+		this.articuloAPI = articuloAPI;
+	}
+
+	public MyPair getArticuloProcedencia() {
+		return articuloProcedencia;
+	}
+
+	public void setArticuloProcedencia(MyPair articuloProcedencia) {
+		this.articuloProcedencia = articuloProcedencia;
+	}
+
+	public String getMedida() {
+		return medida;
+	}
+
+	public void setMedida(String medida) {
+		this.medida = medida;
+	}
+
+	public MyPair getArticuloIndiceCarga() {
+		return articuloIndiceCarga;
+	}
+
+	public void setArticuloIndiceCarga(MyPair articuloIndiceCarga) {
+		this.articuloIndiceCarga = articuloIndiceCarga;
+	}
+
+	public MyPair getArticuloLado() {
+		return articuloLado;
+	}
+
+	public void setArticuloLado(MyPair articuloIndiceLado) {
+		this.articuloLado = articuloIndiceLado;
 	}
 
 }

@@ -1,0 +1,154 @@
+<window width="100%" height="100%"
+	apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.yhaguy.gestion.pagos.AnticipoUtilidadVM')">
+	
+	<hlayout sclass="button-container">
+		<button mold="bs" sclass="btn-sm btn-success" 
+			iconSclass="z-icon-plus-circle" label="Agregar" width="150px"
+			onClick='pop_add.open(self, "after_start")'></button>
+		<space></space>
+		<button mold="bs" sclass="btn-sm btn-primary" 
+			iconSclass="z-icon-list" label="Ver Detalle" width="150px"
+			onClick='pop_selected.open(self, "after_start")'></button>
+	</hlayout>
+	
+	<listbox sclass="small-list" vflex="true"
+		emptyMessage="SIN REGISTROS DE PRÉSTAMOS.."
+		model="@load(vm.anticipos)">
+		<listhead>
+			<listheader label="Fecha"></listheader>
+			<listheader label="Número"></listheader>
+			<listheader label="Accionista"></listheader>
+			<listheader label="Importe Gs." align="right"></listheader>
+		</listhead>
+		<auxhead>
+			<auxheader>
+				<hlayout>
+					<textbox hflex="true" sclass="filter" placeholder="Día.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Mes.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Año.." instant="true"></textbox>
+				</hlayout>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Nro. Operacion.." instant="true"></textbox>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Accionista.." instant="true"></textbox>
+			</auxheader>			
+			<auxheader></auxheader>
+		</auxhead>
+		<template name="model">
+			<listitem>
+				<listcell label="@load(each.fecha) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
+				<listcell label="@load(each.numero)"></listcell>
+				<listcell label="@load(each.accionista)"></listcell>
+				<listcell label="@load(each.importeGs) @converter(vm.cnv.monedaLocal)"></listcell>
+			</listitem>
+		</template>
+		<listfoot>
+			<listfooter label="items"></listfooter>
+		</listfoot>
+	</listbox>
+	
+	<popup id="pop_add" sclass="rounded">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="AGREGAR ANTICIPO DE UTILIDAD" />
+			</hbox>
+			<button onClick="pop_add.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<div height="15px"></div>
+		<grid sclass="vgrid" width="500px" style="margin:10px">
+			<columns>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Fecha:" />
+					<datebox value="@bind(vm.nvo_anticipo.fecha)" hflex="true"></datebox>
+				</row>
+				<row>
+					<field value="Número Operación:" />
+					<textbox value="@load(vm.nvo_anticipo.numero)" readonly="true" hflex="true"></textbox>
+				</row>
+				<row>
+					<field value="Accionista:" />
+					<combobox hflex="true" instant="true"
+						model="@load(vm.datos)"
+						selectedItem="@bind(vm.nvo_anticipo.accionista)">
+					</combobox>
+				</row>
+				<row>
+					<field value="Observación:" />
+					<textbox value="@bind(vm.nvo_anticipo.observacion)" hflex="true" />
+				</row>
+				<row>
+					<field value="Cuenta:" />
+					<bandbox hflex="true" />
+				</row>
+				<row>
+					<field value="Importe Gs:" />
+					<guaranibox hflex="true"  
+						style="background:#EEF7FA;text-align:right;font-weight:bold" 
+						value="@bind(vm.nvo_anticipo.importeGs)" />
+				</row>
+			</rows>
+		</grid>
+		<div height="10px"></div>
+		<hbox width="100%" pack="end">
+			<button mold="bs" sclass="btn-sm btn-success" 
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"
+				onClick="@command('addAnticipo', comp=pop_add)"></button>
+		</hbox>
+	</popup>
+	
+	<popup id="pop_selected" sclass="rounded">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="DETALLE DE ANTICIPO UTILIDAD" />
+			</hbox>
+			<button onClick="pop_selected.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<div height="15px"></div>
+		<grid sclass="vgrid" width="500px" style="margin:10px">
+			<columns>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Fecha:" />
+					<datebox hflex="true" readonly="true"></datebox>
+				</row>
+				<row>
+					<field value="Número Operación:" />
+					<textbox hflex="true" readonly="true"></textbox>
+				</row>
+				<row>
+					<field value="Accionista:" />
+					<combobox hflex="true" instant="true" readonly="true">
+					</combobox>
+				</row>
+				<row>
+					<field value="Observación:" />
+					<textbox hflex="true" readonly="true" />
+				</row>
+				<row>
+					<field value="Cuenta:" />
+					<bandbox hflex="true" readonly="true" />
+				</row>
+				<row>
+					<field value="Importe Gs:" />
+					<guaranibox hflex="true" readonly="true"  
+						style="background:#EEF7FA;text-align:right;font-weight:bold" />
+				</row>
+			</rows>
+		</grid>
+	</popup>
+	
+</window>

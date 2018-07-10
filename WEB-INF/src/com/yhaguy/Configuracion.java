@@ -26,6 +26,7 @@ public class Configuracion extends Config {
 	public static String pathProformaGenerico = "/yhaguy/archivos/proformas/";
 	public static String pathOrdenCompra = PATH_SESSION + ("/yhaguy/archivos/ordenCompras/") + "/";
 	public static String pathOrdenCompraGenerico = "/yhaguy/archivos/ordenCompras/";
+	public static String pathPedidoCompraGenerico = "/yhaguy/archivos/pedidoCompra/";
 	public static String pathPedidoCompra = PATH_SESSION + ("/yhaguy/archivos/pedidoCompra/") + "/";
 	public static String pathPedidoCompraAdjunto = "/reportes/compras/importacion/correos/";
 	public static String pathReportesImportacion = "/reportes/compras/importacion/";
@@ -203,8 +204,8 @@ public class Configuracion extends Config {
 	public static String PROPIETARIO_ADMINISTRACION_DESCRIPCION = "Administracion";
 	public static String PROPIETARIO_AUDITORIA_DESCRIPCION = "Auditoria";
 
-	public static String ESTADO_PEDIDO_COMPRA_ELABORACION = "EN ELABORACION";
-	public static String ESTADO_PEDIDO_COMPRA_CONFIRMADO = "CONFIRMADO";
+	public static String ESTADO_PEDIDO_COMPRA_ELABORACION = "EN PROCESO";
+	public static String ESTADO_PEDIDO_COMPRA_CONFIRMADO = "LIBERADO";
 	public static String ESTADO_PEDIDO_COMPRA_ANULADO = "ANULADO";
 
 	public static String EMPRESA_GRUPO_NO_DEFINIDO = "NO GRUPO";

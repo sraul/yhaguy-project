@@ -15,14 +15,15 @@ public class Proveedor extends Domain {
 	Tipo estadoProveedor;
 	Tipo tipoProveedor;
 	CuentaContable cuentaContable;
-	Set<CondicionPago> condicionPagos = new HashSet<CondicionPago>();
 	Set<Timbrado> timbrados = new HashSet<Timbrado>();
 	private Hashtable<Tipo, String> emails;
 	private String emailsLista = "";
 	long prioridad = 0;
 	boolean completo = false;
 	
-	private String descripcion;
+	private String descripcion;	
+	private int condicionPagoDias;
+	private CondicionPago condicionPago;
 	
 	@Override
 	public int compareTo(Object o) {
@@ -105,14 +106,6 @@ public class Proveedor extends Domain {
 		this.cuentaContable = cuentaContable;
 	}
 
-	public Set<CondicionPago> getCondicionPagos() {
-		return condicionPagos;
-	}
-
-	public void setCondicionPagos(Set<CondicionPago> condicionPagos) {
-		this.condicionPagos = condicionPagos;
-	}
-
 	public Set<Timbrado> getTimbrados() {
 		return timbrados;
 	}
@@ -184,5 +177,21 @@ public class Proveedor extends Domain {
 	public String getDescripcion() {
 		this.descripcion = this.empresa.getRazonSocial();
 		return this.descripcion;
+	}
+
+	public CondicionPago getCondicionPago() {
+		return condicionPago;
+	}
+
+	public void setCondicionPago(CondicionPago condicionPago) {
+		this.condicionPago = condicionPago;
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
 	}
 }

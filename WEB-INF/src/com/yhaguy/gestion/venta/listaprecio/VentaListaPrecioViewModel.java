@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
-
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
@@ -16,6 +14,7 @@ import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Bandbox;
 
 import com.coreweb.componente.ViewPdf;
 import com.coreweb.componente.WindowPopup;
@@ -26,12 +25,17 @@ import com.yhaguy.Configuracion;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.ArticuloListaPrecioDetalle;
+import com.yhaguy.domain.ImportacionFacturaDetalle;
+import com.yhaguy.domain.ImportacionPedidoCompra;
 import com.yhaguy.domain.Proveedor;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
 import com.yhaguy.inicio.AccesoDTO;
 import com.yhaguy.util.Utiles;
 import com.yhaguy.util.reporte.ReporteYhaguy;
+
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 
 public class VentaListaPrecioViewModel extends SimpleViewModel {
 	
@@ -41,10 +45,13 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	
 	private MyArray selectedLista;
 	private MyArray selectedListaPrecioDetalle;
+	private List<MyArray> detalles = new ArrayList<MyArray>();
 	
 	private Proveedor selectedProveedor;
 	
 	private String filterCodigo = "";
+	private String filterImportacion = "";
+	private Object[] selectedImportacion;
 	
 	private int listaPrecioSize = 0;
 	private int listaDetalleSize = 0;
@@ -100,6 +107,13 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	@Command
 	public void imprimir() throws Exception {
 		this.imprimirListaPrecio();
+	}
+	
+	@Command
+	@NotifyChange("detalles")
+	public void selectImportacion(@BindingParam("comp") Bandbox comp) throws Exception {
+		this.selectImportacion_();
+		comp.close();
 	}
 	
 	/**
@@ -228,6 +242,28 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	}
 	
 	/**
+	 * inserta los items de la importacion seleccionada..
+	 */
+	private void selectImportacion_() throws Exception {
+		this.detalles.clear();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ImportacionPedidoCompra imp = rr.getImportacionPedidoCompraById((long) this.selectedImportacion[0]);
+		for (ImportacionFacturaDetalle det : imp.getImportacionFactura_().get(0).getDetalles()) {
+			MyArray my = new MyArray();
+			my.setId(det.getArticulo().getId());
+			my.setPos1(imp.getNumeroPedidoCompra());
+			my.setPos2(det.getArticulo().getCodigoInterno());
+			my.setPos3(det.getArticulo().getCostoGs());
+			my.setPos4(det.getCostoDs());
+			my.setPos5(det.getCostoGs());
+			my.setPos6(det.getArticulo().getPrecioGs());
+			my.setPos7(det.getCostoGs() * 1.60);
+			my.setPos8(det.getCostoGs() * 1.60);
+			this.detalles.add(my);
+		}
+	}
+	
+	/**
 	 * @return las listas de precio..
 	 */
 	public List<MyArray> getListasDePrecio() throws Exception {
@@ -245,6 +281,12 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 			my.setPos6(item.getDesde());
 			my.setPos7(item.getHasta());
 			my.setPos8(item.getFormula());
+			my.setPos9(item.getAuxi());
+			my.setPos10(item.getOrden());
+			my.setPos11("LISTA - " + item.getOrden());
+			my.setPos12("" + item.getRango_descuento_1() + "%");
+			my.setPos13("" + item.getRango_descuento_2() + "%");
+			my.setPos14("" + item.getRango_descuento_3() + "%");
 			out.add(my);
 		}
 		this.listaPrecioSize = out.size();
@@ -366,6 +408,13 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	/**
 	 * GETS / SETS
 	 */
+	
+	@DependsOn("filterImportacion")
+	public List<Object[]> getImportaciones() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getImportaciones(this.filterImportacion);
+	}
+	
 	private AccesoDTO getAcceso() {
 		Session s = Sessions.getCurrent();
 		return (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
@@ -417,6 +466,30 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 
 	public void setSelectedProveedor(Proveedor selectedProveedor) {
 		this.selectedProveedor = selectedProveedor;
+	}
+
+	public String getFilterImportacion() {
+		return filterImportacion;
+	}
+
+	public void setFilterImportacion(String filterImportacion) {
+		this.filterImportacion = filterImportacion;
+	}
+
+	public Object[] getSelectedImportacion() {
+		return selectedImportacion;
+	}
+
+	public void setSelectedImportacion(Object[] selectedImportacion) {
+		this.selectedImportacion = selectedImportacion;
+	}
+
+	public List<MyArray> getDetalles() {
+		return detalles;
+	}
+
+	public void setDetalles(List<MyArray> detalles) {
+		this.detalles = detalles;
 	}
 }
 

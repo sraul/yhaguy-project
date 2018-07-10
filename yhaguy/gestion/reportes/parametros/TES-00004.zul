@@ -23,7 +23,7 @@
 									<textbox hflex="true"
 										value="@bind(vm.dato.filtro.razonSocialVendedor)"
 										instant="true" placeholder="Buscar.." 
-										id="txFilter"/>
+										id="txFilter" />
 								</hlayout>
 							</listheader>
 						</listhead>

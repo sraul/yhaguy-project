@@ -11,6 +11,7 @@ import org.zkoss.bind.annotation.DependsOn;
 import com.coreweb.dto.DTO;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
+import com.yhaguy.Configuracion;
 import com.yhaguy.gestion.empresa.ProveedorDTO;
 
 @SuppressWarnings("serial")
@@ -18,7 +19,7 @@ public class CompraLocalFacturaDTO extends DTO{
 	
 	private String numero = "";
 	private Date fechaCreacion = new Date();
-	private Date fechaOriginal = new Date();
+	private Date fechaOriginal;
 	private Date fechaVencimiento;
 	private double tipoCambio = 0;
 	private String observacion = "";
@@ -27,6 +28,16 @@ public class CompraLocalFacturaDTO extends DTO{
 	private double totalAsignadoGs = 0;
 	private double totalAsignadoDs = 0;
 	private boolean recepcionConfirmada = false;
+	private int condicionPagoDias = 0;
+	private String recepcionConfirmadaPor = "";
+	
+	private boolean conteo1 = false;
+	private boolean conteo2 = false;
+	private boolean conteo3 = false;
+	
+	private String tiempoConteo1 = "";
+	private String tiempoConteo2 = "";
+	private String tiempoConteo3 = "";
 	
 	private ProveedorDTO proveedor = new ProveedorDTO();
 	private MyArray condicionPago = new MyArray();
@@ -36,11 +47,28 @@ public class CompraLocalFacturaDTO extends DTO{
 	private MyArray timbrado = new MyArray("", new Date());
 	private List<CompraLocalFacturaDetalleDTO> detalles = new ArrayList<CompraLocalFacturaDetalleDTO>();
 	
+	/**
+	 * @return true si es una compra en moneda local..
+	 */
+	public boolean isMonedaLocal() {
+		String sigla = (String) this.moneda.getPos2();
+		return sigla.equals(Configuracion.SIGLA_MONEDA_GUARANI);
+	}
+	
 	@DependsOn("detalles")
 	public double getTotalImporteGs() {
 		double out = 0;		
 		for (CompraLocalFacturaDetalleDTO item : this.getDetalles()) {
 			out += item.getImporteGs();
+		}		
+		return out;
+	}
+	
+	@DependsOn("detalles")
+	public double getTotalImporteDs() {
+		double out = 0;		
+		for (CompraLocalFacturaDetalleDTO item : this.getDetalles()) {
+			out += item.getImporteDs();
 		}		
 		return out;
 	}
@@ -286,5 +314,69 @@ public class CompraLocalFacturaDTO extends DTO{
 	}
 
 	public void setImporteIva5(double importeIva5) {
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
+	}
+
+	public String getRecepcionConfirmadaPor() {
+		return recepcionConfirmadaPor;
+	}
+
+	public void setRecepcionConfirmadaPor(String recepcionConfirmadaPor) {
+		this.recepcionConfirmadaPor = recepcionConfirmadaPor;
+	}
+
+	public boolean isConteo1() {
+		return conteo1;
+	}
+
+	public void setConteo1(boolean conteo1) {
+		this.conteo1 = conteo1;
+	}
+
+	public boolean isConteo2() {
+		return conteo2;
+	}
+
+	public void setConteo2(boolean conteo2) {
+		this.conteo2 = conteo2;
+	}
+
+	public boolean isConteo3() {
+		return conteo3;
+	}
+
+	public void setConteo3(boolean conteo3) {
+		this.conteo3 = conteo3;
+	}
+
+	public String getTiempoConteo1() {
+		return tiempoConteo1;
+	}
+
+	public void setTiempoConteo1(String tiempoConteo1) {
+		this.tiempoConteo1 = tiempoConteo1;
+	}
+
+	public String getTiempoConteo2() {
+		return tiempoConteo2;
+	}
+
+	public void setTiempoConteo2(String tiempoConteo2) {
+		this.tiempoConteo2 = tiempoConteo2;
+	}
+
+	public String getTiempoConteo3() {
+		return tiempoConteo3;
+	}
+
+	public void setTiempoConteo3(String tiempoConteo3) {
+		this.tiempoConteo3 = tiempoConteo3;
 	}
 }

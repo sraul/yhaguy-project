@@ -17,20 +17,34 @@ public class CompraLocalOrdenDetalleDTO extends DTO {
 	private int cantidad = 0;
 	private int cantidadRecibida = 0;
 	
+	private double descuentoGs = 0;
+	private double descuentoDs = 0;
+	private double porcDescuento = 0;
+	
 	private boolean presupuesto = false;
 	private boolean ordenCompra = false;
 	
 	private MyArray articulo = new MyArray();
 	private MyPair iva;
 	
-	@DependsOn({"costoGs", "cantidad"})
-	public double getImporteGs(){
-		return costoGs * cantidad;
+	@DependsOn({ "costoGs", "cantidad", "descuentoGs" })
+	public double getImporteGs() { 
+		return ( costoGs * cantidad ) - this.getImporteDescuentoGs();
 	}
 	
-	@DependsOn({"costoDs", "cantidad"})
-	public double getImporteDs(){
-		return costoDs * cantidad;
+	@DependsOn({ "costoDs", "cantidad", "descuentoDs" })
+	public double getImporteDs() {
+		return ( costoDs * cantidad ) - this.getImporteDescuentoDs();
+	}
+	
+	@DependsOn({ "cantidad", "descuentoGs" })
+	public double getImporteDescuentoGs() { 
+		return ( this.descuentoGs * cantidad );
+	}
+	
+	@DependsOn({ "cantidad", "descuentoDs" })
+	public double getImporteDescuentoDs() {
+		return ( this.descuentoDs * cantidad );
 	}
 	
 	@DependsOn({"iva", "costoGs", "cantidad"})
@@ -152,5 +166,29 @@ public class CompraLocalOrdenDetalleDTO extends DTO {
 
 	public void setCantidadRecibida(int cantidadRecibida) {
 		this.cantidadRecibida = cantidadRecibida;
+	}
+
+	public double getDescuentoGs() {
+		return descuentoGs;
+	}
+
+	public void setDescuentoGs(double descuentoGs) {
+		this.descuentoGs = descuentoGs;
+	}
+
+	public double getDescuentoDs() {
+		return descuentoDs;
+	}
+
+	public void setDescuentoDs(double descuentoDs) {
+		this.descuentoDs = descuentoDs;
+	}
+
+	public double getPorcDescuento() {
+		return porcDescuento;
+	}
+
+	public void setPorcDescuento(double porcDescuento) {
+		this.porcDescuento = porcDescuento;
 	}
 }

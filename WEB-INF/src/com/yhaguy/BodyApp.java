@@ -167,8 +167,7 @@ public abstract class BodyApp extends Body {
 		List<ArticuloListaPrecio> precios = rr.getListasDePrecio();
 		List<MyArray> out = new ArrayList<MyArray>();
 		for (ArticuloListaPrecio precio : precios) {
-			MyArray lprecio = new MyArray(precio.getDescripcion(),
-					precio.getMargen());
+			MyArray lprecio = new MyArray(precio.getDescripcion(), precio.getMargen());
 			lprecio.setId(precio.getId());
 			out.add(lprecio);
 		}

@@ -1,0 +1,32 @@
+<zk>
+<grid sclass="vgrid" vflex="true" hflex="true">
+	<columns>
+		<column width="10%" />
+		<column />
+		<column width="10%" />
+		<column />
+	</columns>
+	<rows>
+
+		<row>
+			<hlayout>
+				<label sclass="requerido">*</label>
+				<field value="Familia:" />
+			</hlayout>
+			<combobox model="@load(vm.dtoUtil.articuloFamilia)"
+				value="@load(vm.dto.articuloFamilia)"
+				selectedItem="@bind(vm.dto.articuloFamilia)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('selectFamilia')">
+				<template name="model">
+					<comboitem label="@load(each)" />
+				</template>
+			</combobox>
+		</row>
+	</rows>
+</grid>
+
+<style>
+	.requerido { color:red; font-weight:bold; font-size:11pt }
+</style>
+</zk>

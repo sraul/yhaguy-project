@@ -12,12 +12,19 @@ import com.yhaguy.gestion.compras.gastos.subdiario.ArticuloGastoDTO;
 public class OrdenPedidoGastoDetalleDTO extends DTO {
 	
 	private double importe;
-	private String descripcion = "SIN DESC..";
+	private int cantidad = 1;
+	private String descripcion = "";
+	
 	private MyArray departamento;
 	private MyArray centroCosto;	
 	private MyPair iva;
 	
 	private ArticuloGastoDTO articuloGasto = new ArticuloGastoDTO();
+	
+	@DependsOn({ "importe", "cantidad" })
+	public double getTotalImporteGs() {
+		return this.importe * this.cantidad;
+	}
 	
 	@DependsOn("iva")
 	public boolean isIva10() {
@@ -33,7 +40,7 @@ public class OrdenPedidoGastoDetalleDTO extends DTO {
 	public double getImpuesto() {
 		if(this.isExenta())
 			return 0;
-		return this.getMisc().calcularIVA(this.importe, this.isIva10()? 10 : 5);
+		return this.getMisc().calcularIVA(this.getTotalImporteGs(), this.isIva10()? 10 : 5);
 	}
 	
 	public double getImporte() {
@@ -82,5 +89,13 @@ public class OrdenPedidoGastoDetalleDTO extends DTO {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion.toUpperCase();
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 }

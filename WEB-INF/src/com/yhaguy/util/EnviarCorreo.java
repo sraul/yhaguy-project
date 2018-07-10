@@ -14,7 +14,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import com.sun.mail.util.MailSSLSocketFactory;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Tarea_Programada;
 
@@ -26,11 +25,11 @@ public class EnviarCorreo {
 	static final String EMAIL_FROM_GMAIL = "yhaguysys@gmail.com";
 	static final String EMAIL_FROM_PASSWORD_GMAIL = "yhaguyserversystem123";
 	
-	private static final String SMTP_HOST_NAME = "mail.yhaguyrepuestos.com.py";
-	private static final String SMTP_PORT = "465";
-	private static final String SMTP_START_TLS_ENABLE = "true";
-	private static final String EMAIL_FROM = "sistemagestion@yhaguyrepuestos.com.py";
-	private static final String EMAIL_FROM_PASSWORD = "YhagY_1820";
+	static final String SMTP_HOST_NAME = "mail.yhaguyrepuestos.com.py";
+	static final String SMTP_PORT = "465";
+	static final String SMTP_START_TLS_ENABLE = "true";
+	static final String EMAIL_FROM = "sistemagestion@yhaguyrepuestos.com.py";
+	static final String EMAIL_FROM_PASSWORD = "YhagY_1820";
 	
 	public static final String[] DESTINATARIO = new String[]{ "sergioraul777@gmail.com" };
 	public static final String[] COPIA_OCULTA = new String[]{ "sergioraul777@gmail.com" };
@@ -60,23 +59,23 @@ public class EnviarCorreo {
 		boolean debug = false;
 		Properties props = new Properties();
 		
-		props.put("mail.smtp.host", SMTP_HOST_NAME);
-		props.put("mail.smtp.port", SMTP_PORT);
-		props.put("mail.smtp.starttls.enable", SMTP_START_TLS_ENABLE);
+		props.put("mail.smtp.host", SMTP_HOST_NAME_GMAIL);
+		props.put("mail.smtp.port", SMTP_PORT_GMAIL);
+		props.put("mail.smtp.starttls.enable", SMTP_START_TLS_ENABLE_GMAIL);
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.ssl.enable", "true");
-		props.setProperty("proxySet","true");
-        props.setProperty("socksProxyHost","10.25.5.1");
-        props.setProperty("socksProxyPort","1080");
+		//props.setProperty("proxySet","true");
+        //props.setProperty("socksProxyHost","10.25.5.1");
+        //props.setProperty("socksProxyPort","1080");
         
-        MailSSLSocketFactory sf = new MailSSLSocketFactory();
-		sf.setTrustAllHosts(true); 
-		props.put("mail.smtp.ssl.trust", "*");
-		props.put("mail.smtp.ssl.socketFactory", sf);
+        //MailSSLSocketFactory sf = new MailSSLSocketFactory();
+		//sf.setTrustAllHosts(true); 
+		//props.put("mail.smtp.ssl.trust", "*");
+		//props.put("mail.smtp.ssl.socketFactory", sf);
 				
 		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(EMAIL_FROM, EMAIL_FROM_PASSWORD);
+				return new PasswordAuthentication(EMAIL_FROM_GMAIL, EMAIL_FROM_PASSWORD_GMAIL);
 			}
 		});
 

@@ -17,7 +17,7 @@ public class ImportacionPedidoCompraBrowser extends Browser{
 
 	@Override
 	public void setingInicial() {
-		this.setWidthWindows("1200px");
+		this.setWidthWindows("100%");
 		this.setHigthWindows("90%");
 		this.addOrden("fechaCreacion desc, numeroPedidoCompra");
 	}

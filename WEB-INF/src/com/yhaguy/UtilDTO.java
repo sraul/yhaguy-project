@@ -9,6 +9,8 @@ import com.coreweb.domain.IiD;
 import com.coreweb.dto.UtilCoreDTO;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
+import com.yhaguy.domain.CondicionPago;
+import com.yhaguy.domain.RegisterDomain;
 
 @SuppressWarnings("serial")
 public class UtilDTO extends UtilCoreDTO {
@@ -527,8 +529,26 @@ public class UtilDTO extends UtilCoreDTO {
 	MyPair tipoTarjetaExtractoDetalleTE = new MyPair();
 	MyPair tipoTarjetaExtractoDetalleBM = new MyPair();
 
-	/************************** GETTER/SETTER *************************/
+	
+	/**
+	 * GETS / SETS 
+	 */
 
+	/**
+	 * @return las condiciones..
+	 */
+	public List<MyArray> getCondicionPagos() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		CondicionPago con = (CondicionPago) rr.getObject(CondicionPago.class.getName(), 1);
+		CondicionPago cre = (CondicionPago) rr.getObject(CondicionPago.class.getName(), 2);
+		MyArray my1 = new MyArray(con.getDescripcion().toUpperCase());
+		MyArray my2 = new MyArray(cre.getDescripcion().toUpperCase());
+		my1.setId(con.getId()); my2.setId(cre.getId());
+		out.add(my1); out.add(my2);
+		return out;
+	}
+	
 	public String getSimboloMonedaLocal() {
 		return Configuracion.SIGLA_MONEDA_GUARANI;
 	}

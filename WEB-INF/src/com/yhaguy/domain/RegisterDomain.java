@@ -8173,17 +8173,33 @@ public class RegisterDomain extends Register {
 		return this.hql(query);
 	}
 	
+	/**
+	 * @return los datos de articulo.. 
+	 * [0]:id
+	 * [1]:codigoInterno
+	 * [2]:descripcion
+	 * [3]:costoGs
+	 * [4]:costoDs
+	 * [5]:precioGs
+	 */
+	public Object[] getArticulo(long idArticulo) throws Exception {
+		if (idArticulo < 0) {
+			return null;
+		}
+		String query = "select a.id, a.codigoInterno, a.descripcion, a.costoGs, a.costoDs, a.precioGs"
+				+ " from Articulo a where a.id = " + idArticulo;
+		List<Object[]> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
-			List<NotaCredito> ncs = rr.getObjects(NotaCredito.class.getName());
-			for (NotaCredito nc : ncs) {
-				if (nc.isNotaCreditoVenta()) {
-					nc.setVendedor(nc.getVendedor_());
-					rr.saveObject(nc, nc.getUsuarioMod());
-					System.out.println(nc.getVendedor().getRazonSocial());
-				}
+			List<Articulo> lps = rr.getArticulos();
+			for (Articulo art : lps) {
+				System.out.println(art.getCodigoInterno());
 			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

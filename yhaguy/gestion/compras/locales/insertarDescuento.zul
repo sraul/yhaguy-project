@@ -22,18 +22,14 @@
 				</combobox>
 			</row>
 			<row>				
-				<field value="% Descuento:" />
-				<hlayout sclass="z-valign-middle">
-				<doublebox id="porcDesc" onChange="@command('calcularDescuento', porc=self.value)"
-					onOK="@command('calcularDescuento', porc=self.value)"/>
-				<label value="%" style="font-size:11px" />
-				</hlayout>
-			</row>
-			<row>				
 				<field value="Valor Descuento:" />
 				<hlayout sclass="z-valign-middle">
-					<guaranibox value="@bind(vm.dato.nvoItem.costoGs)"/>
+					<guaranibox value="@bind(vm.dato.nvoItem.costoGs)"
+						onChange="@command('dolarizarFactura')" />
 					<label value="Gs." style="font-size:11px" />
+					<dolarbox value="@bind(vm.dato.nvoItem.costoDs)"
+						onChange="@command('guaranizarFactura')"/>
+					<label value="U$D" style="font-size:11px" />
 				</hlayout>
 			</row>
 		</rows>

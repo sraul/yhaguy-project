@@ -38,7 +38,7 @@ public class CompraLocalBrowser extends Browser {
 
 		col1.setCampo("numero"); 	
 		col1.setTitulo("Número");
-		col1.setWidthColumna("100px");
+		col1.setWidthColumna("170px");
 		
 		col1_.setCampo("numeroFactura"); 	
 		col1_.setTitulo("Número Factura");

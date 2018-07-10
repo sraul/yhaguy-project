@@ -1,0 +1,139 @@
+<window width="100%" height="100%"
+	apply="org.zkoss.bind.BindComposer">
+	
+	<hlayout sclass="button-container">
+		<button mold="bs" sclass="btn-sm btn-success" 
+			iconSclass="z-icon-plus-circle" label="Agregar" width="150px"
+			onClick='pop_add.open(self, "after_start")'></button>
+		<space></space>
+		<button mold="bs" sclass="btn-sm btn-primary" 
+			iconSclass="z-icon-list" label="Ver Detalle" width="150px"
+			onClick='pop_selected.open(self, "after_start")'></button>
+	</hlayout>
+	
+	<listbox sclass="small-list" vflex="true"
+		emptyMessage="SIN REGISTROS DE ANTICIPOS..">
+		<listhead>
+			<listheader label="Fecha"></listheader>
+			<listheader label="Funcionario"></listheader>
+			<listheader label="Motivo"></listheader>
+			<listheader label="Liquidación Gs." align="right"></listheader>
+		</listhead>
+		<auxhead>
+			<auxheader>
+				<hlayout>
+					<textbox hflex="true" sclass="filter" placeholder="Día.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Mes.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Año.." instant="true"></textbox>
+				</hlayout>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Funcionario.." instant="true"></textbox>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Motivo.." instant="true"></textbox>
+			</auxheader>			
+			<auxheader></auxheader>
+		</auxhead>
+		<listfoot>
+			<listfooter label="items"></listfooter>
+		</listfoot>
+	</listbox>
+	
+	<popup id="pop_add" sclass="rounded">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="AGREGAR ANTICIPO DE HONORARIOS" />
+			</hbox>
+			<button onClick="pop_add.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<div height="15px"></div>
+		<grid sclass="vgrid" width="450px" style="margin:10px">
+			<columns>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Fecha:" />
+					<datebox hflex="true"></datebox>
+				</row>
+				<row>
+					<field value="Funcionario:" />
+					<bandbox hflex="true"></bandbox>
+				</row>
+				<row>
+					<field value="Mes:" />
+					<combobox hflex="true"></combobox>
+				</row>
+				<row>
+					<field value="Año:" />
+					<combobox hflex="true"></combobox>
+				</row>
+				<row>
+					<field value="Observación:" />
+					<textbox hflex="true"></textbox>
+				</row>
+				<row>
+					<field value="Total Anticipo Gs:" />
+					<guaranibox hflex="true"  
+						style="background:#EEF7FA;text-align:right;font-weight:bold" 
+						 />
+				</row>
+			</rows>
+		</grid>
+		<div height="10px"></div>
+		<hbox width="100%" pack="end">
+			<button mold="bs" sclass="btn-sm btn-success" 
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"></button>
+		</hbox>
+	</popup>
+	
+	<popup id="pop_selected" sclass="rounded">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="DETALLE DE ANTICIPO SALARIAL" />
+			</hbox>
+			<button onClick="pop_selected.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<div height="15px"></div>
+		<grid sclass="vgrid" width="450px" style="margin:10px">
+			<columns>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Fecha:" />
+					<datebox hflex="true"></datebox>
+				</row>
+				<row>
+					<field value="Funcionario:" />
+					<bandbox hflex="true"></bandbox>
+				</row>
+				<row>
+					<field value="Mes:" />
+					<combobox hflex="true"></combobox>
+				</row>
+				<row>
+					<field value="Año:" />
+					<combobox hflex="true"></combobox>
+				</row>
+				<row>
+					<field value="Observación:" />
+					<textbox hflex="true"></textbox>
+				</row>
+				<row>
+					<field value="Total Anticipo Gs:" />
+					<guaranibox hflex="true"  
+						style="background:#EEF7FA;text-align:right;font-weight:bold" 
+						 />
+				</row>
+			</rows>
+		</grid>
+	</popup>	
+</window>

@@ -15,6 +15,7 @@
 		<property name="completo" />
 
 		<property name="emailsLista" />
+		<property name="condicionPagoDias" />
 
 
 		<many-to-one name="empresa" class="com.yhaguy.domain.Empresa"
@@ -26,21 +27,11 @@
 		<many-to-one name="tipoProveedor" class="com.coreweb.domain.Tipo"
 			column="idtipoproveedor" lazy="false" />
 
-		<!-- <many-to-one name="tipoPago" class="com.yhaguy.domain.ProveedorTipoPago" 
-			column="idTipoPago" lazy="false" /> <many-to-one name="estadoProveedor" class="com.yhaguy.domain.ProveedorEstado" 
-			column="idestado" lazy="false" /> <many-to-one name="tipoProveedor" class="com.yhaguy.domain.ProveedorTipo" 
-			column="idtipoproveedor" lazy="false" /> -->
-
 		<many-to-one name="cuentaContable" class="com.yhaguy.domain.CuentaContable"
 			column="idCuentaContable" lazy="false" />
 			
-		<set name="condicionPagos" table="Proveedor_proveedorcondicionpago"
-			inverse="false" lazy="false" fetch="join">
-			<key>
-				<column name="idproveedor" not-null="false" />
-			</key>
-			<many-to-many column="idProveedorCondicionPago" class="com.yhaguy.domain.CondicionPago" />
-		</set>
+		<many-to-one name="condicionPago" class="com.yhaguy.domain.CondicionPago"
+			column="idCondicionPago" lazy="false" />
 
 		<set name="timbrados" table="timbrado" inverse="false" lazy="false"
 			fetch="join" cascade="all">

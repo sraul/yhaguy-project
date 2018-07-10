@@ -38,6 +38,7 @@ import com.yhaguy.domain.BancoCta;
 import com.yhaguy.domain.CentroCosto;
 import com.yhaguy.domain.CondicionPago;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
+import com.yhaguy.domain.DepartamentoApp;
 import com.yhaguy.domain.OrdenPedidoGasto;
 import com.yhaguy.domain.Proveedor;
 import com.yhaguy.domain.RegisterDomain;
@@ -328,8 +329,8 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 		WindowPopup w = new WindowPopup();
 		w.setModo(modo);
 		w.setDato(this);
-		w.setWidth("470px");
-		w.setHigth("310px");
+		w.setWidth("500px");
+		w.setHigth("420px");
 		w.setTitulo("Detalle del Pedido de Gasto");
 		w.show(Configuracion.ORDEN_PEDIDO_GASTO_DETALLE_ZUL);
 
@@ -427,7 +428,6 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 	 */
 	private void insertarItemFactura() throws Exception {
 		this.gastoDetalle = new GastoDetalleDTO();
-		this.gastoDetalle.setCentroCosto(this.getCentroCosto());
 		this.gastoDetalle.setTipoIva(this.getDtoUtil().getTipoIva10());
 		this.gastoDetalle.setCantidad(1);
 
@@ -464,7 +464,7 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 		wp.setCheckAC(null);
 		wp.setDato(this);
 		wp.setHigth("500px");
-		wp.setWidth("800px");
+		wp.setWidth("1000px");
 		wp.setTitulo("Importar ítems de la Orden de Compra");		
 		wp.show(ZUL_IMPORT_OC);
 		if (wp.isClickAceptar()) {
@@ -479,8 +479,8 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 		for (OrdenPedidoGastoDetalleDTO item : this.selectedItemsImportar) {
 			GastoDetalleDTO det = new GastoDetalleDTO();
 			det.setArticuloGasto(item.getArticuloGasto());
-			det.setCantidad(1);
-			det.setCentroCosto(item.getCentroCosto());
+			det.setCantidad(item.getCantidad());
+			det.setDepartamento(item.getDepartamento());
 			det.setMontoGs(item.getImporte());
 			det.setObservacion(item.getDescripcion());
 			det.setTipoIva(this.getIva(item.getIva()));
@@ -837,6 +837,21 @@ public class OrdenPedidoGastoControlBody extends BodyApp {
 		for (BancoCta banco : bancos) {
 			MyArray my = new MyArray(banco.getBanco().getDescripcion().toUpperCase());
 			my.setId(banco.getId());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los departamentos..
+	 */
+	public List<MyArray> getDepartamentos() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<DepartamentoApp> deps = rr.getDepartamentosApp();
+		for (DepartamentoApp dep : deps) {
+			MyArray my = new MyArray(dep.getNombre().toUpperCase());
+			my.setId(dep.getId());
 			out.add(my);
 		}
 		return out;

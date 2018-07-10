@@ -442,7 +442,6 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 
 		List<Tipo> tiposMonedas = rr.getTipos(Configuracion.ID_TIPO_MONEDA);
 		dto.setMonedas(this.listaTiposToListaMyPair(tiposMonedas));
-		dto.setMonedasConSimbolo(this.listaTiposToListaMyArray(tiposMonedas));
 
 		Tipo monedaGuarani = rr.getTipoPorSigla(Configuracion.SIGLA_MONEDA_GUARANI);
 		dto.setMonedaGuarani(tipoToMyPair(monedaGuarani));
@@ -450,6 +449,9 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		
 		Tipo monedaDolares = rr.getTipoPorSigla(Configuracion.SIGLA_MONEDA_DOLAR);
 		dto.setMonedaDolaresConSimbolo(tipoToMyArray(monedaDolares));
+		
+		dto.getMonedasConSimbolo().add(tipoToMyArray(monedaGuarani));
+		dto.getMonedasConSimbolo().add(tipoToMyArray(monedaDolares));
 
 		// seteo de los estados y tipos individuales
 		Tipo tipoTransferenciaInternaDom = (Tipo) rr

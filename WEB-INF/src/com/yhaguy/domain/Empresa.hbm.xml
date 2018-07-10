@@ -31,10 +31,11 @@
 		<property name="longitud" />
 		<property name="userlocation" />
 		
+		<property name="motivoBloqueo" />
+		
 		<property name="cuentaBloqueada">
 			<column name="cuentaBloqueada" default="false" />
 		</property>
-		<property name="motivoBloqueo" />
 
 		<many-to-one name="vendedor" class="com.yhaguy.domain.Funcionario"
 			column="idvendedor" lazy="false" />

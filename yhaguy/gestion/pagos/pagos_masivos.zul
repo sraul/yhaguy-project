@@ -1,0 +1,178 @@
+<window width="100%" height="100%"
+	apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.yhaguy.gestion.pagos.PagosMasivosViewModel')">
+	
+	<hlayout sclass="button-container">
+		<button mold="bs" sclass="btn-sm btn-success" 
+			iconSclass="z-icon-plus-circle" label="Agregar" width="150px"
+			onClick='pop_add.open(self, "after_start")'></button>
+		<space></space>
+		<button mold="bs" sclass="btn-sm btn-primary" 
+			iconSclass="z-icon-list" label="Ver Detalle" width="150px"
+			onClick='pop_selected.open(self, "after_start")'></button>
+	</hlayout>
+	
+	<listbox sclass="small-list" vflex="true"
+		emptyMessage="SIN REGISTROS DE PAGOS MASIVOS..">
+		<listhead>
+			<listheader label="Fecha"></listheader>
+			<listheader label="Número"></listheader>
+			<listheader label="Caja"></listheader>
+			<listheader label="Desde" align="right"></listheader>
+			<listheader label="Hasta" align="right"></listheader>
+		</listhead>
+		<auxhead>
+			<auxheader>
+				<hlayout>
+					<textbox hflex="true" sclass="filter" placeholder="Día.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Mes.." instant="true"></textbox>
+					<textbox hflex="true" sclass="filter" placeholder="Año.." instant="true"></textbox>
+				</hlayout>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Número.." instant="true"></textbox>
+			</auxheader>
+			<auxheader>
+				<textbox hflex="true" sclass="filter" placeholder="Caja.." instant="true"></textbox>
+			</auxheader>			
+			<auxheader></auxheader>
+			<auxheader></auxheader>
+		</auxhead>
+		<listfoot>
+			<listfooter label="items"></listfooter>
+		</listfoot>
+	</listbox>
+	
+	<popup id="pop_add" sclass="rounded"
+		width="1100px">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="AGREGAR PAGOS MASIVOS" />
+			</hbox>
+			<button onClick="pop_add.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<vbox>
+		<grid sclass="vgrid">
+			<rows>
+				<row>
+					<vlayout spacing="0">
+						<field value="Fecha" />
+						<textbox value="@load(vm.desde) @converter('formattedDate', format='dd-MM-yyyy')" readonly="true" hflex="true"></textbox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Número" />
+						<textbox value="PGM-00001" readonly="true" hflex="true"></textbox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Desde" />
+						<datebox value="@bind(vm.desde)" hflex="true"
+							instant="true"></datebox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Hasta" />
+						<datebox value="@bind(vm.hasta)" hflex="true"
+							instant="true"></datebox>
+					</vlayout>
+				</row>
+				<row>
+					<vlayout spacing="0">
+						<field value="Banco" />
+						<combobox readonly="true" hflex="true"
+							model="@load(vm.bancos)">
+							<template name="model">
+								<comboitem label="@load(each.banco.descripcion)"></comboitem>
+							</template>
+						</combobox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Chequera" />
+						<combobox readonly="true" hflex="true">
+							<comboitem label="CHEQUERA 1"></comboitem>
+							<comboitem label="CHEQUERA 2"></comboitem>
+							<comboitem label="CHEQUERA 3"></comboitem>
+						</combobox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Vencimiento" />
+						<datebox hflex="true"></datebox>
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Caja" />
+						<textbox readonly="true" hflex="true"></textbox>
+					</vlayout>
+				</row>
+			</rows>
+		</grid>
+		<listbox sclass="small-list" checkmark="true" multiple="true" height="500px"
+			style="margin:5px" emptyMessage="FACTURAS A PAGAR.."
+			model="@load(vm.movimientos)">
+			<listhead style="text-align:center">
+				<listheader width="40px" align="center"></listheader>
+				<listheader label="Proveedor"></listheader>
+				<listheader label="Emisión" width="110px"></listheader>
+				<listheader label="Vencimiento" width="110px"></listheader>
+				<listheader label="Número" width="150px"></listheader>
+				<listheader label="Concepto" width="170px"></listheader>
+				<listheader label="Saldo Gs." align="right" width="120px"></listheader>
+			</listhead>
+			<template name="model">
+				<listitem>
+					<listcell />
+					<listcell label="@load(each[10])"></listcell>
+					<listcell label="@load(each[6]) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
+					<listcell label="@load(each[7]) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
+					<listcell label="@load(each[2])"></listcell>
+					<listcell label="@load(each[3])"></listcell>
+					<listcell label="@load(each[9]) @converter(vm.cnv.monedaLocal)"></listcell>
+				</listitem>
+			</template>
+			<listfoot>
+				<listfooter label="items"></listfooter>
+			</listfoot>
+		</listbox>
+		</vbox>
+		<hbox width="100%" pack="end">
+			<button mold="bs" sclass="btn-sm btn-success" 
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"></button>
+		</hbox>
+	</popup>
+	
+	<popup id="pop_selected" sclass="rounded">
+		<hbox align="end" pack="end" width="100%">
+			<hbox pack="start" align="center" hflex="true" vflex="true"
+				style="border-bottom:solid 1px silver">
+				<field value="DETALLE DE PAGO MASIVO" />
+			</hbox>
+			<button onClick="pop_selected.close()"
+				iconSclass="z-icon-times">
+			</button>
+		</hbox>
+		<div height="15px"></div>
+		<grid sclass="vgrid" width="450px" style="margin:10px">
+			<columns>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row>
+					<field value="Fecha:" />
+					<datebox hflex="true"></datebox>
+				</row>
+				<row>
+					<field value="Número:" />
+					<textbox hflex="true"></textbox>
+				</row>
+				<row>
+					<field value="Desde:" />
+					<spinner hflex="true"></spinner>
+				</row>
+				<row>
+					<field value="Hasta:" />
+					<spinner hflex="true"></spinner>
+				</row>
+			</rows>
+		</grid>
+	</popup>	
+</window>

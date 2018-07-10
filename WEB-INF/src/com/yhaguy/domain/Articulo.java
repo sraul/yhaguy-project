@@ -9,6 +9,11 @@ import com.coreweb.domain.Tipo;
 
 @SuppressWarnings("serial")
 public class Articulo extends Domain {
+	
+	public static final String FAMILIA_FILTROS = "ART-FAM-FIL";
+	public static final String FAMILIA_LUBRICANTES = "ART-FAM-LUB";
+	public static final String FAMILIA_NEUMATICOS = "ART-FAM-NEU";
+	public static final String FAMILIA_REPUESTOS = "ART-FAM-REP";
 
 	private String descripcion = ""; 
 	private String codigoInterno = ""; 
@@ -21,6 +26,8 @@ public class Articulo extends Domain {
 	private double peso;
 	private double volumen; 
 	private double costoGs;
+	private double costoDs;
+	private double precioGs;
 	private Date fechaAlta; 
 	private boolean importado; 
 	private boolean servicio;
@@ -286,5 +293,21 @@ public class Articulo extends Domain {
 
 	public void setStock(long stock) {
 		this.stock = stock;
+	}
+
+	public double getCostoDs() {
+		return costoDs;
+	}
+
+	public void setCostoDs(double costoDs) {
+		this.costoDs = costoDs;
+	}
+
+	public double getPrecioGs() {
+		return precioGs;
+	}
+
+	public void setPrecioGs(double precioGs) {
+		this.precioGs = precioGs;
 	}
 }

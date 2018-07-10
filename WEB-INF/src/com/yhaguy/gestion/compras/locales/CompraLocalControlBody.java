@@ -4,13 +4,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
-
+import org.json.JSONObject;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -22,6 +22,7 @@ import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -35,11 +36,8 @@ import com.coreweb.dto.DTO;
 import com.coreweb.extras.agenda.ControlAgendaEvento;
 import com.coreweb.extras.browser.Browser;
 import com.coreweb.extras.csv.CSV;
-import com.coreweb.extras.email.CuerpoCorreo;
-import com.coreweb.extras.email.EnviarCorreo;
 import com.coreweb.extras.reporte.DatosColumnas;
 import com.coreweb.util.AutoNumeroControl;
-import com.coreweb.util.Misc;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 import com.yhaguy.BodyApp;
@@ -53,13 +51,21 @@ import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.articulos.buscador.BuscadorArticulosViewModel;
 import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
+import com.yhaguy.gestion.comun.ControlArticuloStock;
 import com.yhaguy.gestion.comun.ControlLogica;
 import com.yhaguy.gestion.empresa.ctacte.ControlCtaCteEmpresa;
 import com.yhaguy.inicio.AccesoDTO;
+import com.yhaguy.util.EnviarCorreo;
 import com.yhaguy.util.Utiles;
+import com.yhaguy.util.connect.JSONResult;
 import com.yhaguy.util.reporte.ReporteYhaguy;
 
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
+
 public class CompraLocalControlBody extends BodyApp {
+	
+	static final String[] DESTINATARIOS = new String[] { "sergioa@yhaguyrepuestos.com.py" };
 	
 	static final String ZUL_PRINT = "/yhaguy/gestion/compras/locales/impresion.zul";
 	static final String ZUL_IMPORTAR_PRESUP = "/yhaguy/gestion/compras/locales/importarPresupuesto.zul";
@@ -97,30 +103,29 @@ public class CompraLocalControlBody extends BodyApp {
 	private long totalVentas = 0;
 	private long totalStock = 0;
 	
+	private Date inicioConteo;
+	private boolean contando = false;
+	private int conteoActual = 0;
+	private boolean cargaFactura = false;
+	
 	@Wire
 	private Popup popComparativo;
 	@Wire
-	private Tab tab1;	
-	@Wire
-	private Tab tab2;	
-	@Wire
-	private Tab tab3;	
-	@Wire
-	private Tab tab4;	
-	@Wire
-	private Tab tab5;	
-	@Wire
-	private Tab tab6;
+	private Tab tab_rec;		
 	@Wire
 	private Textbox txNro;
 
 	@Init(superclass=true)
-	public void init(){		
+	public void init() {		
 	}
 	
-	@AfterCompose(superclass=true)
-	public void afterCompose(){
-		this.seleccionarTab();
+	@AfterCompose(superclass = true)
+	public void afterCompose() {
+		try {
+			this.seleccionarTab();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}	
 
 	@Override
@@ -147,7 +152,6 @@ public class CompraLocalControlBody extends BodyApp {
 	@Override
 	public DTO nuevoDTO() throws Exception {
 		CompraLocalOrdenDTO nvoDto = new CompraLocalOrdenDTO();
-		tab1.setSelected(true);
 		this.sugerirValores(nvoDto);
 		this.addEventoAgenda(EVENTO_CREACION_ORDEN_COMPRA);
 		return nvoDto;		
@@ -185,7 +189,23 @@ public class CompraLocalControlBody extends BodyApp {
 	}
 	
 	@Override
+	public void afterSave() {
+		try {
+			if (this.cargaFactura) {
+				this.notificacionRecepcion();
+			}
+			this.cargaFactura = false;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
 	public boolean verificarAlGrabar() {
+		if(this.contando) {
+			this.mensajeError = "Antes debe finalizar el conteo..";
+			return false;
+		};
 		return this.validarFormulario();
 	}
 
@@ -281,8 +301,14 @@ public class CompraLocalControlBody extends BodyApp {
 	
 	@Command
 	@NotifyChange("*")
-	public void confirmarRecepcion() {
+	public void confirmarRecepcion() throws Exception {
 		this.confirmRecepcion();
+	}
+	
+	@Command
+	@NotifyChange("*")
+	public void confirmarConteo() throws Exception {
+		this.confirmarConteo_();
 	}
 	
 	@Command
@@ -296,6 +322,11 @@ public class CompraLocalControlBody extends BodyApp {
 	public void eliminarGasto(){
 		this.deleteGasto();
 	}	
+	
+	@Command
+	public void registroFactura() {
+		this.cargaFactura = true;
+	}
 	
 	@Command
 	@NotifyChange("*")
@@ -326,7 +357,7 @@ public class CompraLocalControlBody extends BodyApp {
 	@Command
 	public void calcularVencimiento(){
 		CompraLocalFacturaDTO factura = this.dto.getFactura();
-		int plazo = (Integer) factura.getCondicionPago().getPos2();
+		int plazo = factura.getCondicionPagoDias();
 		Date emision = factura.getFechaOriginal();
 		Date vencimiento = m.calcularFechaVencimiento(emision, plazo);
 		factura.setFechaVencimiento(vencimiento);
@@ -346,6 +377,31 @@ public class CompraLocalControlBody extends BodyApp {
 		} else {
 			this.dto.getFactura().setTimbrado(new MyArray("", null));
 		}
+	}
+	
+	@Command
+	@NotifyChange("*")
+	public void iniciarConteo(@BindingParam("comp1") Button comp1, @BindingParam("comp2") Button comp2) {
+		this.iniciarConteo();
+		comp1.setDisabled(true);
+		comp2.setVisible(true);
+	}
+	
+	@Command
+	@NotifyChange("*")
+	public void finalizarConteo(@BindingParam("comp1") Button comp1, @BindingParam("comp2") Button comp2) 
+		throws Exception {
+		this.finalizarConteo();
+		comp1.setDisabled(false);
+		comp2.setVisible(false);
+	}
+	
+	@Command
+	@NotifyChange("*")
+	public void volcarStockPendiente(@BindingParam("item") MyArray item) throws Exception {
+		if (this.mensajeSiNo("Desea volcar a stock el articulo seleccionado..?")) {
+			this.volcarStockPendiente_(item);
+		}		
 	}
 	
 	/*********************************************************/
@@ -399,8 +455,8 @@ public class CompraLocalControlBody extends BodyApp {
 		w.setTitulo("Insertar Ítem");
 		w.setModo(WindowPopup.NUEVO);
 		w.setDato(this);
-		w.setWidth("450px");
-		w.setHigth("400px");
+		w.setWidth("500px");
+		w.setHigth("450px");
 		w.setCheckAC(new ValidadorInsertarItem(this));
 		w.show(Configuracion.INSERTAR_ITEM_COMPRA_LOCAL_ORDEN_ZUL);
 		if (w.isClickAceptar()) {
@@ -450,6 +506,7 @@ public class CompraLocalControlBody extends BodyApp {
 		fac.setTipoCambio(this.dto.getTipoCambio());
 		fac.setSucursal(this.dto.getSucursal());
 		fac.setCondicionPago(this.dto.getCondicionPago());
+		fac.setCondicionPagoDias(this.dto.getCondicionPagoDias());
 		for (CompraLocalOrdenDetalleDTO item : this.dto.getDetalles()) {
 			CompraLocalFacturaDetalleDTO det = new CompraLocalFacturaDetalleDTO();
 			det.setArticulo(item.getArticulo());
@@ -457,6 +514,8 @@ public class CompraLocalControlBody extends BodyApp {
 			det.setCantidadRecibida(item.getCantidad());
 			det.setCostoGs(item.getCostoGs());
 			det.setCostoDs(item.getCostoDs());
+			det.setDescuentoDs(item.getDescuentoDs());
+			det.setDescuentoGs(item.getDescuentoGs());
 			det.setIva(item.getIva());
 			fac.getDetalles().add(det);
 		}
@@ -470,7 +529,8 @@ public class CompraLocalControlBody extends BodyApp {
 		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
 		this.setEstadoABMConsulta();
 		this.addEventoAgenda(EVENTO_AUTORIZACION_ORDEN_COMPRA);
-		Clients.showNotification("Orden de Compra autorizada..");
+		this.notificacionContraCheque();
+		Clients.showNotification("ORDEN DE COMPRA AUTORIZADA..");
 	}
 	
 	/**
@@ -495,7 +555,7 @@ public class CompraLocalControlBody extends BodyApp {
 	/**
 	 * @return confirmacion para eliminar item..
 	 */
-	private boolean confirmarEliminarItemFactura(){
+	private boolean confirmarEliminarItemFactura() {
 		this.facturaItemsEliminar = "Esta seguro de eliminar los sgts ítems: \n";		
 		for (CompraLocalFacturaDetalleDTO d : this.selectedFacturaItems) {
 			this.facturaItemsEliminar = this.facturaItemsEliminar + "\n - " + d.getArticulo().getPos1();
@@ -608,12 +668,25 @@ public class CompraLocalControlBody extends BodyApp {
 	/**
 	 * confirma la recepcion..
 	 */
-	private void confirmRecepcion() {
+	private void confirmRecepcion() throws Exception {
 		if(this.mensajeSiNo("Desea confirmar la recepción de mercaderías..") == false)
 			return;
-		this.dto.setRecepcionado(true);
-		Clients.showNotification("Recepción confirmada..");
+		this.dto.getFactura().setRecepcionConfirmada(true);
+		this.dto.getFactura().setRecepcionConfirmadaPor(this.getUs().getNombre().toUpperCase());
+		Clients.showNotification("RECEPCION CONFIRMADA..");
 		this.addEventoAgenda(EVENTO_CONFIRMACION_RECEPCION);
+		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
+		this.setEstadoABMConsulta();
+	}
+	
+	/**
+	 * confirmar conteo..
+	 */
+	private void confirmarConteo_() throws Exception {
+		this.dto.setRecepcionado(true);
+		Clients.showNotification("CONTEO CONFIRMADO..");
+		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
+		this.setEstadoABMConsulta();
 	}
 	
 	/**
@@ -664,6 +737,82 @@ public class CompraLocalControlBody extends BodyApp {
 	}	
 	
 	/**
+	 * notificacion a pagos si la compra es contra cheque..
+	 */
+	private void notificacionContraCheque() throws Exception {
+		if (this.dto.isContraCheque_()) {
+			String tipoCambio = this.dto.isMonedaLocal() ? "" : " al tipo de cambio Gs: " + Utiles.getNumberFormat(this.dto.getTipoCambio());
+			String importeDs = this.dto.isMonedaLocal() ? "" : "  - Importe USD: " + Utiles.getNumberFormat(this.dto.getTotalImporteDs());
+			EnviarCorreo correo = new EnviarCorreo();
+			correo.sendMessage(DESTINATARIOS, new String[]{ "" }, "Notificacion - compra local contra cheque",
+					"Se registro la autorización de compra contra cheque: \n"
+					+ "\n - Concepto: " + this.dto.getTipoMovimiento().getPos1() + " " + this.dto.getNumero()
+					+ "\n - Proveedor: " + this.dto.getProveedor().getRazonSocial() 
+					+ "\n - Moneda: " + this.dto.getMoneda().getPos1().toString().toUpperCase() + tipoCambio
+					+ "\n - Importe Gs: " + Utiles.getNumberFormat(this.dto.getTotalImporteGs()) + importeDs					
+					+ "\n - Autorizado por: " + this.dto.getAutorizadoPor()
+					+ "\n - Observacion: " + this.dto.getObservacion()
+					+ "\n\n\n\n -------------------------- \n Gestión Yhaguy Versión 1.0", null, null);
+			Clients.showNotification("NOTIFICACION ENVIADA..");
+		}
+	}
+	
+	/**
+	 * notificacion a deposito de carga de factura de compra..
+	 */
+	private void notificacionRecepcion() throws Exception {
+		if (!this.dto.getFactura().getNumero().isEmpty()) {
+			EnviarCorreo correo = new EnviarCorreo();
+			correo.sendMessage(DESTINATARIOS, new String[]{ "" }, "Notificacion - recepcion de compra local",
+					"Se registro la carga de factura que necesita validacion de recepcion física: \n"
+					+ "\n - Orden de Compra: " + this.dto.getNumero()
+					+ "\n - Factura: " + this.dto.getFactura().getNumero()
+					+ "\n - Proveedor: " + this.dto.getProveedor().getRazonSocial() 					
+					+ "\n - Autorizado por: " + this.dto.getAutorizadoPor()
+					+ "\n - Observacion: " + this.dto.getObservacion()
+					+ "\n\n\n\n -------------------------- \n Gestión Yhaguy Versión 1.0", null, null);
+			Clients.showNotification("NOTIFICACION ENVIADA..");
+		}
+	}
+	
+	/**
+	 * inicia los conteos..
+	 */
+	private void iniciarConteo() {
+		this.contando = true;
+		this.inicioConteo = new Date();
+		if (!this.dto.getFactura().isConteo1()) {
+			this.dto.getFactura().setConteo1(true);
+			this.conteoActual = 1;
+		} else if (!this.dto.getFactura().isConteo2()) {
+			this.dto.getFactura().setConteo2(true);
+			this.conteoActual = 2;
+		} else {
+			this.dto.getFactura().setConteo3(true);
+			this.conteoActual = 3;
+		}
+	}
+	
+	/**
+	 * finaliza el conteo..
+	 */
+	private void finalizarConteo() throws Exception {
+		this.contando = false;
+		Integer[] tiempo = Utiles.getDiferenciaHoras(this.inicioConteo, new Date());
+		String tiempo_ = tiempo[0] + ":" + tiempo[1] + ":" + tiempo[2];
+		if (this.dto.getFactura().getTiempoConteo1().isEmpty()) {
+			this.dto.getFactura().setTiempoConteo1(tiempo_);
+		} else if (this.dto.getFactura().getTiempoConteo2().isEmpty()) {
+			this.dto.getFactura().setTiempoConteo2(tiempo_);
+		} else {
+			this.dto.getFactura().setTiempoConteo3(tiempo_);
+		}
+		Clients.showNotification("TIEMPO DE CONTEO: " + tiempo_);
+		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
+		this.setEstadoABMConsulta();
+	}
+	
+	/**
 	 * @return los costos finales..
 	 */
 	public List<MyArray> getItemsCostoFinal() {
@@ -705,7 +854,7 @@ public class CompraLocalControlBody extends BodyApp {
 					items.get(d.getArticulo().getId()).setPos5(
 							cantAnterior + d.getCantidad());
 				} else {
-					if (d.isDescuento() == false) {
+					if (!d.isDescuento()) {
 						MyArray mr = new MyArray();
 						mr.setId(d.getArticulo().getId());
 						mr.setPos1(d.getArticulo().getPos1());
@@ -718,6 +867,11 @@ public class CompraLocalControlBody extends BodyApp {
 						mr.setPos5(new Integer(d.getCantidad()));
 						mr.setPos6(d.getCostoGs());
 						mr.setPos7(d.getCostoDs());
+						mr.setPos8(d.getCantidadRecepcionada(this.dto.getFactura()));
+						int dif = (int) mr.getPos5() - (int) mr.getPos8();
+						mr.setPos9(dif - d.getVolcadoPendiente());
+						mr.setPos11((dif - d.getVolcadoPendiente()) > 0 ? false : true);
+						mr.setPos12(d);
 						items.put(d.getArticulo().getId(), mr);
 					}
 				}
@@ -734,16 +888,61 @@ public class CompraLocalControlBody extends BodyApp {
 	 * cierre de la compra..
 	 */
 	private void cerrarCompra() throws Exception {		
-		if(this.mensajeSiNo("Desea cerrar la compra..") == false)
-			return;
+		if(!this.mensajeSiNo("Desea cerrar la compra..")) return;
 		this.dto.setReadonly();
 		this.dto.setCerrado(true);
 		this.setTimbrado();
 		this.dto.getFactura().setReadonly();
 		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
 		this.volcarCompra();
+		this.generarBackOrder();
 		this.setEstadoABMConsulta();
 		Clients.showNotification("Compra correctamente cerrada..");
+	}
+	
+	/**
+	 * genera back order..
+	 */
+	private void generarBackOrder() throws Exception {
+		Map<String, CompraLocalFacturaDetalleDTO> dets = new HashMap<String, CompraLocalFacturaDetalleDTO>();
+		List<CompraLocalOrdenDetalleDTO> items = new ArrayList<CompraLocalOrdenDetalleDTO>();
+		for (CompraLocalFacturaDetalleDTO det : this.dto.getFactura().getDetalles()) {
+			dets.put((String) det.getArticulo().getPos1(), det);
+		}
+		for (CompraLocalOrdenDetalleDTO det : this.dto.getDetalles()) {
+			String cod = (String) det.getArticulo().getPos1();
+			CompraLocalFacturaDetalleDTO item = dets.get(cod);
+			if (item == null) {
+				det.setId((long) -1);
+				items.add(det);
+			} else {
+				int dif = det.getCantidad() - item.getCantidad();
+				if (dif > 0) {
+					det.setId((long) -1);
+					det.setCantidad(dif);
+					items.add(det);
+				}
+			}
+		}
+		if (items.size() > 0) {
+			CompraLocalOrdenDTO back = new CompraLocalOrdenDTO();
+			back.setAutorizado(true);
+			back.setAutorizadoPor(this.dto.getAutorizadoPor());
+			back.setCondicionPago(this.dto.getCondicionPago());
+			back.setCondicionPagoDias(this.dto.getCondicionPagoDias());
+			back.setContraCheque(this.dto.getContraCheque());
+			back.setDetalles(items);
+			back.setFechaCreacion(new Date());
+			back.setHabilitado(this.dto.isHabilitado());
+			back.setMoneda(this.dto.getMoneda());
+			back.setNumero(this.dto.getNumero() + " (BACK-ORDER)");
+			back.setObservacion(this.dto.getObservacion());
+			back.setProveedor(this.dto.getProveedor());
+			back.setSucursal(this.dto.getSucursal());
+			back.setTipoCambio(this.dto.getTipoCambio());
+			back.setTipoMovimiento(this.dto.getTipoMovimiento());
+			this.saveDTO(back);
+		}
 	}
 	
 	/**
@@ -774,7 +973,7 @@ public class CompraLocalControlBody extends BodyApp {
 			art.setId(m.getId());
 			art.setPos1(m.getPos1());
 
-			Integer cant = (Integer) m.getPos5();
+			Integer cant = (Integer) m.getPos8(); // vuelca la cantidad recepcionada..
 			double costoFinalGs = (double) m.getPos3();
 
 			this.ctr.actualizarArticuloDepositoCompra(this.dto.getId(),
@@ -785,6 +984,22 @@ public class CompraLocalControlBody extends BodyApp {
 					this.dto.getFactura().getFechaOriginal(), this.dto.getFactura().getId(),
 					this.dto.getFactura().getTipoMovimiento().getId(), this.getLoginNombre());
 		}
+	}
+	
+	/**
+	 * vuelca a stock los pendientes..
+	 */
+	private void volcarStockPendiente_(MyArray item) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ArticuloDeposito adep = rr.getArticuloDeposito(item.getId(), this.dto.getDeposito().getId());
+		int cant = (int) item.getPos9();
+		CompraLocalFacturaDetalleDTO det = (CompraLocalFacturaDetalleDTO) item.getPos12();
+		if (adep != null) {
+			ControlArticuloStock.actualizarStock(adep.getId(), cant, this.getLoginNombre());
+		}
+		det.setVolcadoPendiente(cant);
+		this.dto = (CompraLocalOrdenDTO) this.saveDTO(this.dto);
+		Clients.showNotification("STOCK PENDIENTE VOLCADO..!");
 	}
 	
 	/**
@@ -860,16 +1075,12 @@ public class CompraLocalControlBody extends BodyApp {
 		return out;
 	}	
 	
-	private void seleccionarTab(){
-		List<Tab> tabs = new ArrayList<Tab>();
-		tabs.add(tab1);	tabs.add(tab2);
-		tabs.add(tab3);	tabs.add(tab4);
-		tabs.add(tab5);	tabs.add(tab6);
-		for (Tab tab : tabs) {
-			if (tab.isDisabled() == false) {
-				tab.setSelected(true);
-				return;
-			}
+	/**
+	 * selecciona el tab..
+	 */
+	private void seleccionarTab() throws Exception {
+		if (!this.isOperacionHabilitada("verificarCompraLocal")) {
+			this.tab_rec.setSelected(true);
 		}
 	}
 	
@@ -1039,8 +1250,20 @@ public class CompraLocalControlBody extends BodyApp {
 	}	
 	
 	@Command @NotifyChange("*")
-	public void refreshTipoCambio(){
-		double tipoCambio = this.getDtoUtil().getCambioVentaBCP(this.dto.getMoneda());
+	public void refreshTipoCambio() {
+		double tipoCambio = 1;
+		if (!this.dto.isMonedaLocal()) {
+			try {
+				JSONResult json = new JSONResult();
+	            String result = json.getCotizaciones();
+	            JSONObject json_data = new JSONObject(result);
+	            JSONObject json_dolarpy = json_data.getJSONObject("dolarpy");
+	            JSONObject json_bcp = json_dolarpy.getJSONObject("set");
+	            tipoCambio = json_bcp.getDouble("venta");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		this.dto.setTipoCambio(tipoCambio);
 	}
 	
@@ -1106,61 +1329,12 @@ public class CompraLocalControlBody extends BodyApp {
 	/**************************************** ENVIO DE CORREO **************************************/
 	
 	String linkOrdenCompra = "";
-	String pathRealOrdenCompra = "";
-	
-	CuerpoCorreo correo = new CuerpoCorreo("compraslocales@yhaguyrepuestos.com.py", "yrmkt1970",			
-			Configuracion.TEXTO_CORREO_IMPORTACION);			
+	String pathRealOrdenCompra = "";			
 		
 	@Command
 	@NotifyChange("*")
 	public void correo() throws Exception {
-		correo.setAsunto(this.getTipoOrdenCompra());		
-		this.generarAdjuntoCorreo();			
-		this.showCorreo();
-		txNro.focus();
-	}
-	
-	public void showCorreo() throws Exception{
-		
-		WindowPopup w = new WindowPopup();
-		w.setModo(WindowPopup.NUEVO);
-		w.setTitulo("Envio de Correos");
-		w.setWidth("750px");
-		w.setHigth("500px");
-		w.setDato(this);
-		w.setCheckAC(new ValidadorEnviarCorreo(this));
-		w.show(Configuracion.CORREO_COMPRA_LOCAL_ZUL);
-		if (w.isClickAceptar()) {				
-			this.enviarCorreo();
-		} else {
-			//si no envia borra el archivo
-			this.m.borrarArchivo(this.pathRealOrdenCompra);
-		}
-	}
-
-	// Genera el informe de Pedido Compra, guarda en un directorio en formato
-	// PDF y de ahi adjunta al correo..
-	public void generarAdjuntoCorreo(){}	
-	
-	public void enviarCorreo() throws Exception {
-		
-		String[] send = correo.getDestinatario().trim().split(";");
-		String[] sendCC = correo.getDestinatarioCopia().trim().split(";");
-		String[] sendCCO = correo.getDestinatarioCopiaOculta().trim().split(";");
-
-		correo.setAdjunto(this.pathRealOrdenCompra);
-				
-		EnviarCorreo enviarCorreo = new EnviarCorreo();			
-		enviarCorreo.sendMessage(send, sendCC, sendCCO,
-		correo.getAsunto(), correo.getCuerpo(),
-		correo.getRemitente(), correo.getClave(), this.getNombreArchivo() + ".pdf",
-		correo.getAdjunto());
-			
-		this.getCtrAgenda().addDetalle(ControlAgendaEvento.COTIZACION, this.dto.getNumero(),
-					0, Configuracion.TEXTO_CORREO_ENVIADO + correo.getAsunto(), this.linkOrdenCompra);
-			
-		this.mensajePopupTemporal(Configuracion.TEXTO_CORREO_ENVIADO_CORRECTAMENTE);
-	}		
+	}	
 
 	/***********************************************************************************************/	
 	
@@ -1557,6 +1731,15 @@ public class CompraLocalControlBody extends BodyApp {
 		return (this.isDeshabilitado() == true)
 				|| (this.dto.getDetalles().size() == 0)
 				|| (this.dto.isAutorizado() 
+				|| (this.dto.isControlAutorizacion() && !this.dto.isHabilitado())		
+				|| (this.dto.esNuevo()));
+	}
+	
+	@DependsOn({ "deshabilitado", "dto" })
+	public boolean isHabilitarDisabled() {
+		return (this.isDeshabilitado() == true)
+				|| (this.dto.getDetalles().size() == 0)
+				|| (this.dto.isAutorizado() 
 				|| (this.dto.esNuevo()));
 	}
 	
@@ -1722,6 +1905,15 @@ public class CompraLocalControlBody extends BodyApp {
 		return descGlobal / importeFactura;
 	}
 	
+	/**
+	 * @return list si - no.
+	 */
+	public List<String> getListaSiNo() {
+		List<String> out = new ArrayList<String>();
+		out.add("SI"); out.add("NO");
+		return out;
+	}
+	
 	public CompraLocalOrdenDTO getDto() {
 		return dto;
 	}
@@ -1811,14 +2003,6 @@ public class CompraLocalControlBody extends BodyApp {
 	public void setNvoGasto(CompraLocalGastoDTO nvoGasto) {
 		this.nvoGasto = nvoGasto;
 	}
-	
-	public CuerpoCorreo getCorreo() {
-		return correo;
-	}
-
-	public void setCorreo(CuerpoCorreo correo) {
-		this.correo = correo;
-	}
 
 	public String getNombreArchivo() {
 		return this.dto.getNumero();
@@ -1904,6 +2088,22 @@ public class CompraLocalControlBody extends BodyApp {
 
 	public void setTotalStock(long totalStock) {
 		this.totalStock = totalStock;
+	}
+
+	public boolean isContando() {
+		return contando;
+	}
+
+	public void setContando(boolean contando) {
+		this.contando = contando;
+	}
+
+	public int getConteoActual() {
+		return conteoActual;
+	}
+
+	public void setConteoActual(int conteoActual) {
+		this.conteoActual = conteoActual;
 	}
 }
 
@@ -2257,90 +2457,6 @@ class ValidadorInsertarDescuento implements VerificaAceptarCancelar{
 		return "Error al Cancelar";
 	}
 	
-}
-
-
-
-//Validador de Enviar Correo..
-class ValidadorEnviarCorreo implements VerificaAceptarCancelar{
-
-	private String mensajeError = "";
-	private CuerpoCorreo correo = new CuerpoCorreo("", "", "");
-	private Misc m = new Misc();
-	
-	public String getMensajeError() {
-		return mensajeError;
-	}
-
-	public void setMensajeError(String mensajeError) {
-		this.mensajeError = mensajeError;
-	}
-	
-	//Constructor
-	public ValidadorEnviarCorreo(CompraLocalControlBody ctr){
-		this.correo = ctr.getCorreo();
-	}
-
-	@Override
-	public boolean verificarAceptar() {		
-		boolean out = true;
-		this.mensajeError = "No se puede realizar la operación debido a: \n";
-		
-		if ((correo.getDestinatario().trim().length() == 0) 
-				&& (correo.getDestinatarioCopia().trim().length() == 0)
-					&& (correo.getDestinatarioCopiaOculta().trim().length() == 0)) {
-			this.mensajeError = mensajeError + "\n - Debe ingresar "
-					+ "al menos una dirección de correo..";
-			out = false;
-		}
-		
-		String send = correo.getDestinatario();
-		String sendCC = correo.getDestinatarioCopia();
-		String sendCCO = correo.getDestinatarioCopiaOculta();
-		
-		String[] arraySend = null;
-		String[] arraySendCC = null;
-		String[] arraySendCCO = null;
-		
-		if (send.trim().length() > 0) {
-			arraySend = correo.getDestinatario().trim().split(";");
-		}
-		
-		if (sendCC.trim().length() > 0) {
-			arraySendCC = correo.getDestinatarioCopia().trim().split(";");
-		}
-		
-		if (sendCCO.trim().length() > 0) {
-			arraySendCCO = correo.getDestinatarioCopiaOculta().trim().split(";");
-		}
-
-		String[] correos = m.concatenarArraysDeString(arraySend, arraySendCC, arraySendCCO, null, null);
-		boolean correosCheck = (boolean) m.chequearMultipleCorreos(correos)[0];
-		String correosMsg = (String) m.chequearMultipleCorreos(correos)[1];
-		
-		if (correosCheck == false) {
-			this.mensajeError = mensajeError + "Las siguientes direcciones de Correo son "
-					+ "inválidas: \n" + correosMsg;
-			out = false;
-		}
-		
-		return out;
-	}
-
-	@Override
-	public String textoVerificarAceptar() {
-		return this.mensajeError;
-	}
-
-	@Override
-	public boolean verificarCancelar() {
-		return true;
-	}
-
-	@Override
-	public String textoVerificarCancelar() {
-		return "Error al Cancelar";
-	}	
 }
 
 /**

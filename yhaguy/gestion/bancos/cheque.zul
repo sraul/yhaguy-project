@@ -98,7 +98,7 @@
 			</rows>
 		</grid>
 
-		<hlayout>
+		<hlayout valign="top">
 			<grid sclass="vgrid" hflex="true" style="margin-right: 15px">
 				<columns>
 					<column width="75px" />
@@ -115,6 +115,10 @@
 							<button
 								iconSclass="z-icon-search" onClick="@command('buscarBanco')" />
 						</hlayout>
+					</row>
+					<row>
+						<field value="Chequera:" />
+						<combobox hflex="true" />
 					</row>
 					<row>
 						<field value="Número:" />					

@@ -17,11 +17,14 @@ public class CompraLocalOrden extends Domain {
 	private double tipoCambio;
 	private String observacion;
 	private boolean autorizado;
+	private boolean habilitado;
 	private boolean cerrado;
 	private boolean subDiarioConfirmado;
 	private boolean recepcionado;
 	private String autorizadoPor;
 	private String numeroFactura;
+	private int condicionPagoDias;
+	private String contraCheque;
 
 	private Proveedor proveedor;
 	private CondicionPago condicionPago;
@@ -221,5 +224,29 @@ public class CompraLocalOrden extends Domain {
 
 	public void setNumeroFactura(String numeroFactura) {
 		this.numeroFactura = numeroFactura;
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
+	}
+
+	public String getContraCheque() {
+		return contraCheque;
+	}
+
+	public void setContraCheque(String contraCheque) {
+		this.contraCheque = contraCheque;
+	}
+
+	public boolean isHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(boolean habilitado) {
+		this.habilitado = habilitado;
 	}
 }

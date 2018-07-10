@@ -1,9 +1,12 @@
 package com.yhaguy.gestion.empresa;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.Init;
 
 import com.coreweb.Config;
@@ -14,6 +17,7 @@ import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 import com.yhaguy.ID;
 import com.yhaguy.UtilDTO;
+import com.yhaguy.domain.CondicionPago;
 import com.yhaguy.domain.Proveedor;
 import com.yhaguy.domain.RegisterDomain;
 
@@ -71,6 +75,7 @@ public class ProveedorControlBody extends EmpresaControlBody {
 		aux.getEmpresa().setPais(this.utilDto.getPaisParaguay());
 		aux.getEmpresa().setEmpresaGrupoSociedad(this.utilDto.getGrupoEmpresaNoDefinido());
 		aux.getEmpresa().setRegimenTributario(this.utilDto.getRegimenTributarioNoExenta());	
+		aux.setCondicionPago(this.utilDto.getCondicionPagoContado());
 		
 		//Valores por defecto para CtaCteProveedor
 		aux.getEmpresa().getCtaCteEmpresa().setEstadoComoProveedor(this.utilDto.getCtaCteEmpresaEstadoSinCuenta());
@@ -100,6 +105,15 @@ public class ProveedorControlBody extends EmpresaControlBody {
 		return new ProveedorBrowser();
 	}
 	
+	@Command
+	public void sugerirDiasCredito() {
+		if (this.dto.getCondicionPago().getId().longValue() > 1) {
+			this.dto.setCondicionPagoDias(30);
+		} else {
+			this.dto.setCondicionPagoDias(0);
+		}
+		BindUtils.postNotifyChange(null, null, this.dto, "condicionPagoDias");
+	}
 	
 	/************************************* UTILES ****************************************/
 	
@@ -109,7 +123,6 @@ public class ProveedorControlBody extends EmpresaControlBody {
 	//============================= VALIDAR FORMULARIO ===================================
 	
 		private String mensajeError = "";
-		private boolean controlRuc = true;
 		
 		@Override
 		public boolean verificarAlGrabar() {
@@ -253,7 +266,6 @@ public class ProveedorControlBody extends EmpresaControlBody {
 				if (rr.existe(Proveedor.class, "empresa.ruc", Config.TIPO_STRING , ruc, this.getDTOCorriente()) == true){
 					out = false;
 					this.mensajeError = this.mensajeError + "\n - Ya existe un cliente con este RUC: " + ruc;
-					this.controlRuc = false;
 				}
 				
 				if(emp.getCtaCteEmpresa().getEstadoComoProveedor() == null ||  emp.getCtaCteEmpresa().getEstadoComoProveedor().esNuevo()){
@@ -317,6 +329,27 @@ public class ProveedorControlBody extends EmpresaControlBody {
 			
 			return out;
 		}
+		
+		
+		/**
+		 * GETS / SETS
+		 */
+		
+		/**
+		 * @return las condiciones..
+		 */
+		public List<MyArray> getCondicionPagos() throws Exception {
+			List<MyArray> out = new ArrayList<MyArray>();
+			RegisterDomain rr = RegisterDomain.getInstance();
+			CondicionPago con = (CondicionPago) rr.getObject(CondicionPago.class.getName(), 1);
+			CondicionPago cre = (CondicionPago) rr.getObject(CondicionPago.class.getName(), 2);
+			MyArray my1 = new MyArray(con.getDescripcion().toUpperCase());
+			MyArray my2 = new MyArray(cre.getDescripcion().toUpperCase());
+			my1.setId(con.getId()); my2.setId(cre.getId());
+			out.add(my1); out.add(my2);
+			return out;
+		}
+		
 		public boolean isConsultaCtaCteDisabled() throws Exception{
 			if (this.operacionHabilitada("ConsultarCtaCteProveedoresABM", ID.F_PROVEEDOR_ABM_BODY))
 				return false;

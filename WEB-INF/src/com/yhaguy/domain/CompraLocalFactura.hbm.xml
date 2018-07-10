@@ -26,6 +26,24 @@
 		<property name="importeDs"/>
 		<property name="importeIva10"/>
 		<property name="importeIva5"/>
+		<property name="condicionPagoDias"/>
+		<property name="recepcionConfirmadaPor"/>
+		
+		<property name="tiempoConteo1"/>
+		<property name="tiempoConteo2"/>
+		<property name="tiempoConteo3"/>
+		
+		<property name="conteo1">
+			<column name="conteo1" default="false" />
+		</property>
+		
+		<property name="conteo2">
+			<column name="conteo2" default="false" />
+		</property>
+		
+		<property name="conteo3">
+			<column name="conteo3" default="false" />
+		</property>
 		
 		<property name="ivaRetenido">
 			<column name="ivaRetenido" not-null="true" default="false" />

@@ -12,6 +12,10 @@ public class ArticuloListaPrecio extends Domain {
 	private String descripcion;
 	private String formula;
 	private int margen;
+	private int rango_descuento_1;
+	private int rango_descuento_2;
+	private int rango_descuento_3;
+	
 	private boolean activo;
 	
 	private Date desde;
@@ -86,5 +90,29 @@ public class ArticuloListaPrecio extends Domain {
 
 	public void setFormula(String formula) {
 		this.formula = formula;
+	}
+
+	public int getRango_descuento_1() {
+		return rango_descuento_1;
+	}
+
+	public void setRango_descuento_1(int rango_descuento_1) {
+		this.rango_descuento_1 = rango_descuento_1;
+	}
+
+	public int getRango_descuento_2() {
+		return rango_descuento_2;
+	}
+
+	public void setRango_descuento_2(int rango_descuento_2) {
+		this.rango_descuento_2 = rango_descuento_2;
+	}
+
+	public int getRango_descuento_3() {
+		return rango_descuento_3;
+	}
+
+	public void setRango_descuento_3(int rango_descuento_3) {
+		this.rango_descuento_3 = rango_descuento_3;
 	}
 }

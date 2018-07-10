@@ -9,6 +9,8 @@ public class CompraLocalOrdenDetalle extends Domain{
 	private double costoGs;
 	private double costoDs;
 	private double ultCostoGs;
+	private double descuentoGs;
+	private double descuentoDs;
 	private int cantidad;
 	private int cantidadRecibida;
 	
@@ -93,5 +95,21 @@ public class CompraLocalOrdenDetalle extends Domain{
 
 	public void setCantidadRecibida(int cantidadRecibida) {
 		this.cantidadRecibida = cantidadRecibida;
+	}
+
+	public double getDescuentoGs() {
+		return descuentoGs;
+	}
+
+	public void setDescuentoGs(double descuentoGs) {
+		this.descuentoGs = descuentoGs;
+	}
+
+	public double getDescuentoDs() {
+		return descuentoDs;
+	}
+
+	public void setDescuentoDs(double descuentoDs) {
+		this.descuentoDs = descuentoDs;
 	}
 }

@@ -1,10 +1,12 @@
 package com.yhaguy.gestion.articulos;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
+import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
@@ -14,6 +16,7 @@ import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Include;
 
 import com.coreweb.componente.BuscarElemento;
 import com.coreweb.componente.VerificaAceptarCancelar;
@@ -23,6 +26,7 @@ import com.coreweb.dto.DTO;
 import com.coreweb.extras.agenda.ControlAgendaEvento;
 import com.coreweb.extras.browser.Browser;
 import com.coreweb.util.MyArray;
+import com.coreweb.util.MyPair;
 import com.yhaguy.BodyApp;
 import com.yhaguy.Configuracion;
 import com.yhaguy.UtilDTO;
@@ -35,6 +39,12 @@ public class ArticuloControlBody extends BodyApp {
 	
 	static final String ZUL_ADD_PROVEEDOR = "/yhaguy/gestion/articulos/articuloProveedor.zul";
 	static final String ZUL_VER_IMAGEN = "/yhaguy/gestion/articulos/imagenArticulo.zul";
+	
+	static final String ZUL_SECUENCIA = "/yhaguy/gestion/articulos/secuencia/secuencia.zul";
+	static final String ZUL_SECUENCIA_FILTROS = "/yhaguy/gestion/articulos/secuencia/secuencia_filtros.zul";
+	static final String ZUL_SECUENCIA_LUBRICANTES = "/yhaguy/gestion/articulos/secuencia/secuencia_lubricantes.zul";
+	static final String ZUL_SECUENCIA_NEUMATICOS = "/yhaguy/gestion/articulos/secuencia/secuencia_neumaticos.zul";
+	static final String ZUL_SECUENCIA_REPUESTOS = "/yhaguy/gestion/articulos/secuencia/secuencia_repuestos.zul";
 	
 	static String[] attArticulo = { "codigoInterno", "descripcion" };
 	static String[] colArticulo = { "Código", "Descripción" };
@@ -57,6 +67,9 @@ public class ArticuloControlBody extends BodyApp {
 	
 	@Wire
 	private Button verImg;
+	
+	@Wire
+	private Include inc_secuencia;
 
 	@Init(superclass = true)
 	public void init() {
@@ -194,6 +207,16 @@ public class ArticuloControlBody extends BodyApp {
 		this.subirImagen(event);
 	}
 	
+	@Command
+	public void selectFamilia() {
+		this.seleccionarFamilia();
+	}
+	
+	@Command
+	public void setDescripcion(@BindingParam("desc") String descripcion) {
+		this.setDescripcion_(descripcion.toUpperCase());
+	}
+	
 	/******************************************************/
 	
 	
@@ -204,11 +227,8 @@ public class ArticuloControlBody extends BodyApp {
 	 */
 	private void sugerirValores(ArticuloDTO articulo) {
 		articulo.setArticuloEstado(this.utilDto.getArticuloEstadoActivo());
-		articulo.setArticuloLinea(this.utilDto.getArticuloLinea().get(0));
-		articulo.setArticuloParte(this.utilDto.getArticuloParte().get(0));
-		articulo.setArticuloMarca(this.utilDto.getArticuloMarca().get(0));
-		articulo.setArticuloFamilia(this.utilDto.getArticuloFamilia().get(0));
 		articulo.setArticuloUnidadMedida(this.utilDto.getArticuloUnidadMedida().get(0));
+		this.inc_secuencia.setSrc(ZUL_SECUENCIA);
 	}
 	
 	/**
@@ -327,6 +347,47 @@ public class ArticuloControlBody extends BodyApp {
 		w.setSoloBotonCerrar();
 		w.setTitulo("Imagen del Artículo..");
 		w.show(ZUL_VER_IMAGEN);
+	}
+	
+	/**
+	 * seleccion de familia..
+	 */
+	private void seleccionarFamilia() {
+		String flia = this.dto.getArticuloFamilia().getSigla();
+		int length = this.dto.getArticuloFamilia().getText().length();
+		String desc = this.dto.getArticuloFamilia().getText().substring(0, length - 1);
+		switch (flia) {
+		case Articulo.FAMILIA_FILTROS:
+			this.inc_secuencia.setSrc(ZUL_SECUENCIA_FILTROS);
+			break;
+
+		case Articulo.FAMILIA_LUBRICANTES:
+			this.inc_secuencia.setSrc(ZUL_SECUENCIA_LUBRICANTES);
+			break;
+			
+		case Articulo.FAMILIA_NEUMATICOS:
+			this.inc_secuencia.setSrc(ZUL_SECUENCIA_NEUMATICOS);
+			break;
+			
+		case Articulo.FAMILIA_REPUESTOS:
+			this.inc_secuencia.setSrc(ZUL_SECUENCIA_REPUESTOS);
+			break;
+		}
+		
+		this.setDescripcion_(desc.toUpperCase());
+	}
+	
+	/**
+	 * set descripcion..
+	 */
+	private void setDescripcion_(String descripcion) {
+		String desc = this.dto.getDescripcion();
+		if (desc.isEmpty()) {
+			this.dto.setDescripcion(descripcion);
+		} else {
+			this.dto.setDescripcion(desc + " " + descripcion);
+		}
+		BindUtils.postNotifyChange(null, null, this.dto, "descripcion");
 	}
 	
 	/**
@@ -451,11 +512,11 @@ public class ArticuloControlBody extends BodyApp {
 			return "Error al cancelar..";
 		}		
 	}
-	
-	/******************************************************/
 
 	
-	/*********************** GET/SET **********************/
+	/**
+	 * GETS / SETS
+	 */
 	
 	/**
 	 * @return true si ya existe el codigo en la bd..
@@ -481,6 +542,197 @@ public class ArticuloControlBody extends BodyApp {
 	public boolean isDeleteUbicacionDisabled() {
 		return this.isDeshabilitado() || this.selectedUbicaciones == null
 				|| this.selectedUbicaciones.size() == 0;
+	}
+	
+	@DependsOn( "dto.codigoInterno" )
+	public boolean isDetalleVisible() {
+		return !this.dto.getCodigoInterno().trim().isEmpty();
+	}
+	
+	/**
+	 * @return las marcas..
+	 */
+	public List<MyPair> getDatos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "DATO 1"));
+		out.add(new MyPair(100, "DATO 2"));
+		out.add(new MyPair(100, "DATO 3"));
+		out.add(new MyPair(100, "DATO 4"));
+		return out;
+	}
+	
+	/**
+	 * @return las marcas..
+	 */
+	public List<MyPair> getMarcasFiltros() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "TECFIL"));
+		out.add(new MyPair(100, "LANSS"));
+		out.add(new MyPair(100, "NAKATA"));
+		return out;
+	}
+	
+	/**
+	 * @return los grupos..
+	 */
+	public List<MyPair> getGrupoFiltros() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "AIRE"));
+		out.add(new MyPair(100, "ACEITE"));
+		out.add(new MyPair(100, "COMBUSTIBLE"));
+		out.add(new MyPair(100, "HIDRAULICO"));
+		return out;
+	}
+	
+	/**
+	 * @return los sub grupos..
+	 */
+	public List<MyPair> getSubGrupoFiltros() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		return out;
+	}
+	
+	/**
+	 * @return las lineas..
+	 */
+	public List<MyPair> getLineaFiltros() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "PESADA"));
+		out.add(new MyPair(100, "LIVIANA"));
+		return out;
+	}
+	
+	/**
+	 * @return las marcas..
+	 */
+	public List<MyPair> getMarcasLubricantes() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "VALVOLINE"));
+		return out;
+	}
+	
+	/**
+	 * @return los grupos..
+	 */
+	public List<MyPair> getGrupoLubricantes() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "MOTOR"));
+		out.add(new MyPair(100, "TRANSMISION"));
+		out.add(new MyPair(100, "CAJA"));
+		return out;
+	}
+	
+	/**
+	 * @return los sub grupos..
+	 */
+	public List<MyPair> getSubGrupoLubricantes() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "20W50"));
+		out.add(new MyPair(100, "85W140"));
+		out.add(new MyPair(100, "80W90"));
+		return out;
+	}
+	
+	/**
+	 * @return las lineas..
+	 */
+	public List<MyPair> getLineaLubricantes() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "PREMIUM"));
+		out.add(new MyPair(100, "GEAR OIL"));
+		out.add(new MyPair(100, "MINERAL"));
+		return out;
+	}
+	
+	/**
+	 * @return las marcas..
+	 */
+	public List<MyPair> getMarcasNeumaticos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "GT"));
+		out.add(new MyPair(100, "CONTINENTAL"));
+		out.add(new MyPair(100, "HANKOOK"));
+		return out;
+	}
+	
+	/**
+	 * @return los grupos..
+	 */
+	public List<MyPair> getGrupoNeumaticos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "CAMIONETA"));
+		out.add(new MyPair(100, "AUTO"));
+		out.add(new MyPair(100, "CAMIONES"));
+		return out;
+	}
+	
+	/**
+	 * @return los sub grupos..
+	 */
+	public List<MyPair> getSubGrupoNeumaticos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "ALL TERRAIN"));
+		out.add(new MyPair(100, "AUTO"));
+		out.add(new MyPair(100, "MUD TERRAIN"));
+		return out;
+	}
+	
+	/**
+	 * @return las lineas..
+	 */
+	public List<MyPair> getLineaNeumaticos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "LIVIANA"));
+		out.add(new MyPair(100, "CARGA"));
+		out.add(new MyPair(100, "PESADA"));
+		return out;
+	}
+	
+	/**
+	 * @return las marcas..
+	 */
+	public List<MyPair> getMarcasRepuestos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "NAKATA"));
+		out.add(new MyPair(100, "MAHLE"));
+		out.add(new MyPair(100, "WABCO"));
+		return out;
+	}
+	
+	/**
+	 * @return los grupos..
+	 */
+	public List<MyPair> getGrupoRepuestos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "SUSPENSION"));
+		out.add(new MyPair(100, "DIRECCION"));
+		out.add(new MyPair(100, "MOTOR"));
+		out.add(new MyPair(100, "TRANSMISION"));
+		out.add(new MyPair(100, "FRENO"));
+		return out;
+	}
+	
+	/**
+	 * @return los sub grupos..
+	 */
+	public List<MyPair> getSubGrupoRepuestos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "AMORTIGUADOR"));
+		out.add(new MyPair(100, "ROTULA"));
+		out.add(new MyPair(100, "CARDAN"));
+		out.add(new MyPair(100, "ARO"));
+		out.add(new MyPair(100, "COMPRESOR"));
+		return out;
+	}
+	
+	/**
+	 * @return las lineas..
+	 */
+	public List<MyPair> getLineaRepuestos() {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(new MyPair(100, "LIVIANA"));
+		out.add(new MyPair(100, "PESADA"));
+		return out;
 	}
 	
 	public String getTipoFamilia() {

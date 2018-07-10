@@ -18,9 +18,15 @@
 		<property name="autorizado" />
 		<property name="cerrado" />
 		<property name="subDiarioConfirmado" />
-		<property name="recepcionado"/>
+		<property name="recepcionado" />
 		<property name="autorizadoPor" />
-		<property name="numeroFactura"/>
+		<property name="numeroFactura" />
+		<property name="condicionPagoDias" />
+		<property name="contraCheque" />
+		
+		<property name="habilitado">
+			<column name="habilitado" default="false" />
+		</property>
 
 		<many-to-one name="proveedor" class="com.yhaguy.domain.Proveedor" column="idProveedor"
 			lazy="false"/>

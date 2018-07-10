@@ -79,8 +79,8 @@ public class AssemblerGasto extends Assembler {
 class AssemblerGastoDetalle extends Assembler {
 
 	private static String[] attIguales = {"observacion", "cantidad", "montoGs", "montoDs", "montoIva"};
-	private static String[] attCentroCosto = {"numero", "descripcion", "montoAsignado"};
 	private static String[] attTipoIva = {"descripcion", "sigla"};
+	private static String[] attDepartamento = { "nombre" };
 	
 	@Override
 	public Domain dtoToDomain(DTO dto) throws Exception {
@@ -88,7 +88,7 @@ class AssemblerGastoDetalle extends Assembler {
 		
 		this.copiarValoresAtributos(dto, domain, attIguales);
 		this.hijoDtoToHijoDomain(dto, domain, "articuloGasto", new AssemblerArticuloGasto(), false);
-		this.myArrayToDomain(dto, domain, "centroCosto");
+		this.myArrayToDomain(dto, domain, "departamento");
 		this.myArrayToDomain(dto, domain, "tipoIva");
 		
 		return domain;
@@ -100,7 +100,7 @@ class AssemblerGastoDetalle extends Assembler {
 		
 		this.copiarValoresAtributos(domain, dto, attIguales);
 		this.hijoDomainToHijoDTO(domain, dto, "articuloGasto", new AssemblerArticuloGasto());
-		this.domainToMyArray(domain, dto, "centroCosto", attCentroCosto);
+		this.domainToMyArray(domain, dto, "departamento", attDepartamento);
 		this.domainToMyArray(domain, dto, "tipoIva", attTipoIva);
 		
 		return dto;

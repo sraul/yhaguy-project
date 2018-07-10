@@ -73,14 +73,35 @@
 						visible="@load(!vm.dato.dto.monedaLocal)"/>
 				</hlayout>
 			</row>	
-			<row visible="false">
+			<row>
 				<field value="Descuento:" style="color:red;font-weight:bold" />			
 				<hlayout sclass="z-valign-middle">
-					<guaranibox />
+					<guaranibox value="@bind(vm.dato.nvoDetalle.descuentoGs)" 
+						onChange="@command('dolarizarDescuento_')"/>
 					<label value="Gs." style="font-size:11px" />
 					<space />
-					<guaranibox width="50px" />
+					<guaranibox value="@bind(vm.dato.nvoDetalle.descuentoDs)"  
+						onChange="@command('guaranizarDescuento_')" 
+						visible="@load(!vm.dato.dto.monedaLocal)" />
+					<label value="U$D" style="font-size:11px" visible="@load(!vm.dato.dto.monedaLocal)" />
+					<space />
+					<guaranibox width="50px" 
+						value="@bind(vm.dato.nvoDetalle.porcDescuento)"
+						onChange="@command('descontarPorcentaje')"/>
 					<label value="%" style="font-size:11px" />
+				</hlayout>
+			</row>
+			<row>
+				<field value="Total Descuento:" style="color:red;font-weight:bold" />			
+				<hlayout sclass="z-valign-middle">
+					<guaranibox value="@bind(vm.dato.nvoDetalle.importeDescuentoGs)" 
+						readonly="true" />
+					<label value="Gs." style="font-size:11px" />
+					<space />
+					<guaranibox value="@bind(vm.dato.nvoDetalle.importeDescuentoDs)" 
+						readonly="true" 
+						visible="@load(!vm.dato.dto.monedaLocal)" />
+					<label value="U$D" style="font-size:11px" visible="@load(!vm.dato.dto.monedaLocal)" />
 				</hlayout>
 			</row>
 			<row visible="@load(!vm.dato.nvoDetalle.presupuesto)">

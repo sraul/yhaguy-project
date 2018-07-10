@@ -3,19 +3,20 @@ package com.yhaguy.gestion.compras.locales;
 import com.coreweb.domain.Domain;
 import com.coreweb.dto.Assembler;
 import com.coreweb.dto.DTO;
+import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.CompraFiscal;
 import com.yhaguy.domain.CompraLocalFactura;
 import com.yhaguy.domain.CompraLocalFacturaDetalle;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.empresa.AssemblerProveedor;
 
 public class AssemblerCompraLocalFactura extends Assembler {
 
-	private static String[] attIguales = { "numero", "fechaCreacion",
-			"fechaOriginal", "fechaVencimiento", "tipoCambio", "observacion",
-			"descuentoGs", "descuentoDs", "totalAsignadoGs", "totalAsignadoDs",
-			"recepcionConfirmada", "importeGs", "importeDs", "importeIva10",
-			"importeIva5" };
+	private static String[] attIguales = { "numero", "fechaCreacion", "fechaOriginal", "fechaVencimiento", "tipoCambio",
+			"observacion", "descuentoGs", "descuentoDs", "totalAsignadoGs", "totalAsignadoDs", "recepcionConfirmada",
+			"importeGs", "importeDs", "importeIva10", "importeIva5", "condicionPagoDias", "recepcionConfirmadaPor",
+			"conteo1", "conteo2", "conteo3", "tiempoConteo1", "tiempoConteo2", "tiempoConteo3" };
 	private static String[] attMoneda = { "descripcion", "sigla" };
 	private static String[] attTipoMovimiento = { "descripcion" };
 	private static String[] attCondicion = { "descripcion", "plazo" };
@@ -23,8 +24,12 @@ public class AssemblerCompraLocalFactura extends Assembler {
 
 	@Override
 	public Domain dtoToDomain(DTO dto) throws Exception {
+		CompraLocalFacturaDTO dto_ = (CompraLocalFacturaDTO) dto;
 		CompraLocalFactura domain = (CompraLocalFactura) getDomain(dto,
 				CompraLocalFactura.class);
+		
+		if (dto_.getTimbrado().esNuevo())
+			this.saveTimbrado(dto_);
 
 		this.copiarValoresAtributos(dto, domain, attIguales);
 		this.hijoDtoToHijoDomain(dto, domain, "proveedor", new AssemblerProveedor(), false);
@@ -61,6 +66,14 @@ public class AssemblerCompraLocalFactura extends Assembler {
 				new AssemblerCompraLocalFacturaDetalle());
 
 		return dto;
+	}
+	
+	/**
+	 * graba el timbrado en la bd..
+	 */
+	private void saveTimbrado(CompraLocalFacturaDTO dto) {
+		WindowTimbrado w = new WindowTimbrado();
+		w.agregarTimbrado(dto.getTimbrado(), dto.getProveedor().getId());
 	}
 
 	/**
@@ -105,9 +118,10 @@ public class AssemblerCompraLocalFactura extends Assembler {
  */
 class AssemblerCompraLocalFacturaDetalle extends Assembler{
 
-	private static String[] attIguales = {"costoGs", "costoDs", "importeExentaGs", "importeExentaDs", "importeGravadaGs", 
+	private static String[] attIguales = { "costoGs", "costoDs", "importeExentaGs", "importeExentaDs", "importeGravadaGs", 
 											"importeGravadaDs", "descuentoGs", "descuentoDs", "cantidad", "cantidadRecibida",
-											"textoDescuento", "importeDescuentoGs", "importeDescuentoDs", "descuento"};
+											"textoDescuento", "importeDescuentoGs", "importeDescuentoDs", "descuento", "controlCarga",
+											"conteo1", "conteo2", "conteo3", "volcadoPendiente" };
 	private static String[] attArticulo = { "codigoInterno", "codigoProveedor", "codigoOriginal", "descripcion" };
 	
 	@Override
@@ -130,6 +144,11 @@ class AssemblerCompraLocalFacturaDetalle extends Assembler{
 		this.domainToMyArray(domain, dto, "articulo", attArticulo);
 		this.domainToMyPair(domain, dto, "tipoDescuento");
 		this.domainToMyPair(domain, dto, "iva");
+		
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Articulo art = rr.getArticuloById(dto.getArticulo().getId());
+		dto.getArticulo().setPos5(art.getArticuloFamilia().getDescripcion().toUpperCase());
+		dto.getArticulo().setPos6(art.getArticuloMarca().getDescripcion().toUpperCase());
 		
 		return dto;
 	}

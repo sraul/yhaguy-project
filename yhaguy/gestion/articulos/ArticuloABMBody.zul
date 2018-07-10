@@ -3,9 +3,9 @@
 		viewModel="@id('vm') @init('com.yhaguy.gestion.articulos.ArticuloControlBody')"
 		apply="org.zkoss.bind.BindComposer" width="100%" height="100%">
 
-		<hbox height="100%">
+		<hbox height="100%" width="100%">
 		
-			<vbox height="100%">
+			<vbox height="100%" hflex="true">
 				<grid sclass="vgrid">
 					<rows>
 						<row>
@@ -16,7 +16,9 @@
 									hflex="true" />
 							</vlayout>
 							<vlayout spacing="0">
-								<field value="Código Proveedor" />
+								<field value="Código                          
+								
+								" />
 								<textbox
 									value="@bind(vm.dto.codigoProveedor)" 
 									hflex="true"/>
@@ -35,7 +37,7 @@
 							</vlayout>
 						</row>
 						<row>
-							<cell colspan="3">
+							<cell colspan="2">
 								<vlayout>
 									<field value="Descripción" />
 									<textbox hflex="true"
@@ -49,19 +51,29 @@
 										value="@bind(vm.dto.observacion)" />
 								</vlayout>
 							</cell>
+							<cell>
+								<vlayout>
+									<field value="Datos" />
+									<button 
+										label="Importar datos" hflex="true"
+										iconSclass="z-icon-upload" upload="true"
+										tooltiptext="Importar datos para procesamiento masivo.."
+										disabled="@load(vm.dto.esNuevo() ? 'true' : 'false')"></button>
+								</vlayout>
+							</cell>
 						</row>
 					</rows>
 				</grid>			
+				
+					<solicitarCabecera visible="@load(!vm.detalleVisible)" />
 
-				<div height="10px" />
-
-					<tabbox vflex="true" width="100%">
+					<tabbox vflex="true" width="100%" visible="@load(vm.detalleVisible)">
 						<tabs>
-							<tab label="General" hflex="true"/>
-							<tab label="Proveedores" />							
-							<tab label="Referencias" />
-							<tab label="Ubicaciones" />
-							<tab label="Precios" />
+							<tab label="General" width="150px" />
+							<tab label="Proveedores" width="150px" />							
+							<tab label="Referencias" width="150px" />
+							<tab label="Ubicaciones" width="150px" />
+							<tab label="Precios" width="150px" />
 						</tabs>
 
 						<tabpanels>
@@ -69,130 +81,7 @@
 							
 								<!-- ________________ DATOS GENERALES ________________ -->
 
-								<grid sclass="vgrid" vflex="true">
-									<columns>
-										<column width="15%"/>
-										<column />
-										<column width="15%"/>
-										<column />
-									</columns>
-									<rows>
-										<row>
-											<field value="Importado:" />
-											<hlayout>
-												<checkbox checked="@bind(vm.dto.importado)"/>
-												<label value="@load(vm.dto.importado? 'SI':'NO')"/>
-											</hlayout>	
-											<field value="Línea:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloLinea)" 
-												value="@load(vm.dto.articuloLinea.text.toUpperCase())"
-												selectedItem="@bind(vm.dto.articuloLinea)"
-												hflex="true"
-												instant="true">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each.text.toUpperCase())" />
-												</template>
-											</combobox>
-										</row>
-										<row>
-											<field value="Ítem de Servicio:" />
-											<hlayout>
-												<checkbox checked="@bind(vm.dto.servicio)"/>
-												<label value="@load(vm.dto.servicio? 'SI':'NO')"/>
-											</hlayout>
-											<field value="Peso:" />
-											<hlayout>
-												<doublespinner hflex="true"
-													value="@bind(vm.dto.peso)">
-												</doublespinner>
-												<field>Kg.</field>
-											</hlayout>											
-										</row>
-										<row>
-											<field value="Estado:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloEstado)" 
-												value="@load(vm.dto.articuloEstado.text.toUpperCase())"
-												selectedItem="@bind(vm.dto.articuloEstado)"
-												hflex="true" style="margin-right:20px"
-												instant="true">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each.text.toUpperCase())" />
-												</template>
-											</combobox>
-											
-											<field value="Marca Producto:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloMarca)"
-												value="@load(vm.dto.articuloMarca)"
-												selectedItem="@bind(vm.dto.articuloMarca)"
-												hflex="true">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each)" />
-												</template>
-											</combobox>
-										</row>
-										<row>
-											<field value="Parte:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloParte)"
-												value="@load(vm.dto.articuloParte.text.toUpperCase())"
-												selectedItem="@bind(vm.dto.articuloParte)"
-												hflex="true" style="margin-right:20px">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each.text.toUpperCase())" />
-												</template>
-											</combobox>
-											<field value="Volumen:" />
-											<textbox hflex="true"
-												value="@bind(vm.dto.volumen)">
-											</textbox>
-										</row>
-										<row>
-											<field value="Familia:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloFamilia)" 
-												value="@load(vm.dto.articuloFamilia)"
-												selectedItem="@bind(vm.dto.articuloFamilia)"
-												hflex="true" style="margin-right:20px">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each)" />
-												</template>
-											</combobox>
-											<field value="Fecha alta:" />
-											<hlayout>
-												<datebox
-													value="@bind(vm.dto.fechaAlta)" 
-													readonly="true" hflex="true"/>
-											</hlayout>
-										</row>
-										<row>
-											<field value="Unidad de Medida:" />
-											<combobox
-												model="@load(vm.dtoUtil.articuloUnidadMedida)"
-												value="@load(vm.dto.articuloUnidadMedida)"
-												selectedItem="@bind(vm.dto.articuloUnidadMedida)"
-												hflex="true" style="margin-right:20px">
-												<template
-													name="model">
-													<comboitem
-														label="@load(each)" />
-												</template>
-											</combobox>
-										</row>
-									</rows>
-								</grid>
+								<include id="inc_secuencia" src="/yhaguy/gestion/articulos/secuencia/secuencia_filtros.zul"></include>
 
 
 							</tabpanel>
@@ -362,14 +251,28 @@
 						</tabpanels>
 					</tabbox>
 			</vbox>
-				<vbox width="350px" vflex="true"
+				<vbox width="450px" vflex="true"
 					sclass="button-container" pack="center" align="center">
-										
+					
+					<field>PERFIL 1</field>										
 					<html><![CDATA[
-        				<img id="foto" height="250px" alt="" width="330px" onerror="this.src='http://190.211.240.30/images/default.png'" ></img> ]]>
+        				<img id="foto" height="230px" alt="" width="310px" onerror="this.src='http://190.211.240.30/images/default.png'" ></img> ]]>
     				</html>
 					
-					<div height="5px" />
+					<div height="10px" />
+					
+					<field>PERFIL 2</field>
+					<html><![CDATA[
+        				<img id="foto2" height="230px" alt="" width="310px" onerror="this.src='http://190.211.240.30/images/default.png'" ></img> ]]>
+    				</html>
+    				
+    				<div height="10px" />
+    				
+    				<field>PERFIL 3</field>
+    				<html><![CDATA[
+        				<img id="foto3" height="230px" alt="" width="310px" onerror="this.src='http://190.211.240.30/images/default.png'" ></img> ]]>
+    				</html>    				
+					
 					<hlayout visible="false">
 						<fileupload id="upImg" label="subir imagen"
 							style="font-weight:bold" />
@@ -383,7 +286,11 @@
 		<script>
 			function setImage(url) {
 				var imagen = document.getElementById("foto");
+				var imagen2 = document.getElementById("foto2");
+				var imagen3 = document.getElementById("foto3");
 				imagen.src = url;
+				imagen2.src = url;
+				imagen3.src = url;
 			}
 		</script>
 		
@@ -392,6 +299,5 @@
 	<style>
 		.z-combobox-content { max-height: 200px!important; width: 100%;
 		overflow: hidden!important; overflow-y: scroll!important; }
-		.z-tab-text { width: 100px; }
 	</style>
 </zk>

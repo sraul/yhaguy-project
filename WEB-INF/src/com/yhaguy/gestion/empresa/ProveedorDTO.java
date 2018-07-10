@@ -2,20 +2,23 @@ package com.yhaguy.gestion.empresa;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.coreweb.dto.DTO;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 
+@SuppressWarnings("serial")
 public class ProveedorDTO extends DTO {
 
 	EmpresaDTO empresa = new EmpresaDTO();
 	MyPair estadoProveedor;
 	MyPair tipoProveedor;
-	List<MyArray> condicionPagos = new ArrayList<MyArray>();
 	private List<MyArray> emails = new ArrayList<MyArray>();
 	
 	private MyArray cuentaContable = new MyArray();
+	private MyArray condicionPago = new MyArray();
 
+	private int condicionPagoDias = 0;
 	private long prioridad = 0;
 	private boolean completo = false;
 
@@ -103,14 +106,6 @@ public class ProveedorDTO extends DTO {
 		this.tipoProveedor = tipoProveedor;
 	}
 
-	public List<MyArray> getCondicionPagos() {
-		return condicionPagos;
-	}
-
-	public void setCondicionPagos(List<MyArray> condicionPagos) {
-		this.condicionPagos = condicionPagos;
-	}
-
 	public List<MyArray> getEmails() {
 		return emails;
 	}
@@ -137,6 +132,22 @@ public class ProveedorDTO extends DTO {
 			out += " sin empresa " + "(" + this.getId() + ")";
 		}
 		return out;
+	}
+
+	public MyArray getCondicionPago() {
+		return condicionPago;
+	}
+
+	public void setCondicionPago(MyArray condicionPago) {
+		this.condicionPago = condicionPago;
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
 	}
 
 }

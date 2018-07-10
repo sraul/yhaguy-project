@@ -5,11 +5,8 @@
 		height="100%">
 		
 		<include src="/yhaguy/gestion/empresa/EmpresaRUC.zul" />
-		<div height="15px"/>
-			
-		<include src="/yhaguy/gestion/empresa/EmpresaBody.zul" visible="@load(vm.tabDatosVisible)"/>		
+		<div height="15px"/>			
+		<include src="/yhaguy/gestion/empresa/EmpresaBody.zul" visible="@load(vm.tabDatosVisible)"/>
 		
-		<solicitarCabecera visible="@load(!vm.tabDatosVisible)"/>
-
 	</window>
 </zk>

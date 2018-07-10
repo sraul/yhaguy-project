@@ -28,7 +28,6 @@ import com.coreweb.util.MyPair;
 import com.yhaguy.Configuracion;
 import com.yhaguy.ID;
 import com.yhaguy.UtilDTO;
-import com.yhaguy.domain.CentroCosto;
 import com.yhaguy.domain.Proveedor;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
@@ -216,7 +215,6 @@ public class GastoSimpleControl extends SoloViewModel implements VerificaAceptar
 	@NotifyChange("*")
 	public void abrirVentanaInsertarItem() throws Exception {
 		this.nvoItem = new GastoDetalleDTO();
-		this.nvoItem.setCentroCosto(this.getCentroCosto());
 		this.nvoItem.setTipoIva(this.getUtilDto().getTipoIva10());
 
 		if (this.dto.isAutoFactura() || this.dto.isBoletaVenta())
@@ -428,11 +426,6 @@ public class GastoSimpleControl extends SoloViewModel implements VerificaAceptar
 			out = false;
 		}
 		
-		if (item.getCentroCosto().esNuevo() == true) {
-			mensajeError = mensajeError + "\n - Debe seleccionar un Centro de Costo..";
-			out = false;
-		}
-		
 		if (item.getCantidad() <= 0) {
 			mensajeError = mensajeError + "\n - La cantidad debe ser mayor a cero..";
 			out = false;
@@ -475,19 +468,7 @@ public class GastoSimpleControl extends SoloViewModel implements VerificaAceptar
 				&& (this.dto.getNumeroFactura().isEmpty() == false)
 				&& (timbrado.isEmpty() == false);
 	}
-	
-	/**
-	 * @return el centro de costo..
-	 */
-	private MyArray getCentroCosto() throws Exception {
-		RegisterDomain rr = RegisterDomain.getInstance();
-		CentroCosto cc = (CentroCosto) rr.getObject(CentroCosto.class.getName(), 1);
-		MyArray out = new MyArray();
-		out.setId(cc.getId());
-		out.setPos1(cc.getDescripcion());
-		return out;
-	}
-	
+		
 	/**
 	 * @return timbrado como MyArray..
 	 */

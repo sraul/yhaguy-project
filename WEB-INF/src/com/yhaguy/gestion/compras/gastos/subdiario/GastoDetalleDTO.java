@@ -16,7 +16,7 @@ public class GastoDetalleDTO extends DTO{
 	private double montoIva = 0;
 	
 	private ArticuloGastoDTO articuloGasto = new ArticuloGastoDTO();
-	private MyArray centroCosto = new MyArray();
+	private MyArray departamento = new MyArray();
 	private MyArray tipoIva = new MyArray();
 	
 	
@@ -101,14 +101,6 @@ public class GastoDetalleDTO extends DTO{
 		this.articuloGasto = articuloGasto;
 	}
 
-	public MyArray getCentroCosto() {
-		return centroCosto;
-	}
-
-	public void setCentroCosto(MyArray centroCosto) {
-		this.centroCosto = centroCosto;
-	}
-
 	public MyArray getTipoIva() {
 		return tipoIva;
 	}
@@ -123,5 +115,13 @@ public class GastoDetalleDTO extends DTO{
 
 	public void setMontoIva(double montoIva) {
 		this.montoIva = getMisc().redondeo(montoIva);
+	}
+
+	public MyArray getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(MyArray departamento) {
+		this.departamento = departamento;
 	}	
 }

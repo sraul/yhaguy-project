@@ -8,10 +8,8 @@ import com.yhaguy.gestion.compras.gastos.subdiario.AssemblerArticuloGasto;
 
 public class AssemblerOrdenPedidoGastoDetalle extends Assembler {
 
-	private static String[] attIguales = { "importe", "descripcion" };
+	private static String[] attIguales = { "importe", "descripcion", "cantidad" };
 	private static String[] attDepartamento = { "nombre" };
-	private static String[] attCentroCosto = { "numero", "descripcion",
-			"montoAsignado" };
 
 	@Override
 	public Domain dtoToDomain(DTO dtoD) throws Exception {
@@ -21,7 +19,6 @@ public class AssemblerOrdenPedidoGastoDetalle extends Assembler {
 
 		this.copiarValoresAtributos(dto, domain, attIguales);
 		this.myArrayToDomain(dto, domain, "departamento");
-		this.myArrayToDomain(dto, domain, "centroCosto");
 		this.myPairToDomain(dto, domain, "iva");
 
 		this.hijoDtoToHijoDomain(dto, domain, "articuloGasto",
@@ -37,7 +34,6 @@ public class AssemblerOrdenPedidoGastoDetalle extends Assembler {
 
 		this.copiarValoresAtributos(domain, dto, attIguales);
 		this.domainToMyArray(domain, dto, "departamento", attDepartamento);
-		this.domainToMyArray(domain, dto, "centroCosto", attCentroCosto);
 		this.domainToMyPair(domain, dto, "iva");
 
 		this.hijoDomainToHijoDTO(domain, dto, "articuloGasto",

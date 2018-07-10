@@ -3,19 +3,19 @@
 	height="100%">
 
 	<hbox vflex="true">
-		<vbox hflex="4" vflex="true" spacing="0">
-			<hlayout sclass="button-container">
-				<button mold="bs" sclass="btn-danger btn-sm" width="120px"
-					iconSclass="z-icon-minus-circle"
-					onClick="@command('deleteItem')"
-					disabled="@load(vm.selectedLista eq null ? 'true' : 'false')" label=" Eliminar" />
-				<space/>
+		<vbox hflex="2" vflex="true" spacing="0">
+			<hlayout sclass="button-container" style="background:#EEF7FA">
 				<button mold="bs" sclass="btn-success btn-sm" width="120px"
 					iconSclass="z-icon-plus-circle"
 					onClick="@command('insertItem')"
 					label=" Insertar" />
 				<space/>
-				<button mold="bs" sclass="btn-warning btn-sm" width="120px"
+				<button mold="bs" sclass="btn-primary btn-sm" width="120px"
+					iconSclass="z-icon-minus-circle"
+					onClick="@command('deleteItem')"
+					disabled="@load(vm.selectedLista eq null ? 'true' : 'false')" label=" Eliminar" />
+				<space/>
+				<button mold="bs" sclass="btn-info btn-sm" width="120px"
 					iconSclass="z-icon-edit"
 					disabled="@load(vm.selectedLista eq null ? 'true' : 'false')"
 					onClick="@command('editItem')"
@@ -24,26 +24,18 @@
 			<listbox sclass="small-list" vflex="true"
 				model="@load(vm.listasDePrecio)"
 				selectedItem="@bind(vm.selectedLista)">
-				<auxhead>
-					<auxheader label="Listas de Precios" colspan="2"></auxheader>
-					<auxheader label="Vigencia" colspan="3"></auxheader>
-				</auxhead>
 				<listhead style="text-align:center">
 					<listheader label="Descripción"></listheader>
-					<listheader label="Margen" width="60px"
+					<listheader label="Incremento %" width="100px"
 						align="right">
 					</listheader>
 					<listheader label="Fórmula" />
-					<listheader label="Desde" width="80px"></listheader>
-					<listheader label="Hasta" width="80px"></listheader>
 				</listhead>
 				<template name="model">
 					<listitem>
 						<listcell label="@load(each.pos1)"></listcell>
-						<listcell label="@load(each.pos2)"></listcell>
+						<listcell label="@load(each.pos9)"></listcell>
 						<listcell label="@load(each.pos8)"></listcell>
-						<listcell label="@load(each.pos4)"></listcell>
-						<listcell label="@load(each.pos5)"></listcell>
 					</listitem>
 				</template>
 				<listfoot>
@@ -57,86 +49,187 @@
 					</listfooter>
 				</listfoot>
 			</listbox>
+			<hlayout sclass="button-container" style="background:#EEF7FA">
+				<field value="ESCALA DE DESCUENTOS" />
+			</hlayout>
+			<listbox sclass="small-list"
+				model="@load(vm.listasDePrecio)"
+				selectedItem="@bind(vm.selectedLista)">
+				<auxhead>
+					<auxheader colspan="3" label="1er Criterio"></auxheader>
+				</auxhead>
+				<listhead style="text-align:center">
+					<listheader />
+					<listheader></listheader>
+					<listheader></listheader>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.pos1)"></listcell>
+						<listcell label="@load(each.pos10)"></listcell>
+						<listcell label="@load(each.pos11)"></listcell>
+					</listitem>
+				</template>
+			</listbox>
+			<div height="5px"></div>
+			<listbox sclass="small-list" vflex="true"
+				model="@load(vm.listasDePrecio)"
+				selectedItem="@bind(vm.selectedLista)">
+				<auxhead>
+					<auxheader colspan="4" label="2do Criterio"></auxheader>
+				</auxhead>
+				<listhead style="text-align:center">
+					<listheader />
+					<listheader></listheader>
+					<listheader></listheader>
+					<listheader></listheader>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.pos1)"></listcell>
+						<listcell label="@load(each.pos12)"></listcell>
+						<listcell label="@load(each.pos13)"></listcell>
+						<listcell label="@load(each.pos14)"></listcell>
+					</listitem>
+				</template>
+				<listfoot>
+					<listfooter span="2">
+						<hlayout>
+							<field value="@load(vm.listaPrecioSize)" />
+							<field value="ítems" />
+						</hlayout>
+					</listfooter>
+				</listfoot>
+			</listbox>
 		</vbox>
 
-		<vbox hflex="6" vflex="true" spacing="0">
-			<hlayout sclass="button-container" hflex="true">
-				<button mold="bs" sclass="btn-warning btn-sm" width="120px"
+		<vbox hflex="5" vflex="true" spacing="0">
+			<hlayout sclass="button-container" hflex="true" style="background:#EEF7FA">
+				<button mold="bs" sclass="btn-primary btn-sm" width="120px"
 					iconSclass="z-icon-edit"
 					disabled="@load(vm.selectedListaPrecioDetalle eq null ? 'true' : 'false')"
 					onClick="@command('editDetalle')"
 					label=" Modificar" />
-				<space hflex="true"/>
-				<button mold="bs" sclass="btn-primary btn-sm" width="120px"
+				<space />
+				<button mold="bs" sclass="btn-info btn-sm" width="120px"
 					iconSclass="z-icon-print"
 					disabled="@load(vm.selectedLista eq null ? 'true' : 'false')"
 					onClick="@command('imprimir')"
 					label=" Imprimir" />
+				<space></space>
+				<button mold="bs" upload="true" width="150px" height="30px"
+					iconSclass="z-icon-upload"
+					label=" Importar Archivo" />
+				<space/>
 			</hlayout>
 			<listbox sclass="small-list" vflex="true"
-				model="@load(vm.articulos)"
+				model="@load(vm.detalles)"
 				selectedItem="@bind(vm.selectedListaPrecioDetalle)"
 				emptyMessage="SELECCIONE UNA LISTA DE PRECIO..">
 				<listhead style="text-align:center">
+					<listheader label="Import. Nro." width="120px"></listheader>
 					<listheader label="Código"></listheader>
-					<listheader label="Lista"></listheader>
-					<listheader label="Costo S/iva" align="right"
-						width="110px"/>
-					<listheader label="Costo S/iva" align="right"
-						width="110px">
+					<listheader align="right" width="130px"/>
+					<listheader align="right" width="130px">
 					</listheader>
-					<listheader label="Precio Cont." align="right"
-						width="110px">
+					<listheader align="right"
+						width="130px">
 					</listheader>
-					<listheader label="Precio Créd." align="right"
-						width="110px">
+					<listheader align="right"
+						width="130px">
 					</listheader>
-					<listheader label="Margen" align="right"
+					<listheader align="right"
+						width="130px">
+					</listheader>
+					<listheader align="right"
+						width="130px">
+					</listheader>
+					<listheader align="right"
 						width="100px">
 					</listheader>
 				</listhead>
 				<auxhead>
 					<auxheader>
-						<textbox hflex="true" placeholder="Código.."
-							sclass="filter" value="@bind(vm.filterCodigo)"
-							instant="true"
-							visible="@load(vm.selectedLista eq null ? 'false' : 'true')">
-						</textbox>
+						<bandbox id="bnd_imp" hflex="true" placeholder="Buscar.."
+							style="background:#EEF7FA" readonly="true"
+							onOpen='tx_filter.focus()'>
+							<bandpopup>
+								<listbox sclass="small-list" width="400px" height="200px"
+									model="@load(vm.importaciones)"
+									selectedItem="@bind(vm.selectedImportacion)"
+									onSelect="@command('selectImportacion', comp=bnd_imp)">
+									<auxhead>
+										<auxheader>
+											<textbox id="tx_filter" hflex="true" placeholder="Importación Nro.."
+												sclass="filter" value="@bind(vm.filterImportacion)"
+												instant="true"></textbox>
+										</auxheader>
+									</auxhead>
+									<listhead>
+										<listheader></listheader>
+									</listhead>
+									<template name="model">
+										<listitem>
+											<listcell label="@load(each[1])"></listcell>
+										</listitem>
+									</template>
+								</listbox>
+							</bandpopup>	
+						</bandbox>
 					</auxheader>
-					<auxheader></auxheader>
-					<auxheader></auxheader>
-					<auxheader></auxheader>
-					<auxheader></auxheader>
-					<auxheader></auxheader>
-					<auxheader></auxheader>
+					<auxheader>
+						<hbox hflex="true">
+							<textbox hflex="true" placeholder="Código.."
+								sclass="filter" value="@bind(vm.filterCodigo)"
+								instant="true">
+							</textbox>
+							<div width="10px"></div>
+						</hbox>
+					</auxheader>
+					<auxheader label="Costo Actual Gs."></auxheader>
+					<auxheader label="Costo Import. U$D"></auxheader>
+					<auxheader label="Costo Import. Gs."></auxheader>
+					<auxheader label="Precio Actual"></auxheader>
+					<auxheader label="Precio Sugerido"></auxheader>
+					<auxheader label="Precio Final"></auxheader>
+					<auxheader label="Margen"></auxheader>
 				</auxhead>
 				<template name="model">
 					<listitem>
 						<listcell label="@load(each.pos1)"></listcell>
-						<listcell label="@load(each.pos2.pos1)" />
-						<listcell label="@load(each.pos4) @converter(vm.cnv.monedaLocal)"></listcell>
-						<listcell
-							label="@load(each.pos3.pos3) @converter(vm.cnv.monedaLocal)" />
-						<listcell
-							label="@load(each.pos3.pos1) @converter(vm.cnv.monedaLocal)" />
-						<listcell
-							label="@load(each.pos3.pos2) @converter(vm.cnv.monedaLocal)" />
-						<listcell
-							label="@load(each.pos3.pos4) @converter(vm.cnv.monedaExtranjera)" />
+						<listcell label="@load(each.pos2)"></listcell>
+						<listcell label="@load(each.pos3) @converter(vm.cnv.monedaLocal)"></listcell>
+						<listcell label="@load(each.pos4) @converter(vm.cnv.monedaExtranjera)"></listcell>
+						<listcell label="@load(each.pos5) @converter(vm.cnv.monedaLocal)"></listcell>
+						<listcell>
+							<hlayout valign="bottom">
+								<label value="@load(each.pos6) @converter(vm.cnv.monedaLocal)"></label>
+								<div width="5px" />
+								<checkbox></checkbox>
+							</hlayout>
+						</listcell>
+						<listcell label="@load(each.pos7) @converter(vm.cnv.monedaLocal)"></listcell>
+						<listcell label="@load(each.pos8) @converter(vm.cnv.monedaLocal)"></listcell>
+						<listcell></listcell>
 					</listitem>
 				</template>
 				<listfoot>
 					<listfooter>
 						<hlayout>
-							<field value="@load(vm.listaDetalleSize)" />
+							<field value="@load(vm.detalles.size())" />
 							<field value="ítems" />
-							<label value="(máx 10 ítems)"
-								style="font-style:italic">
-							</label>
 						</hlayout>
 					</listfooter>
 				</listfoot>
 			</listbox>
+			<style>
+				input[type="checkbox"] {
+    			margin: 0px;
+    			margin-top: 0px;
+    			padding: 0px;
+    			line-height: normal;
+				}
+			</style>
 		</vbox>
 	</hbox>
 

@@ -25,6 +25,15 @@
 		<property name="descuento" />
 		<property name="cantidad" />
 		<property name="cantidadRecibida" />
+		<property name="volcadoPendiente" />
+		
+		<property name="conteo1" />
+		<property name="conteo2" />
+		<property name="conteo3" />
+		
+		<property name="controlCarga">
+			<column name="controlCarga" default="false" />
+		</property>
 
 		<many-to-one name="articulo" class="com.yhaguy.domain.Articulo"
 			column="idArticulo" lazy="false"/>

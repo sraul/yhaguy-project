@@ -552,4 +552,16 @@ public class Utiles {
 		}
 	      return sum / values.size();
 	  }
+	
+	/**
+	 * @return la diferencia de hs entre 2 fechas..
+	 */
+	public static Integer[] getDiferenciaHoras(Date fecha1, Date fecha2) {
+		int milisegundos_hra = 1000 * 60 * 60;
+		int milisegundos_min = 1000 * 60;
+		int milisegundos_seg = 1000;
+		double dif = fecha2.getTime() - fecha1.getTime();
+		int segundos = (int) ((dif) / milisegundos_seg);
+	    return new Integer[] { (int) ((dif) / milisegundos_hra), (int) ((dif) / milisegundos_min), (segundos > 60 ? segundos % 60 : segundos) } ;
+	}
 }

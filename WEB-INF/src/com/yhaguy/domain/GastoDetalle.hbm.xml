@@ -19,9 +19,9 @@
 
 		<many-to-one name="articuloGasto" class="com.yhaguy.domain.ArticuloGasto" 
 			column="idArticuloGasto" lazy="false"/>
-
-		<many-to-one name="centroCosto" class="com.yhaguy.domain.CentroCosto"
-			column="idCentroCosto" lazy="false"/>
+			
+		<many-to-one name="departamento" class="com.yhaguy.domain.DepartamentoApp"
+			column="idDepartamento" lazy="false" />
 		
 		<many-to-one name="tipoIva" class="com.coreweb.domain.Tipo"
 			column="idTipoIva" lazy="false"/>

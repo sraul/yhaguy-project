@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.DependsOn;
 
 import com.coreweb.dto.DTO;
@@ -15,17 +16,22 @@ import com.yhaguy.Configuracion;
 import com.yhaguy.gestion.empresa.ProveedorDTO;
 
 @SuppressWarnings("serial")
-public class CompraLocalOrdenDTO extends DTO{
+public class CompraLocalOrdenDTO extends DTO {
+	
+	static final double MONTO_SUJETO_A_HABILITACION = 10000000;
 	
 	private String numero = "...";
 	private Date fechaCreacion = new Date();
 	private double tipoCambio = 0;
 	private String observacion = "Sin obs..";
 	private boolean autorizado = false;
+	private boolean habilitado = false;
 	private boolean cerrado = false;
 	private boolean recepcionado = false;
 	private String autorizadoPor = "...";
-	private String numeroFactura = "- - -";
+	private String numeroFactura = "";
+	private int condicionPagoDias = 0;
+	private String contraCheque = "NO";
 	
 	private ProveedorDTO proveedor = new ProveedorDTO();
 	private MyArray condicionPago = new MyArray();
@@ -41,7 +47,7 @@ public class CompraLocalOrdenDTO extends DTO{
 	
 	
 	@DependsOn("autorizado")
-	public String getEstado(){
+	public String getEstado() {
 		String out = "NO AUTORIZADO";
 		if (this.autorizado == true) {
 			out = "AUTORIZADO";
@@ -55,6 +61,18 @@ public class CompraLocalOrdenDTO extends DTO{
 	public boolean isMonedaLocal() {
 		String sigla = (String) this.moneda.getPos2();
 		return sigla.equals(Configuracion.SIGLA_MONEDA_GUARANI);
+	}
+	
+	/**
+	 * @return true si es contra cheque..
+	 */
+	public boolean isContraCheque_() {
+		return this.contraCheque.equals("SI");
+	}
+	
+	@DependsOn("detalles")
+	public boolean isControlAutorizacion() {
+		return this.getTotalImporteGs() > MONTO_SUJETO_A_HABILITACION;
 	}
 	
 	@DependsOn("detalles")
@@ -82,6 +100,15 @@ public class CompraLocalOrdenDTO extends DTO{
 		double out = 0;		
 		for (CompraLocalOrdenDetalleDTO item : this.getDetalles()) {
 			out += item.getImporteGs();
+		}		
+		return out;
+	}
+	
+	@DependsOn("detalles")
+	public double getTotalImporteDs() {
+		double out = 0;		
+		for (CompraLocalOrdenDetalleDTO item : this.getDetalles()) {
+			out += item.getImporteDs();
 		}		
 		return out;
 	}
@@ -197,6 +224,14 @@ public class CompraLocalOrdenDTO extends DTO{
 	
 	public void setProveedor(ProveedorDTO proveedor) {
 		this.proveedor = proveedor;
+		if (this.esNuevo()) {
+			if (!this.proveedor.getCondicionPago().esNuevo()) {
+				this.setCondicionPago(this.proveedor.getCondicionPago());
+				this.setCondicionPagoDias(this.proveedor.getCondicionPagoDias());
+			}
+			BindUtils.postNotifyChange(null, null, this, "condicionPago");
+			BindUtils.postNotifyChange(null, null, this, "condicionPagoDias");
+		}
 	}
 	
 	public MyArray getCondicionPago() {
@@ -281,5 +316,29 @@ public class CompraLocalOrdenDTO extends DTO{
 
 	public void setNumeroFactura(String numeroFactura) {
 		this.numeroFactura = numeroFactura;
+	}
+
+	public int getCondicionPagoDias() {
+		return condicionPagoDias;
+	}
+
+	public void setCondicionPagoDias(int condicionPagoDias) {
+		this.condicionPagoDias = condicionPagoDias;
+	}
+
+	public String getContraCheque() {
+		return contraCheque;
+	}
+
+	public void setContraCheque(String contraCheque) {
+		this.contraCheque = contraCheque;
+	}
+
+	public boolean isHabilitado() {
+		return habilitado;
+	}
+
+	public void setHabilitado(boolean habilitado) {
+		this.habilitado = habilitado;
 	}
 }
