@@ -88,6 +88,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	
 	static final String[][] CAB = { { "Empresa", CSV.STRING } };
 	static final String[][] DET = { { "CODIGO", CSV.STRING }, { "CANTIDAD", CSV.STRING } };
+	static final String[][] DET_PROFORMA = { { "CODIGO", CSV.STRING }, { "CANTIDAD", CSV.STRING }, { "COSTO", CSV.STRING } };
 
 	private ImportacionPedidoCompraDTO dto = new ImportacionPedidoCompraDTO();	
 	
@@ -450,12 +451,13 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			RegisterDomain rr = RegisterDomain.getInstance();
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
-			CSV csv = new CSV(CAB, DET, PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", ',');
+			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", ',');
 
 			csv.start();
 			while (csv.hashNext()) {
 				String codigo = csv.getDetalleString("CODIGO"); 
 				String cantidad = csv.getDetalleString("CANTIDAD");
+				String costoDs = csv.getDetalleString("COSTO");
 				
 				ImportacionPedidoCompraDetalleDTO item = new ImportacionPedidoCompraDetalleDTO();
 				Articulo art = rr.getArticulo(codigo);
@@ -463,6 +465,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					ArticuloDTO ar = (ArticuloDTO) ass.domainToDto(art);
 					item.setArticulo(ar);
 					item.setCantidad(Integer.parseInt(cantidad));
+					item.setCostoProformaDs(Double.parseDouble(costoDs));
 				}				
 				list.add(item);
 			}
