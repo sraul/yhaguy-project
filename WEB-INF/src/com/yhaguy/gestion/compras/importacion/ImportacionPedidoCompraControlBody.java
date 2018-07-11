@@ -465,7 +465,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					ArticuloDTO ar = (ArticuloDTO) ass.domainToDto(art);
 					item.setArticulo(ar);
 					item.setCantidad(Integer.parseInt(cantidad));
-					item.setCostoProformaDs(Double.parseDouble(costoDs));
+					item.setCostoProformaDs(Double.parseDouble(costoDs.replace(".", "").replace(",", ".")));
 				}				
 				list.add(item);
 			}
