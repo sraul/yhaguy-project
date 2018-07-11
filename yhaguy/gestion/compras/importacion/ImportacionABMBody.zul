@@ -98,7 +98,8 @@
 										<combobox id="moneda"
 											hflex="true" model="@load(vm.dtoUtil.monedasConSimbolo)"
 											value="@load(vm.dto.moneda.pos1)"
-											selectedItem="@bind(vm.dto.moneda)" instant="true">
+											selectedItem="@bind(vm.dto.moneda)" instant="true"
+											onChange="@command('refreshTipoCambio')">
 											<template name="model">
 												<comboitem
 													label="@load(each.pos1)" />

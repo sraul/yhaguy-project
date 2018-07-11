@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -75,6 +76,7 @@ import com.yhaguy.gestion.empresa.ctacte.AssemblerCtaCteEmpresaMovimiento;
 import com.yhaguy.gestion.empresa.ctacte.ControlCtaCteEmpresa;
 import com.yhaguy.gestion.empresa.ctacte.CtaCteEmpresaMovimientoDTO;
 import com.yhaguy.util.Utiles;
+import com.yhaguy.util.connect.JSONResult;
 import com.yhaguy.util.reporte.ReporteYhaguy;
 
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
@@ -103,7 +105,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	public MyArray totalesCostoFinal = new MyArray(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 	@Init(superclass = true)
-	public void init() {		
+	public void init() {
 	}
 
 	@AfterCompose(superclass = true)
@@ -224,6 +226,24 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.nvaTrazabilidad.setPos4(this.dto.getVia());
 		}
 		comp.open(parent, "after_start");
+	}
+	
+	@Command @NotifyChange("*")
+	public void refreshTipoCambio() {
+		double tipoCambio = 1;
+		if (!this.dto.isMonedaLocal()) {
+			try {
+				JSONResult json = new JSONResult();
+	            String result = json.getCotizaciones();
+	            JSONObject json_data = new JSONObject(result);
+	            JSONObject json_dolarpy = json_data.getJSONObject("dolarpy");
+	            JSONObject json_bcp = json_dolarpy.getJSONObject("set");
+	            tipoCambio = json_bcp.getDouble("venta");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		this.dto.setCambio(tipoCambio);
 	}
 	
 	
@@ -1188,6 +1208,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		dto.setTipoMovimiento(ordenCompraImportacion);
 		dto.setMoneda(this.getDtoUtil().getMonedaDolaresConSimbolo());
 		this.prorrateado = false;
+		this.refreshTipoCambio();
 	}
 	
 	@Command

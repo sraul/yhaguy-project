@@ -55,6 +55,14 @@ public class ImportacionPedidoCompraDTO extends DTO {
 	private double totalGastos = 0;
 	
 	/**
+	 * @return true si es una compra en moneda local..
+	 */
+	public boolean isMonedaLocal() {
+		String sigla = (String) this.moneda.getPos2();
+		return sigla.equals(Configuracion.SIGLA_MONEDA_GUARANI);
+	}
+	
+	/**
 	 * @return los gastos de importacion..
 	 */
 	public List<Object[]> getGastos() throws Exception {
