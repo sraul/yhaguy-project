@@ -73,7 +73,8 @@ public class PagosMasivosViewModel extends SimpleViewModel {
 		planilla.setCaja((Caja) rr.getObject(Caja.class.getName(), 5));
 		planilla.setEstado(rr.getTipoPorSigla(Configuracion.SIGLA_CAJA_PERIODO_CERRADA));
 		planilla.setNumero("CJP-" + AutoNumeroControl.getAutoNumero("CJP"));
-		planilla.setResponsable((Funcionario) rr.getObject(Funcionario.class.getName(), 39));
+		planilla.setResponsable((Funcionario) rr.getObject(Funcionario.class.getName(), 8));
+		planilla.setTipo(CajaPeriodo.TIPO_PAGOS);
 		
 		for (MyArray item : this.selectedItems) {			
 			long idEmpresa = (long) ((Object[]) item.getPos1())[14];
