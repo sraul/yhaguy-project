@@ -24,6 +24,14 @@
 					<textbox value="@bind(vm.dato.nvoDetalle.descripcion)" hflex="true"/>
 				</row>
 				<row>
+					<field value="Sucursal:" />
+					<combobox hflex="true" model="@load(vm.sucursales)">
+						<template name="model">
+							<comboitem label="@load(each.descripcion)"></comboitem>
+						</template>	
+					</combobox>
+				</row>
+				<row>
 					<field value="Centro de Costo:" />
 					<combobox hflex="true" model="@load(vm.dato.departamentos)"
 						selectedItem="@bind(vm.dato.nvoDetalle.departamento)"

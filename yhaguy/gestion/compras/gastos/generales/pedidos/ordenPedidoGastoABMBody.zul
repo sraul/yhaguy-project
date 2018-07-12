@@ -360,7 +360,7 @@
 							<listheader label="Código" width="130px" />
 							<listheader label="Cuenta" />
 							<listheader label="Observación" />
-							<listheader label="Departamento" />
+							<listheader label="Centro de Costo" />
 							<listheader label="Cantidad"
 								style="text-align:center" align="right" width="90px" />
 							<listheader label="Importe Gs."

@@ -44,7 +44,7 @@
 	</listbox>
 	
 	<popup id="pop_add" sclass="rounded"
-		width="1100px">
+		width="1250px">
 		<hbox align="end" pack="end" width="100%">
 			<hbox pack="start" align="center" hflex="true" vflex="true"
 				style="border-bottom:solid 1px silver">
@@ -54,36 +54,30 @@
 				iconSclass="z-icon-times">
 			</button>
 		</hbox>
-		<vbox>
 		<grid sclass="vgrid">
 			<rows>
 				<row>
 					<vlayout spacing="0">
 						<field value="Fecha" />
-						<textbox value="@load(vm.desde) @converter('formattedDate', format='dd-MM-yyyy')" readonly="true" hflex="true"></textbox>
+						<textbox
+							value="@load(vm.desde) @converter('formattedDate', format='dd-MM-yyyy')"
+							readonly="true" hflex="true">
+						</textbox>
 					</vlayout>
 					<vlayout spacing="0">
 						<field value="Número" />
-						<textbox value="PGM-00001" readonly="true" hflex="true"></textbox>
+						<textbox value="PGM-00001" readonly="true"
+							hflex="true">
+						</textbox>
 					</vlayout>
-					<vlayout spacing="0">
-						<field value="Desde" />
-						<datebox value="@bind(vm.desde)" hflex="true"
-							instant="true"></datebox>
-					</vlayout>
-					<vlayout spacing="0">
-						<field value="Hasta" />
-						<datebox value="@bind(vm.hasta)" hflex="true"
-							instant="true"></datebox>
-					</vlayout>
-				</row>
-				<row>
 					<vlayout spacing="0">
 						<field value="Banco" />
 						<combobox readonly="true" hflex="true"
 							model="@load(vm.bancos)">
 							<template name="model">
-								<comboitem label="@load(each.banco.descripcion)"></comboitem>
+								<comboitem
+									label="@load(each.banco.descripcion)">
+								</comboitem>
 							</template>
 						</combobox>
 					</vlayout>
@@ -96,47 +90,119 @@
 						</combobox>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Vencimiento" />
-						<datebox hflex="true"></datebox>
+						<field value="Desde" />
+						<datebox value="@bind(vm.desde)" hflex="true"
+							onChange="@command('getMovimientos')">
+						</datebox>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Caja" />
-						<textbox readonly="true" hflex="true"></textbox>
+						<field value="Hasta" />
+						<datebox value="@bind(vm.hasta)" hflex="true"
+							onChange="@command('getMovimientos')">
+						</datebox>
 					</vlayout>
 				</row>
 			</rows>
 		</grid>
-		<listbox sclass="small-list" checkmark="true" multiple="true" height="500px"
-			style="margin:5px" emptyMessage="FACTURAS A PAGAR.."
-			model="@load(vm.movimientos)">
-			<listhead style="text-align:center">
-				<listheader width="40px" align="center"></listheader>
-				<listheader label="Proveedor"></listheader>
-				<listheader label="Emisión" width="110px"></listheader>
-				<listheader label="Vencimiento" width="110px"></listheader>
-				<listheader label="Número" width="150px"></listheader>
-				<listheader label="Concepto" width="170px"></listheader>
-				<listheader label="Saldo Gs." align="right" width="120px"></listheader>
-			</listhead>
-			<template name="model">
-				<listitem>
-					<listcell />
-					<listcell label="@load(each[10])"></listcell>
-					<listcell label="@load(each[6]) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
-					<listcell label="@load(each[7]) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
-					<listcell label="@load(each[2])"></listcell>
-					<listcell label="@load(each[3])"></listcell>
-					<listcell label="@load(each[9]) @converter(vm.cnv.monedaLocal)"></listcell>
-				</listitem>
-			</template>
-			<listfoot>
-				<listfooter label="items"></listfooter>
-			</listfoot>
-		</listbox>
-		</vbox>
-		<hbox width="100%" pack="end">
+		<div height="5px"></div>
+		<tabbox>
+			<tabs>
+				<tab width="150px" label="Definición"></tab>
+				<tab width="150px" label="Vista Previa"></tab>
+			</tabs>
+			<tabpanels>
+				<tabpanel>					
+					<listbox sclass="rounded" checkmark="true"
+						multiple="true" height="500px" style="margin:5px"
+						emptyMessage="FACTURAS A PAGAR.." model="@load(vm.items)"
+						selectedItems="@bind(vm.selectedItems)">
+						<listhead style="text-align:center">
+							<listheader width="40px" align="center"></listheader>
+							<listheader label="Proveedor"></listheader>
+							<listheader label="Vencimiento"
+								width="110px">
+							</listheader>
+							<listheader label="Número" width="150px"></listheader>
+							<listheader label="Concepto"
+								width="170px">
+							</listheader>
+							<listheader label="Importe Gs." align="right"
+								width="120px">
+							</listheader>
+							<listheader label="Retencion Gs." align="right"
+								width="120px">
+							</listheader>
+							<listheader label="Cheque Vto."
+								width="170px">
+							</listheader>
+							<listheader label="Diferir por"
+								width="170px">
+							</listheader>
+						</listhead>
+						<template name="model">
+							<listitem>
+								<listcell />
+								<listcell
+									label="@load(each.pos1[10])">
+								</listcell>
+								<listcell
+									label="@load(each.pos1[7]) @converter('formattedDate', format='dd-MM-yyyy')">
+								</listcell>
+								<listcell label="@load(each.pos1[2])"></listcell>
+								<listcell label="@load(each.pos1[3])"></listcell>
+								<listcell
+									label="@load(each.pos1[9]) @converter(vm.cnv.monedaLocal)">
+								</listcell>
+								<listcell>
+									<guaranibox value="@bind(each.pos4)"
+										hflex="true" vflex="true">
+									</guaranibox>
+								</listcell>
+								<listcell>
+									<datebox value="@bind(each.pos2)"
+										hflex="true" vflex="true">
+									</datebox>
+								</listcell>
+								<listcell>
+									<spinner value="@bind(each.pos3)"
+										hflex="true">
+									</spinner>
+								</listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</tabpanel>
+				<tabpanel>
+					<listbox 
+						height="500px" style="margin:5px"
+						emptyMessage="SIN DATOS.." model="@load(vm.vistaPrevia)">
+						<listhead style="text-align:center">
+							<listheader label="Orden Pago" width="130px"></listheader>
+							<listheader label="Proveedor"></listheader>
+							<listheader label="Factura Nro." width="150px"></listheader>
+							<listheader label="Importe Gs." align="right" width="140px"></listheader>
+							<listheader label="Cheque Nro." width="120px" align="right"></listheader>
+							<listheader label="Cheque Vto." width="120px" align="right"></listheader>
+						</listhead>
+						<template name="model">
+							<listitem>
+								<listcell label="@load(each.pos1)" />
+								<listcell label="@load(each.pos2.pos1[10])"></listcell>
+								<listcell label="@load(each.pos2.pos1[2])"></listcell>
+								<listcell label="@load(each.pos2.pos1[9]) @converter(vm.cnv.monedaLocal)"></listcell>
+								<listcell label="@load(each.pos3)" />
+								<listcell label="@load(each.pos2.pos2) @converter('formattedDate', format='dd-MM-yyyy')"></listcell>
+							</listitem>
+						</template>
+					</listbox>
+				</tabpanel>
+			</tabpanels>
+		</tabbox>
+		<div height="5px"></div>
+		<hbox sclass="button-container" width="100%" pack="end">
 			<button mold="bs" sclass="btn-sm btn-success" 
-				iconSclass="z-icon-check" width="150px" style="margin-right:5px"></button>
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"
+				onClick="@command('generarOrdenesPago')"></button>
 		</hbox>
 	</popup>
 	
@@ -175,4 +241,8 @@
 			</rows>
 		</grid>
 	</popup>	
+	
+	<style>
+		.z-listcell-content { text-overflow: ellipsis; white-space: nowrap; }
+	</style>
 </window>

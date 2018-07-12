@@ -1,5 +1,7 @@
 package com.yhaguy.gestion.compras.gastos.generales.pedidos;
 
+import java.util.List;
+
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
 import org.zkoss.bind.annotation.Command;
@@ -12,6 +14,8 @@ import com.coreweb.control.SoloViewModel;
 import com.yhaguy.Configuracion;
 import com.yhaguy.ID;
 import com.yhaguy.domain.ArticuloGasto;
+import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.SucursalApp;
 import com.yhaguy.gestion.compras.gastos.subdiario.ArticuloGastoDTO;
 import com.yhaguy.gestion.compras.gastos.subdiario.AssemblerArticuloGasto;
 
@@ -108,6 +112,12 @@ public class OrdenPedidoGastoSimpleControl extends SoloViewModel {
 			return descripcion;
 		}
 		return "";
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SucursalApp> getSucursales() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getObjects(SucursalApp.class.getName());
 	}
 	
 	public OrdenPedidoGastoControlBody getDato() {
