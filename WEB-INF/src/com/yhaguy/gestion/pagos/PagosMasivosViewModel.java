@@ -48,6 +48,7 @@ public class PagosMasivosViewModel extends SimpleViewModel {
 		if (this.desde == null || this.hasta == null) {
 			this.items = new ArrayList<>();
 		}
+		this.items.clear();
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Object[]> list = rr.getSaldosByVencimiento(this.desde, this.hasta, Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_PROVEEDOR, 0, 0, 31);
 		Date chequeVto = new Date();

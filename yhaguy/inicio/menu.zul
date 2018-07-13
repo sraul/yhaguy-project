@@ -70,6 +70,7 @@
 				<zk forEach="${vm.menuItem(self,'VentaMeta')}" />
 				<zk forEach="${vm.menuItem(self,'PreparacionPedidos')}" />
 				<zk forEach="${vm.menuItem(self,'ServicioTecnico')}" />
+				<zk forEach="${vm.menuItem(self,'ServicioTecnicoAutocentros')}" />
 				<zk forEach="${vm.menuItem(self,'ControlTalonarios')}" />
 				<zk forEach="${vm.menuItem(self,'RuteoVendedores')}" />
 				<zk forEach="${vm.menuItem(self,'VentaDefinicion', 'tab=cliente,empresa')}" />
