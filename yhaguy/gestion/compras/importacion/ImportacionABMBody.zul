@@ -249,9 +249,10 @@
 							<listbox hflex="true" sclass="small-list"
 								height="560px" model="@load(vm.dto.trazabilidad)"
 								emptyMessage="SIN REGISTROS..">
+								<custom-attributes org.zkoss.zul.listbox.autoSort="true" />
 								<listhead style="text-align:center">
 									<listheader label="Descripción"></listheader>
-									<listheader label="Fecha" width="120px" align="right"></listheader>
+									<listheader label="Fecha" width="120px" align="right" sort="auto(pos1)" onCreate="self.sort(true)"></listheader>
 									<listheader label="Documento" width="120px" align="center"></listheader>
 								</listhead>
 								<template name="model">
@@ -705,12 +706,6 @@
 											value="@load(each.cantidad)"
 											visible="@load(vm.deshabilitado)" sclass="label-list" />
 									</div>
-								</listcell>
-								<listcell
-									style="@load(each.costoSinProrrateoGs gt 0? 'background:#ffff99':'')">
-									<label
-										value="@load(each.costoSinProrrateoGs) @converter(vm.cnv.monedaLocal)"
-										sclass="label-list" />
 								</listcell>
 								<listcell>
 									<div>
