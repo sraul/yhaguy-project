@@ -83,6 +83,7 @@ import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 public class ImportacionPedidoCompraControlBody extends BodyApp {
 	
 	static final String PATH = Configuracion.pathPedidoCompra;
+	static final String PATH_GENERICO = Configuracion.pathPedidoCompraGenerico;
 	
 	static final String[][] CAB = { { "Empresa", CSV.STRING } };
 	static final String[][] DET = { { "CODIGO", CSV.STRING }, { "CANTIDAD", CSV.STRING } };
@@ -430,7 +431,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
 			Clients.showNotification(noEncontrado);
 			
-			MyArray trazabilidad = new MyArray(new Date(), "SOLICITANDO COTIZACION", PATH + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
+			MyArray trazabilidad = new MyArray(new Date(), "SOLICITANDO COTIZACION", PATH_GENERICO + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
 			this.dto.getTrazabilidad().add(trazabilidad);
 		
 		} catch (Exception e) {
@@ -472,7 +473,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.dto.getImportacionPedidoCompraDetalle().addAll(list);
 			this.dto.setConfirmadoImportacion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
-			MyArray trazabilidad = new MyArray(new Date(), "PROFORMA CARGADA", PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
+			MyArray trazabilidad = new MyArray(new Date(), "PROFORMA CARGADA", PATH_GENERICO + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
 			this.dto.getTrazabilidad().add(trazabilidad);
 		} catch (Exception e) {
 			e.printStackTrace();
