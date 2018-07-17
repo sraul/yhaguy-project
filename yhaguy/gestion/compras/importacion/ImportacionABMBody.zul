@@ -656,7 +656,7 @@
 							<listheader label="Presentacion"
 								width="95px" style="text-align: center" align="right"
 								visible="false" />
-							<listheader label="Cantidad" width="65px"
+							<listheader label="Cantidad" width="80px"
 								visible="@load(!vm.comparativoPrr)" style="text-align: center"
 								align="right" sort="auto(cantidad)" />
 							<listheader
@@ -743,9 +743,6 @@
 									value="@load(vm.selectedImportacionFactura.detalleSize)"
 									style="font-weight:bold" />
 							</listfooter>
-							<listfooter />
-							<listfooter />
-							<listfooter />
 							<listfooter />
 							<listfooter />
 							<listfooter />
