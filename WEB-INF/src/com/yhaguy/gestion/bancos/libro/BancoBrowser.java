@@ -14,7 +14,7 @@ public class BancoBrowser extends Browser{
 	public void setingInicial() {
 		this.setWidthWindows("980px");
 		this.setHigthWindows("80%");
-		this.addOrden("nroCuenta");
+		this.addOrden("id");
 	}
 	
 	@Override

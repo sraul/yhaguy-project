@@ -351,7 +351,7 @@
 								sclass="btn-success btn-sm"
 								iconSclass="z-icon-check"
 								disabled="@load(vm.nvoServicio.detalles.size() eq 0)"
-								width="100px" onClick="@command('addServicioTecnico', comp = pop_add)"/>
+								width="100px" onClick="@command('addServicioTecnico', comp = pop_add)" />
 						</hlayout>
 					</listfooter>
 				</listfoot>
