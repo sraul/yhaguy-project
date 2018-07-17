@@ -408,7 +408,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
 			CSV csv = new CSV(CAB, DET, PATH + this.dto.getNumeroPedidoCompra() + ".csv", ',');
-
+			String noEncontrado = "Códigos no encontrados: \n";
 			csv.start();
 			while (csv.hashNext()) {
 				String codigo = csv.getDetalleString("CODIGO"); 
@@ -420,12 +420,15 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					ArticuloDTO ar = (ArticuloDTO) ass.domainToDto(art);
 					item.setArticulo(ar);
 					item.setCantidad(Integer.parseInt(cantidad));
-				}				
-				list.add(item);
+					list.add(item);
+				} else {
+					noEncontrado += codigo + "\n";
+				}
 			}
 			this.dto.getSolicitudCotizaciones().addAll(list);
 			this.dto.setConfirmadoAdministracion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			Clients.showNotification(noEncontrado);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Clients.showNotification(
