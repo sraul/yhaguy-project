@@ -429,6 +429,10 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.dto.setConfirmadoAdministracion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
 			Clients.showNotification(noEncontrado);
+			
+			MyArray trazabilidad = new MyArray(new Date(), "SOLICITANDO COTIZACION", PATH + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
+			this.dto.getTrazabilidad().add(trazabilidad);
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			Clients.showNotification(
@@ -468,6 +472,8 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.dto.getImportacionPedidoCompraDetalle().addAll(list);
 			this.dto.setConfirmadoImportacion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			MyArray trazabilidad = new MyArray(new Date(), "PROFORMA CARGADA", PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
+			this.dto.getTrazabilidad().add(trazabilidad);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Clients.showNotification(
