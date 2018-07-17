@@ -658,17 +658,6 @@
 							<listheader label="Cantidad" width="65px"
 								visible="@load(!vm.comparativoPrr)" style="text-align: center"
 								align="right" sort="auto(cantidad)" />
-							<listheader label="Costo S/P Gs."
-								width="110px" style="text-align:center" align="right"
-								visible="@load(vm.comparativoPrr)"
-								tooltiptext="Costo Sin Prorrateo" />
-							<listheader label="Costo Gs." width="120px"
-								sort="auto(costoGs)" style="text-align: center" align="right" />
-							<listheader
-								label="@load(vm.concatenar('Costo S/P', vm.dto.moneda.pos2))"
-								width="100px" style="text-align: center" align="right"
-								visible="@load(vm.comparativoPrr)"
-								tooltiptext="Costo Sin Prorrateo" />
 							<listheader
 								label="@load(vm.concatenar('Costo', vm.dto.moneda.pos2))"
 								width="120px" sort="auto(costoDs)" style="text-align: center"
@@ -676,19 +665,6 @@
 							<listheader label="Descuento" width="85px"
 								align="right" sort="auto(textoDescuento)"
 								style="text-align: center" visible="false" />
-							<listheader label="Importe S/P Gs."
-								width="115px" visible="@load(vm.comparativoPrr)"
-								style="text-align: center" align="right"
-								sort="auto(costoSinProrrateoGs)"
-								tooltiptext="Costo Sin Prorrateo" />
-							<listheader label="Importe Gs."
-								width="120px" sort="auto(importeGsCalculado)"
-								style="text-align: center" align="right" />
-							<listheader
-								label="@load(vm.concatenar('Importe S/P', vm.dto.moneda.pos2))"
-								width="105px" style="text-align: center" align="right"
-								visible="@load(vm.comparativoPrr)"
-								tooltiptext="Costo Sin Prorrateo" />
 							<listheader
 								label="@load(vm.concatenar('Importe', vm.dto.moneda.pos2))"
 								width="120px" style="text-align: center" align="right"
@@ -738,25 +714,6 @@
 								</listcell>
 								<listcell>
 									<div>
-										<guaranibox
-											value="@bind(each.costoGs)" inplace="true"
-											onChange="@command('notificarCostoDs', item=each, comp=self)"
-											onFocus='detFactura.setSelectedIndex(s.index)'
-											readonly="@load(each.gastoDescuento)"
-											visible="@load(!vm.deshabilitado)" />
-										<label
-											value="@load(each.costoGs) @converter(vm.cnv.monedaLocal)"
-											visible="@load(vm.deshabilitado)" sclass="label-list" />
-									</div>
-								</listcell>
-								<listcell
-									style="@load(each.costoSinProrrateoDs gt 0? 'background:#ffff99':'')">
-									<label
-										value="@load(each.costoSinProrrateoDs) @converter(vm.cnv.monedaExtranjera)"
-										sclass="label-list" />
-								</listcell>
-								<listcell>
-									<div>
 										<dolarbox
 											value="@bind(each.costoDs)" inplace="true"
 											onChange="@command('notificarCostoGs', item=each, comp=self)"
@@ -776,23 +733,6 @@
 										onChange="@command('descuentoPorItem', item=each, comp=self)"
 										onFocus='detFactura.setSelectedIndex(s.index)'
 										readonly="@load(each.gastoDescuento)" />
-								</listcell>
-								<listcell
-									style="@load(each.importeSinProrrateoGs gt 0? 'background:#ffff99':'')">
-									<label
-										value="@load(each.importeSinProrrateoGs) @converter(vm.cnv.monedaLocal)"
-										sclass="label-list" />
-								</listcell>
-								<listcell>
-									<label
-										value="@load(each.importeGsCalculado) @converter(vm.cnv.monedaLocal)"
-										sclass="label-list" />
-								</listcell>
-								<listcell
-									style="@load(each.importeSinProrrateoDs gt 0? 'background:#ffff99':'')">
-									<label
-										value="@load(each.importeSinProrrateoDs) @converter(vm.cnv.monedaExtranjera)"
-										sclass="label-list" />
 								</listcell>
 								<listcell>
 									<label
@@ -818,22 +758,6 @@
 							<listfooter />
 							<listfooter />
 							<listfooter />
-							<listfooter>
-								<guaranibox
-									value="@load(vm.totalImporteFactura[2])"
-									style="background:#EEF7FA;text-align:right;font-weight:bold"
-									readonly="true" />
-							</listfooter>
-							<listfooter>
-								<guaranibox
-									value="@load(vm.totalImporteFactura[0])"
-									style="background:#EEF7FA;text-align:right;font-weight:bold" />
-							</listfooter>
-							<listfooter>
-								<dolarbox
-									value="@load(vm.totalImporteFactura[3])"
-									style="background:#EEF7FA;text-align:right;font-weight:bold" />
-							</listfooter>
 							<listfooter>
 								<dolarbox
 									value="@load(vm.totalImporteFactura[1])"
