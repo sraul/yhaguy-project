@@ -8193,6 +8193,15 @@ public class RegisterDomain extends Register {
 		return list.size() > 0 ? list.get(0) : null;
 	}
 	
+	/**
+	 * @return la ultima cotizacion..
+	 */
+	public double getTipoCambioVenta() throws Exception {
+		String query = "select t.id, t.venta from TipoCambio t where t.id = (select max(id) from TipoCambio)";
+		List<Object[]> list = this.hql(query);
+		return (double) list.get(0)[1];
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			

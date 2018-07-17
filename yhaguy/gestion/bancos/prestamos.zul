@@ -202,21 +202,25 @@
 		<vlayout vflex="true">
 			<button label="Calcular cuotas" hflex="true" iconSclass="z-icon-refresh"
 				onClick="@command('calcularCuotas')"></button>
-			<listbox width="350px" sclass="small-list" vflex="true"
+			<listbox width="500px" vflex="true"
 				model="@load(vm.cuotas)" emptyMessage="VISTA PREVIA DE CUOTAS..">
 				<listhead>
 					<listheader label="Nro." align="center" width="70px"></listheader>
 					<listheader label="Vencimiento"></listheader>
+					<listheader label="Interes" align="right"></listheader>
 					<listheader label="Importe" align="right"></listheader>
 				</listhead>
 				<template name="model">
 					<listitem>
 						<listcell label="@load(each[0])"></listcell>
-						<listcell
-							label="@load(each[1]) @converter('formattedDate', format='dd-MM-yyyy')">
+						<listcell>
+							<datebox hflex="true" value="@bind(each[1])"></datebox>
 						</listcell>
-						<listcell
-							label="@load(each[2]) @converter(vm.cnv.monedaLocal)">
+						<listcell>
+							<guaranibox hflex="true" value="@bind(each[3])" />
+						</listcell>
+						<listcell>
+							<guaranibox hflex="true" value="@bind(each[2])" />
 						</listcell>
 					</listitem>
 				</template>

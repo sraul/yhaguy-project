@@ -61,7 +61,7 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		rr.saveObject(this.nvo_prestamo, this.getLoginNombre());
-		ControlCuentaCorriente.addPrestamoBancario(this.nvo_prestamo, this.getLoginNombre());
+		ControlCuentaCorriente.addPrestamoBancario(this.nvo_prestamo, this.cuotas, this.getLoginNombre());
 		comp.close();
 		Clients.showNotification("REGISTRO GUARDADO..");
 		this.inicializarDatos();
@@ -147,7 +147,8 @@ public class BancoPrestamosViewModel extends SimpleViewModel {
 			Object[] cuota = new Object[] {
 					i,
 					Utiles.getFecha(dd + "-" + (mes_ > 9 ? ("" + mes_) : ("0" + mes_)) + "-" + aa + " 00:00:00"),
-					this.nvo_prestamo.getDeudaTotal() / cuotas };
+					this.nvo_prestamo.getDeudaTotal() / cuotas,
+					this.nvo_prestamo.getInteres() / cuotas };
 			this.cuotas.add(cuota);
 		}		
 	}
