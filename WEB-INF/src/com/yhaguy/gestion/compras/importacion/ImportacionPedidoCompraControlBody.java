@@ -70,7 +70,6 @@ import com.yhaguy.domain.Timbrado;
 import com.yhaguy.domain.TipoMovimiento;
 import com.yhaguy.gestion.articulos.ArticuloDTO;
 import com.yhaguy.gestion.articulos.AssemblerArticulo;
-import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
 import com.yhaguy.gestion.comun.ControlLogica;
 import com.yhaguy.gestion.empresa.ctacte.AssemblerCtaCteEmpresaMovimiento;
@@ -2625,6 +2624,9 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	 */	
 	public List<MyArray> getItemsPrecioFinal() throws Exception {
 		List<MyArray> out = new ArrayList<MyArray>();
+		if (this.dto.getResumenGastosDespacho().getTipoCambio() <= 100) {
+			return out;
+		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		double despachoTipoCambio = this.dto.getResumenGastosDespacho().getTipoCambio();
 		double despachoFleteSeguro = this.dto.getResumenGastosDespacho().getValorFleteGs();
