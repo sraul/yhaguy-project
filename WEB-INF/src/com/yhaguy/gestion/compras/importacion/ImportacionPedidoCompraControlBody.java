@@ -2624,7 +2624,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	 */	
 	public List<MyArray> getItemsPrecioFinal() throws Exception {
 		List<MyArray> out = new ArrayList<MyArray>();
-		if (this.dto.getResumenGastosDespacho().getTipoCambio() <= 100) {
+		if (this.dto.getResumenGastosDespacho().getTipoCambio() <= 100	) {
 			return out;
 		}
 		RegisterDomain rr = RegisterDomain.getInstance();
