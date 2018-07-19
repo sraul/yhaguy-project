@@ -3321,17 +3321,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	 */
 	public List<ArticuloGasto> getCuentasGastos() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<ArticuloGasto> out = new ArrayList<ArticuloGasto>();
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 43));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 44));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 45));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 46));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 47));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 48));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 49));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 50));
-		out.add((ArticuloGasto) rr.getObject(ArticuloGasto.class.getName(), 51));
-		return out;
+		return rr.getArticulosGastos("IMPORTACION", 100);
 	}
 	
 	/**
