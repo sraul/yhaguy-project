@@ -3,7 +3,6 @@
 
 		<menu label=" Tesorería" iconSclass="z-icon-briefcase">
 			<menupopup sclass="rounded">
-
 				<zk forEach="${vm.menuItem(self,'Caja')}" />
 				<zk forEach="${vm.menuItem(self,'CajaPlanilla')}" />
 				<zk forEach="${vm.menuItem(self,'CajaPlanillaResumen')}" />
@@ -150,7 +149,7 @@
 				nombreFormulario.value="Bienvenido" ' 
 				iconSclass="z-icon-caret-right"/>
 				<menuitem label="SALIR"
-					href="http://10.25.1.250/yhaguy"
+					href="/sistema.zul"
 					iconSclass="z-icon-caret-right"/>
 			</menupopup>
 		</menu>

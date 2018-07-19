@@ -17,7 +17,7 @@ public class BancoCta extends Domain{
 	private CuentaContable cuentaContable;	
 	
 	public String getBancoDescripcion(){
-		return this.banco.getDescripcion().toUpperCase();
+		return this.banco.getDescripcion().toUpperCase() + " - " + this.moneda.getSigla();
 	}
 	
 	public void setBancoDescripcion(String bancoD){

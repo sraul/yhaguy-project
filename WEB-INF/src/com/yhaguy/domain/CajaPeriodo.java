@@ -17,9 +17,11 @@ public class CajaPeriodo extends Domain {
 	
 	public static final String TIPO_VENTA = "CAJA VENTAS";
 	public static final String TIPO_CHICA = "CAJA CHICA";
+	public static final String TIPO_VIATICOS = "CAJA VIATICOS";
 	public static final String TIPO_COBROS = "CAJA COBRANZAS";
 	public static final String TIPO_COBROS_MOBILE = "CAJA COBRANZAS MOVILES";
 	public static final String TIPO_PAGOS = "CAJA PAGOS";
+	public static final String TIPO_PAGOS_EXTERIOR = "CAJA PAGOS EXTERIOR";
 
 	private String numero;
 	private Date apertura;
@@ -71,7 +73,9 @@ public class CajaPeriodo extends Domain {
 		List<String> out = new ArrayList<String>();
 		out.add(TIPO_VENTA);
 		out.add(TIPO_CHICA);
+		out.add(TIPO_VIATICOS);
 		out.add(TIPO_PAGOS);
+		out.add(TIPO_PAGOS_EXTERIOR);
 		out.add(TIPO_COBROS);
 		out.add(TIPO_COBROS_MOBILE);
 		return out;

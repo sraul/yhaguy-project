@@ -1,11 +1,13 @@
 package com.yhaguy.gestion.bancos.cheques;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.Command;
+import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
@@ -14,15 +16,19 @@ import com.coreweb.componente.BuscarElemento;
 import com.coreweb.componente.VerificaAceptarCancelar;
 import com.coreweb.componente.WindowPopup;
 import com.coreweb.control.SoloViewModel;
+import com.coreweb.util.AutoNumeroControl;
 import com.coreweb.util.MyArray;
 import com.yhaguy.Configuracion;
 import com.yhaguy.ID;
+import com.yhaguy.domain.BancoChequera;
 import com.yhaguy.domain.BancoCta;
+import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.bancos.libro.AssemblerBancoCtaCte;
 import com.yhaguy.gestion.bancos.libro.BancoCtaDTO;
 
 public class WindowCheque extends SoloViewModel {
 	
+	private BancoChequera selectedChequera;
 	
 	public void show(String modo, boolean chequeManual){
 		
@@ -114,10 +120,22 @@ public class WindowCheque extends SoloViewModel {
 		BindUtils.postNotifyChange(null, null, this.cuentaDTO, "*");
 	}
 	
+	@Command
+	@NotifyChange("chequeDTO.numero")
+	public void setNumero() throws Exception {
+		this.chequeDTO.setNumero(AutoNumeroControl.getAutoNumero(this.selectedChequera.getNumero(), true));
+	}
+	
 	/****************************************************/
 	
 	
 	/******************  GETTER/SETTER ******************/
+	
+	@DependsOn("cuentaDTO")
+	public List<BancoChequera> getChequeras() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getChequeras(this.cuentaDTO.getId());
+	}
 	
 	public WindowPopup getWp() {
 		return wp;
@@ -179,6 +197,14 @@ public class WindowCheque extends SoloViewModel {
 
 	public void setChequeManual(boolean chequeManual) {
 		this.chequeManual = chequeManual;
+	}
+
+	public BancoChequera getSelectedChequera() {
+		return selectedChequera;
+	}
+
+	public void setSelectedChequera(BancoChequera selectedChequera) {
+		this.selectedChequera = selectedChequera;
 	}
 }
 

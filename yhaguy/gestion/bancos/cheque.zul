@@ -118,7 +118,12 @@
 					</row>
 					<row>
 						<field value="Chequera:" />
-						<combobox hflex="true" />
+						<combobox model="@load(vm.chequeras)" hflex="true"
+							onSelect="@command('setNumero')">
+							<template name="model">
+								<comboitem label="@load(each.numero)"></comboitem>
+							</template>
+						</combobox>
 					</row>
 					<row>
 						<field value="Número:" />					

@@ -82,12 +82,12 @@
 				<row>
 					<field value="Banco:" />
 					<combobox hflex="true"
-						value="@load(vm.nvo_prestamo.banco.banco.descripcion.toUpperCase())"
+						value="@load(vm.nvo_prestamo.banco.bancoDescripcion)"
 						model="@load(vm.bancos)"
 						selectedItem="@bind(vm.nvo_prestamo.banco)"
 						onSelect="@command('addFilter')" instant="true">
 						<template name="model">
-							<comboitem label="@load(each.banco.descripcion.toUpperCase())" />
+							<comboitem label="@load(each.bancoDescripcion)" />
 						</template>	
 					</combobox>
 				</row>

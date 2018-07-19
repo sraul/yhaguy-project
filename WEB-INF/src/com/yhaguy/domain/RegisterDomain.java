@@ -8202,6 +8202,14 @@ public class RegisterDomain extends Register {
 		return (double) list.get(0)[1];
 	}
 	
+	/**
+	 * @return las chequeras..
+	 */
+	public List<BancoChequera> getChequeras(long idBanco) throws Exception {
+		String query = "select b from BancoChequera b where b.banco.id = " + idBanco;
+		return this.hql(query);
+	}
+	
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
