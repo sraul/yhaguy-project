@@ -638,6 +638,11 @@
 							height="30px" iconSclass="z-icon-upload"
 							label=" Importar Archivo" 
 							disabled="@load(vm.dto.esNuevo() or vm.deshabilitado)"/>
+						<space />
+						<a iconSclass="z-icon-paperclip"
+							label=" ver archivo Importado" href="@load(vm.facturaCsv)"
+							target="_blank" visible="@load(vm.dto.confirmadoImportacion)" 
+							style="font-size:10pt" />
 					</hlayout>
 
 					<listbox id="detFactura" sclass="small-list"

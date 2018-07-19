@@ -1542,12 +1542,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	/*********************** IMPORTACION FACTURA [GASTOS - DESCUENTOS] ************************/
 	
 	@Command @NotifyChange("*")
-	public void agregarGastosDescuentos() throws Exception {
-		
-		if (this.operacionValidaFactura(ADD_GASTOS_DESCUENTOS) == false) {
-			return;
-		}
-				
+	public void agregarGastosDescuentos() throws Exception {				
 		this.nvoItem = new ImportacionFacturaDetalleDTO();
 		this.nvoItem.setGastoDescuento(true);			
 		WindowPopup w = new WindowPopup();
@@ -3254,6 +3249,13 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	 */
 	public String getProformaCsv() {
 		return Configuracion.pathPedidoCompraGenerico + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv";
+	}
+	
+	/**
+	 * @return el link del archivo importado..
+	 */
+	public String getFacturaCsv() {
+		return Configuracion.pathPedidoCompraGenerico + "factura_" + this.dto.getNumeroPedidoCompra() + ".csv";
 	}
 	
 	/**
