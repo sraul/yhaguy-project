@@ -2723,8 +2723,6 @@ class ValidadorGasto implements VerificaAceptarCancelar {
 		mensaje = "No se puede completar la operación debido a: \n";
 
 		double limite = Configuracion.IMPORTE_LIMITE_GASTO_FONDO_FIJO;
-		double totalFac = this.gasto.getImporteGs();
-		double totalFP = this.gasto.getImporteFormaPagoGs();
 
 		String nroFactura = this.gasto.getNumeroFactura();
 		String idTimbrado = this.gasto.getTimbrado().getId() + "";
@@ -2737,10 +2735,6 @@ class ValidadorGasto implements VerificaAceptarCancelar {
 
 		try {
 
-			if (this.ctr.m.esIgual(totalFac, totalFP) == false) {
-				out = false;
-				this.mensaje += "- El total de la factura debe coincidir con el total de formas de pago \n";
-			}
 
 			if (this.gasto.getImporteGs() > limite) {
 				/*
@@ -2791,14 +2785,6 @@ class ValidadorGasto implements VerificaAceptarCancelar {
 				mensaje += "\n - La fecha de la factura no puede ser mayor o "
 						+ "igual a la fecha de vencimiento del timbrado";
 				out = false;
-			}
-
-			// Valida el campo existe cmpbte fisico..
-			if ((this.gasto.isExisteComprobanteFisico() == false)
-					&& (this.gasto.getMotivoComprobanteFisico().trim().length() == 0)) {
-				out = false;
-				mensaje += "- Debe especificar el motivo por el cual no "
-						+ "se cuenta con el Comprobante físico.. \n";
 			}
 
 		} catch (Exception e) {
