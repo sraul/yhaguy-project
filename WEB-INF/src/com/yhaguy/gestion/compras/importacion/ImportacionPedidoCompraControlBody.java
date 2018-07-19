@@ -381,6 +381,24 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	
 	@Command 
 	@NotifyChange("*")
+	public void uploadFilefactura(@BindingParam("file") Media file) {
+		try {
+			Misc misc = new Misc();
+			String name = "factura_" + this.dto.getNumeroPedidoCompra();
+			boolean isText = "text/csv".equals(file.getContentType());
+			InputStream file_ = new ByteArrayInputStream(isText ? file.getStringData().getBytes() : file.getByteData());
+			misc.uploadFile(PATH, name, ".csv", file_);
+			this.csvFactura();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Clients.showNotification(
+					"Hubo un problema al intentar subir el archivo..",
+					Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+		}
+	}
+	
+	@Command 
+	@NotifyChange("*")
 	public void uploadFileTrazabilidad(@BindingParam("file") Media file) {
 		try {
 			Misc misc = new Misc();
@@ -474,6 +492,47 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			this.dto.setConfirmadoImportacion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
 			MyArray trazabilidad = new MyArray(new Date(), "PROFORMA CARGADA", PATH_GENERICO + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
+			this.dto.getTrazabilidad().add(trazabilidad);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Clients.showNotification(
+					"Hubo un problema al leer el archivo..",
+					Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+		}
+	}
+	
+	/**
+	 * csv factura..
+	 */
+	private void csvFactura() {
+		try {
+			this.dto.getImportacionFactura().get(0).getDetalles().clear();
+			List<ImportacionFacturaDetalleDTO> list = new ArrayList<ImportacionFacturaDetalleDTO>();
+			RegisterDomain rr = RegisterDomain.getInstance();
+			AssemblerArticulo ass = new AssemblerArticulo();
+			
+			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "factura_" + this.dto.getNumeroPedidoCompra() + ".csv", ';');
+
+			csv.start();
+			while (csv.hashNext()) {
+				String codigo = csv.getDetalleString("CODIGO"); 
+				String cantidad = csv.getDetalleString("CANTIDAD");
+				String costoDs = csv.getDetalleString("COSTO");
+				
+				ImportacionFacturaDetalleDTO item = new ImportacionFacturaDetalleDTO();
+				Articulo art = rr.getArticulo(codigo);
+				if (art != null) {
+					ArticuloDTO ar = (ArticuloDTO) ass.domainToDto(art);
+					item.setArticulo(ar);
+					item.setCantidad(Integer.parseInt(cantidad));
+					item.setCostoDs(Double.parseDouble(costoDs.replace(".", "").replace(",", ".")));
+				}				
+				list.add(item);
+			}
+			this.dto.getImportacionFactura().get(0).getDetalles().addAll(list);
+			this.dto.setConfirmadoImportacion(true);
+			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			MyArray trazabilidad = new MyArray(new Date(), "FACTURA CARGADA", PATH_GENERICO + "factura_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
 			this.dto.getTrazabilidad().add(trazabilidad);
 		} catch (Exception e) {
 			e.printStackTrace();

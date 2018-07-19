@@ -632,6 +632,12 @@
 							width="150px" iconSclass="z-icon-plus-circle"
 							onClick="@command('agregarGastosDescuentos')"
 							label=" Gastos/Descuentos" />
+						<space />
+						<button mold="bs" upload="true, accept=.csv"
+							onUpload="@command('uploadFilefactura', file=event.media)" width="150px"
+							height="30px" iconSclass="z-icon-upload"
+							label=" Importar Archivo" 
+							disabled="@load(vm.dto.esNuevo() or vm.deshabilitado)"/>
 					</hlayout>
 
 					<listbox id="detFactura" sclass="small-list"
