@@ -507,7 +507,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
 			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", ';');
-
+			String noEncontrado = "Códigos no encontrados: \n";
 			csv.start();
 			while (csv.hashNext()) {
 				String codigo = csv.getDetalleString("CODIGO"); 
@@ -521,12 +521,15 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					item.setArticulo(ar);
 					item.setCantidad(Integer.parseInt(cantidad));
 					item.setCostoProformaDs(Double.parseDouble(costoDs.replace(".", "").replace(",", ".")));
+					list.add(item);
+				} else {
+					noEncontrado += codigo + "\n";
 				}				
-				list.add(item);
 			}
 			this.dto.getImportacionPedidoCompraDetalle().addAll(list);
 			this.dto.setConfirmadoImportacion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			Clients.showNotification(noEncontrado);
 			MyArray trazabilidad = new MyArray(new Date(), "PROFORMA CARGADA", PATH_GENERICO + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
 			this.dto.getTrazabilidad().add(trazabilidad);
 		} catch (Exception e) {
@@ -548,7 +551,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
 			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "factura_" + this.dto.getNumeroPedidoCompra() + ".csv", ';');
-
+			String noEncontrado = "Códigos no encontrados: \n";
 			csv.start();
 			while (csv.hashNext()) {
 				String codigo = csv.getDetalleString("CODIGO"); 
@@ -562,12 +565,15 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 					item.setArticulo(ar);
 					item.setCantidad(Integer.parseInt(cantidad));
 					item.setCostoDs(Double.parseDouble(costoDs.replace(".", "").replace(",", ".")));
-				}				
-				list.add(item);
+					list.add(item);
+				} else {
+					noEncontrado += codigo + "\n";
+				}
 			}
 			this.dto.getImportacionFactura().get(0).getDetalles().addAll(list);
 			this.dto.setConfirmadoImportacion(true);
 			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			Clients.showNotification(noEncontrado);
 			MyArray trazabilidad = new MyArray(new Date(), "FACTURA CARGADA", PATH_GENERICO + "factura_" + this.dto.getNumeroPedidoCompra() + ".csv", "", "", 1, "", 0.0);
 			this.dto.getTrazabilidad().add(trazabilidad);
 		} catch (Exception e) {
