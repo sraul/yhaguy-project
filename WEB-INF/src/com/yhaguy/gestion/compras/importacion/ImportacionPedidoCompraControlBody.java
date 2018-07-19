@@ -66,9 +66,11 @@ import com.yhaguy.domain.Proveedor;
 import com.yhaguy.domain.Recibo;
 import com.yhaguy.domain.ReciboDetalle;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.Timbrado;
 import com.yhaguy.domain.TipoMovimiento;
 import com.yhaguy.gestion.articulos.ArticuloDTO;
 import com.yhaguy.gestion.articulos.AssemblerArticulo;
+import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
 import com.yhaguy.gestion.comun.ControlLogica;
 import com.yhaguy.gestion.empresa.ctacte.AssemblerCtaCteEmpresaMovimiento;
@@ -241,7 +243,42 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		this.dto.setCambio(tipoCambio);
 	}
 	
+	@Command 
+	@NotifyChange("nvoGasto")
+	public void addGastoDetalle() {
+		this.nvoGasto.getDetalles().add(this.nvoGastoDetalle);
+		this.nvoGastoDetalle = new GastoDetalle();
+	}
 	
+	@Command 
+	@NotifyChange("nvoGasto")
+	public void openGasto(@BindingParam("comp") Popup comp, @BindingParam("parent") Component parent) {
+		Timbrado timbrado = new Timbrado();
+		timbrado.setVencimiento(Utiles.getFechaFinMes());
+		this.nvoGasto = new Gasto();
+		this.nvoGasto.setTimbrado(timbrado);
+		comp.open(parent, "after_start");
+	}
+	
+	@Command 
+	@NotifyChange("*")
+	public void addGasto() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Timbrado t = new Timbrado();
+		t.setNumero(this.nvoGasto.getTimbrado().getNumero());
+		t.setVencimiento(this.nvoGasto.getTimbrado().getVencimiento());
+		rr.saveObject(t, this.getLoginNombre());
+		this.nvoGasto.setIdImportacion(this.dto.getId());
+		this.nvoGasto.setTimbrado(t);
+		for (GastoDetalle item : this.nvoGasto.getDetalles()) {
+			this.nvoGasto.setImporteGs(this.nvoGasto.getImporteGs() + item.getMontoGs());
+			this.nvoGasto.setImporteIva10(this.nvoGasto.getImporteIva10() + item.getMontoIva());
+		}
+		rr.saveObject(this.nvoGasto, this.getLoginNombre());
+		this.nvoGasto = new Gasto();
+		// add cta cte..
+		Clients.showNotification("REGISTRO AGREGADO..");
+	}
 	
 	/************************** ELIMINAR ITEM DETALLE ORDEN COMPRA ****************************/
 	
@@ -1389,11 +1426,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 
 	@Command
 	@NotifyChange("*")
-	public void nuevaFactura(){
-		
-		if (this.operacionValidaFactura(AGREGAR_FACTURA) == false) {
-			return;
-		}
+	public void nuevaFactura() {
 		
 		try {
 			this.nvaFactura = new ImportacionFacturaDTO();
@@ -1406,7 +1439,6 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			WindowPopup w = new WindowPopup();
 			w.setModo(WindowPopup.NUEVO);
 			w.setTitulo(Configuracion.TEXTO_AGREGAR_NUEVA_FACTURA);
-			w.setCheckAC(new ValidadorNuevaFactura(this));
 			w.setWidth("400px");
 			w.setHigth("340px");
 			w.setDato(this);

@@ -182,6 +182,26 @@ public class WindowTimbrado extends SoloViewModel implements VerificaAceptarCanc
 		}			
 	}	
 	
+	// Guarda en la BD. el nuevo Timbrado
+	public Timbrado addTimbrado(MyArray timbrado, long idProveedor) {
+		try {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			Timbrado t = new Timbrado();
+			t.setNumero((String) timbrado.getPos1());
+			t.setVencimiento((Date) timbrado.getPos2());
+			rr.saveObject(t, this.getLoginNombre());
+			Proveedor p = rr.getProveedorById(idProveedor);
+			p.getTimbrados().add(t);
+			rr.saveObject(p, this.getLoginNombre());
+			timbrado.setId(t.getId());
+			return t;
+		} catch (Exception e) {
+			e.printStackTrace();
+			mensajeError(e.getMessage());
+		}
+		return null;
+	}
+	
 	/******************************************************************************************/
 	
 	private String mensajeVerificarAceptar = "";

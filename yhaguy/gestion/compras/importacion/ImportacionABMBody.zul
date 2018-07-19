@@ -585,23 +585,6 @@
 						<textbox
 							value="@load(vm.selectedImportacionFactura.fechaOriginal) @converter('formatedDate', format='dd-MM-yyyy')"
 							readonly="true" hflex="true" />
-						<space />
-						<field value="Condición:" />
-						<textbox
-							value="@load(vm.selectedImportacionFactura.condicionPago.pos1)"
-							readonly="true" hflex="true" />
-						<space />
-						<field value="Total:" />
-						<guaranibox
-							value="@load(vm.selectedImportacionFactura.totalAsignadoGs)"
-							readonly="true" hflex="true" />
-						<label value="Gs" style="font-size:11px" />
-						<space />
-						<dolarbox
-							value="@load(vm.selectedImportacionFactura.totalAsignadoDs)"
-							readonly="true" hflex="true" />
-						<label value="@load(vm.dto.moneda.pos2)"
-							style="font-size:11px" />
 
 						<!--
 							Descuento:
@@ -1103,7 +1086,7 @@
 									<hlayout sclass="button-container" style="background:#EEF7FA">
 										<button mold="bs" sclass="btn-primary btn-sm"
 											width="150px" iconSclass="z-icon-check"
-											label=" Agregar" onClick='pop_gastos.open(self, "after_start")' />
+											label=" Agregar" onClick="@command('openGasto', comp=pop_gastos, parent=self)" />
 									</hlayout>
 									<listbox sclass="small-list" vflex="true" emptyMessage="SIN REGISTROS.."
 										model="@load(vm.dto.gastos)">
@@ -1482,7 +1465,8 @@
 					<vlayout spacing="0">
 						<field value="Tipo Movimiento" />
 						<combobox placeholder="Tipo Movimiento.." hflex="true"
-							model="@load(vm.tiposMovimientoGastos)">
+							model="@load(vm.tiposMovimientoGastos)"
+							selectedItem="@bind(vm.nvoGasto.tipoMovimiento)">
 							<template name="model">
 								<comboitem label="@load(each.descripcion.toUpperCase())" />
 							</template>
@@ -1502,20 +1486,25 @@
 				<row>
 					<vlayout spacing="0">
 						<field value="Número" />
-						<textbox hflex="true"></textbox>
+						<textbox hflex="true" value="@bind(vm.nvoGasto.numeroFactura)"></textbox>
 					</vlayout>
 					<vlayout spacing="0">
 						<field value="Timbrado" />
-						<textbox hflex="true"></textbox>
+						<hlayout>
+						<textbox hflex="true"
+							style="text-align:right"
+							placeholder="Nro. Timbrado.." 
+							value="@bind(vm.nvoGasto.timbrado.numero)"/>
+					</hlayout>
 					</vlayout>
 					<vlayout spacing="0">
 						<field value="Proveedor" />
 						<bandbox id="bdx_prov" hflex="true"
-							value="@load(vm.selectedProveedor.razonSocial)">
+							value="@load(vm.nvoGasto.proveedor.razonSocial)">
 							<bandpopup>
 								<listbox sclass="small-list" width="350px" height="350px"
 									model="@load(vm.proveedores)"
-									selectedItem="@bind(vm.selectedProveedor)"
+									selectedItem="@bind(vm.nvoGasto.proveedor)"
 									onSelect='bdx_prov.close()'>
 									<listhead>
 										<listheader>
@@ -1540,38 +1529,40 @@
 			model="@load(vm.nvoGasto.detalles)">
 			<listhead>
 				<listheader label="Cuenta"></listheader>
-				<listheader label="Importe Gs." width="110px"></listheader>
+				<listheader label="Importe Gs." width="110px" align="right"></listheader>
 				<listheader label="Iva" width="100px"></listheader>
 				<listheader width="50px" align="center"></listheader>
 			</listhead>
 			<auxhead>
 				<auxheader>
 					<combobox placeholder="Cuenta.." hflex="true"
-						model="@load(vm.cuentasGastos)">
+						model="@load(vm.cuentasGastos)"
+						selectedItem="@bind(vm.nvoGastoDetalle.articuloGasto)">
 						<template name="model">
 							<comboitem label="@load(each.descripcion)"></comboitem>
 						</template>
 					</combobox>
 				</auxheader>
 				<auxheader>
-					<guaranibox hflex="true" />
+					<guaranibox value="@bind(vm.nvoGastoDetalle.montoGs)" hflex="true" />
 				</auxheader>
 				<auxheader>
 					<combobox placeholder="Iva.." hflex="true"
-						model="@load(vm.tiposIva)">
+						model="@load(vm.tiposIva)"
+						selectedItem="@bind(vm.nvoGastoDetalle.tipoIva)">
 						<template name="model">
 							<comboitem label="@load(each.descripcion)"></comboitem>
 						</template>	
 					</combobox>
 				</auxheader>
 				<auxheader>
-					<button iconSclass="z-icon-plus"></button>
+					<button iconSclass="z-icon-plus" onClick="@command('addGastoDetalle')"></button>
 				</auxheader>
 			</auxhead>
 			<template name="model">
 				<listitem>
 					<listcell label="@load(each.articuloGasto.descripcion)"></listcell>
-					<listcell label="@load(each.montoGs)"></listcell>
+					<listcell label="@load(each.montoGs) @converter(vm.cnv.monedaLocal)"></listcell>
 					<listcell label="@load(each.tipoIva.descripcion)"></listcell>
 					<listcell>
 						<a iconSclass="z-icon-times" />
@@ -1586,6 +1577,12 @@
 				<listfooter></listfooter>
 			</listfoot>
 		</listbox>
+		<div height="10px"></div>
+		<hbox width="100%" pack="end">
+			<button mold="bs" sclass="btn-sm btn-success" 
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"
+				onClick="@command('addGasto')"></button>
+		</hbox>
 	</popup>
 	</div>	
 </zk>
