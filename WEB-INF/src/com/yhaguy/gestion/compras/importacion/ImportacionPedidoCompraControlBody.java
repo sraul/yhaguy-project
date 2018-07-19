@@ -408,7 +408,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			RegisterDomain rr = RegisterDomain.getInstance();
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
-			CSV csv = new CSV(CAB, DET, PATH + this.dto.getNumeroPedidoCompra() + ".csv", ',');
+			CSV csv = new CSV(CAB, DET, PATH + this.dto.getNumeroPedidoCompra() + ".csv", ';');
 			String noEncontrado = "Códigos no encontrados: \n";
 			csv.start();
 			while (csv.hashNext()) {
@@ -452,7 +452,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			RegisterDomain rr = RegisterDomain.getInstance();
 			AssemblerArticulo ass = new AssemblerArticulo();
 			
-			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", ',');
+			CSV csv = new CSV(CAB, DET_PROFORMA, PATH + "proforma_" + this.dto.getNumeroPedidoCompra() + ".csv", ';');
 
 			csv.start();
 			while (csv.hashNext()) {
