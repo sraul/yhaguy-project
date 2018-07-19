@@ -1265,8 +1265,7 @@
 							</template>
 						</combobox>
 					</hlayout>
-					<listbox vflex="true" sclass="small-list"
-						model="@load(vm.itemsPrecioFinal)">
+					<listbox vflex="true" sclass="small-list">
 						<custom-attributes org.zkoss.zul.listbox.autoSort="true" />
 						<listhead>
 							<listheader label="Código" style="text-align:center" width="150px" sort="auto(pos1)" onCreate='self.sort(true)' />
