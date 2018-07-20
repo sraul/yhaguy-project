@@ -1585,7 +1585,6 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		WindowPopup w = new WindowPopup();
 		w.setModo(WindowPopup.NUEVO);
 		w.setDato(this);
-		w.setCheckAC(new ValidadorInsertarGastosDescuentos(this));
 		w.setTitulo("Agregar Gastos/Descuentos");
 		w.setWidth("400px");
 		w.setHigth("280px");
