@@ -1,4 +1,6 @@
 <zk>
+	<timer delay="4000" onTimer="test.setVisible(true)"></timer>
+	<div id="test" visible="false">
 	<menubar id="menubar" visible="@load(vm.menuVisible)">
 
 		<menu label=" Tesorería" iconSclass="z-icon-briefcase">
@@ -154,7 +156,7 @@
 			</menupopup>
 		</menu>
 	</menubar>
-
+	</div>
 	<style>
 		.z-menupopup { width: 300px; padding: 10px 3px 10px 3px; background:#f5f5f5 } .z-menupopup .z-menuseparator { border: none; height: 1px; width:270px; margin:10px }
 		.z-menupopup-separator {
