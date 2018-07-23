@@ -475,11 +475,16 @@
 							label=" Importar Archivo" 
 							disabled="@load(vm.dto.esNuevo() or vm.deshabilitado)"/>
 						<space />
+						<space />
+						<button mold="bs" sclass="btn-warning btn-sm"
+							width="150px" iconSclass="z-icon-plus-circle"
+							label=" Gastos/Descuentos" />
 						<button mold="bs" sclass="btn-warning btn-sm"
 							width="150px" iconSclass="z-icon-bar-chart-o"
 							onClick="@command('verComparativo')"
 							label="@load(vm.comparativo? 'Ocultar Comparativo':'Ver Comparativo')" />
 						<space />
+						
 						<button mold="bs" sclass="btn-primary btn-sm"
 							width="150px" iconSclass="z-icon-check"
 							onClick="@command('confirmarPedidoCompra')" label=" Aprobar" />
@@ -1457,7 +1462,7 @@
 				</hlayout>
 			</vlayout>
 		</popup>
-		<popup id="pop_gastos" sclass="rounded" width="800px">
+		<popup id="pop_gastos" sclass="rounded" width="900px">
 		<grid sclass="vgrid">
 			<rows>
 				<row>
@@ -1481,11 +1486,29 @@
 						<datebox hflex="true"
 							value="@bind(vm.nvoGasto.vencimiento)"></datebox>
 					</vlayout>
+					<vlayout spacing="0">
+						<field value="Moneda" />
+						<combobox model="@load(vm.monedas)" hflex="true"
+							selectedItem="@bind(vm.nvoGasto.moneda)">
+							<template name="model">
+								<comboitem label="@load(each.descripcion.toUpperCase())"/>
+							</template>
+						</combobox>
+					</vlayout>
 				</row>
 				<row>
 					<vlayout spacing="0">
+						<field value="Condición" />
+						<combobox model="@load(vm.condicionesPago)" hflex="true"
+							selectedItem="@bind(vm.nvoGasto.condicionPago)">
+							<template name="model">
+								<comboitem label="@load(each.descripcion)"></comboitem>
+							</template>
+						</combobox>
+					</vlayout>
+					<vlayout spacing="0">
 						<field value="Número" />
-						<textbox hflex="true" value="@bind(vm.nvoGasto.numeroFactura)"></textbox>
+						<textbox hflex="true" value="@bind(vm.nvoGasto.numeroFactura) @converter(vm.cnv.facturaPy)"></textbox>
 					</vlayout>
 					<vlayout spacing="0">
 						<field value="Timbrado" />
@@ -1529,6 +1552,7 @@
 			<listhead>
 				<listheader label="Cuenta"></listheader>
 				<listheader label="Importe Gs." width="110px" align="right"></listheader>
+				<listheader label="Importe U$D" width="110px" align="right" visible="@load(vm.nvoGasto.moneda.sigla ne 'Gs.')"></listheader>
 				<listheader label="Iva" width="100px"></listheader>
 				<listheader width="50px" align="center"></listheader>
 			</listhead>
@@ -1543,7 +1567,12 @@
 					</combobox>
 				</auxheader>
 				<auxheader>
-					<guaranibox value="@bind(vm.nvoGastoDetalle.montoGs)" hflex="true" />
+					<guaranibox value="@bind(vm.nvoGastoDetalle.montoGs)" hflex="true" 
+						onChange="@command('dolarizarGastoDetalle')" />
+				</auxheader>
+				<auxheader>
+					<dolarbox value="@bind(vm.nvoGastoDetalle.montoDs)" hflex="true" 
+						onChange="@command('guaranizarGastoDetalle')" />
 				</auxheader>
 				<auxheader>
 					<combobox placeholder="Iva.." hflex="true"
@@ -1562,6 +1591,7 @@
 				<listitem>
 					<listcell label="@load(each.articuloGasto.descripcion)"></listcell>
 					<listcell label="@load(each.montoGs) @converter(vm.cnv.monedaLocal)"></listcell>
+					<listcell label="@load(each.montoDs) @converter(vm.cnv.monedaExtranjera)"></listcell>
 					<listcell label="@load(each.tipoIva.descripcion)"></listcell>
 					<listcell>
 						<a iconSclass="z-icon-times" />

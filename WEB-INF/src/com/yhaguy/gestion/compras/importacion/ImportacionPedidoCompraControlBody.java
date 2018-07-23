@@ -58,6 +58,7 @@ import com.yhaguy.Configuracion;
 import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.ArticuloGasto;
+import com.yhaguy.domain.CondicionPago;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.Gasto;
 import com.yhaguy.domain.GastoDetalle;
@@ -1375,6 +1376,7 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 	/******************************** INSERTAR ITEM FACTURA ***********************************/
 
 	private ImportacionFacturaDetalleDTO nvoItem = new ImportacionFacturaDetalleDTO();		
+	private ImportacionPedidoCompraDetalleDTO nvoItemProforma = new ImportacionPedidoCompraDetalleDTO();
 
 	@Command
 	@NotifyChange("*")
@@ -3196,6 +3198,22 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 		comp.close();
 	}
 	
+	@Command
+	public void guaranizarGastoDetalle() {
+		double tc = this.dto.getResumenGastosDespacho().getTipoCambio();
+		double ds = this.nvoGastoDetalle.getMontoDs();
+		this.nvoGastoDetalle.setMontoGs(ds * tc);
+		BindUtils.postNotifyChange(null, null, this.nvoGastoDetalle, "montoGs");
+	}
+	
+	@Command
+	public void dolarizarGastoDetalle() {
+		double tc = this.dto.getResumenGastosDespacho().getTipoCambio();
+		double gs = this.nvoGastoDetalle.getMontoGs();
+		this.nvoGastoDetalle.setMontoDs(gs / tc);
+		BindUtils.postNotifyChange(null, null, this.nvoGastoDetalle, "montoDs");
+	}
+	
 	/**
 	 * GETS / SETS
 	 */
@@ -3256,6 +3274,23 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 			out += movim.getSaldo();
 		}
 		return out;
+	}
+	
+	/**
+	 * @return las monedas..
+	 */
+	public List<Tipo> getMonedas() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getTipos(Configuracion.ID_TIPO_MONEDA);
+	}
+	
+	/**
+	 * @return las condiciones..
+	 */
+	@SuppressWarnings("unchecked")
+	public List<CondicionPago> getCondicionesPago() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getObjects(CondicionPago.class.getName());
 	}
 	
 	/**
@@ -3633,6 +3668,14 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 
 	public void setNvoGastoDetalle(GastoDetalle nvoGastoDetalle) {
 		this.nvoGastoDetalle = nvoGastoDetalle;
+	}
+
+	public ImportacionPedidoCompraDetalleDTO getNvoItemProforma() {
+		return nvoItemProforma;
+	}
+
+	public void setNvoItemProforma(ImportacionPedidoCompraDetalleDTO nvoItemProforma) {
+		this.nvoItemProforma = nvoItemProforma;
 	}
 	
 	/***********************************************************************************************/
