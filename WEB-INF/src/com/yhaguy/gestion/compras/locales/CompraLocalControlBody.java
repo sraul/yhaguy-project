@@ -38,6 +38,7 @@ import com.coreweb.extras.browser.Browser;
 import com.coreweb.extras.csv.CSV;
 import com.coreweb.extras.reporte.DatosColumnas;
 import com.coreweb.util.AutoNumeroControl;
+import com.coreweb.util.Misc;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 import com.yhaguy.BodyApp;
@@ -66,6 +67,10 @@ import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 public class CompraLocalControlBody extends BodyApp {
 	
 	static final String[] DESTINATARIOS = new String[] { "sergioa@yhaguyrepuestos.com.py" };
+	
+	static final String PATH = Configuracion.pathPedidoCompra;
+	static final String[][] CAB = { { "Empresa", CSV.STRING } };
+	static final String[][] DET = { { "CODIGO", CSV.STRING }, { "CANTIDAD", CSV.STRING }, { "COSTO", CSV.STRING } };
 	
 	static final String ZUL_PRINT = "/yhaguy/gestion/compras/locales/impresion.zul";
 	static final String ZUL_IMPORTAR_PRESUP = "/yhaguy/gestion/compras/locales/importarPresupuesto.zul";
@@ -404,6 +409,23 @@ public class CompraLocalControlBody extends BodyApp {
 		}		
 	}
 	
+	@Command 
+	@NotifyChange("*")
+	public void uploadFile(@BindingParam("file") Media file) {
+		try {
+			Misc misc = new Misc();
+			String name = this.dto.getNumero();
+			boolean isText = "text/csv".equals(file.getContentType());
+			InputStream file_ = new ByteArrayInputStream(isText ? file.getStringData().getBytes() : file.getByteData());
+			misc.uploadFile(PATH, name, ".csv", file_);
+			this.csvOrdenCompra();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Clients.showNotification("Hubo un problema al intentar subir el archivo..", Clients.NOTIFICATION_TYPE_ERROR,
+					null, null, 0);
+		}
+	}
+	
 	/*********************************************************/
 	
 	
@@ -571,6 +593,49 @@ public class CompraLocalControlBody extends BodyApp {
 			this.dto.getFactura().getDetalles().removeAll(this.selectedFacturaItems);
 			this.selectedFacturaItems = null;
 		}	
+	}
+	
+	/**
+	 * csv de orden de compra..
+	 */
+	private void csvOrdenCompra() {
+		try {
+			this.dto.getDetalles().clear();
+			List<CompraLocalOrdenDetalleDTO> list = new ArrayList<CompraLocalOrdenDetalleDTO>();
+			RegisterDomain rr = RegisterDomain.getInstance();
+			
+			CSV csv = new CSV(CAB, DET, PATH + this.dto.getNumero() + ".csv", ';');
+			String noEncontrado = "Códigos no encontrados: \n";
+			csv.start();
+			while (csv.hashNext()) {
+				String codigo = csv.getDetalleString("CODIGO"); 
+				String cantidad = csv.getDetalleString("CANTIDAD");
+				String costo = csv.getDetalleString("COSTO");
+				
+				CompraLocalOrdenDetalleDTO item = new CompraLocalOrdenDetalleDTO();
+				Articulo art = rr.getArticulo(codigo);
+				if (art != null) {
+					MyArray art_ = new MyArray(art.getCodigoInterno(), "", "", art.getDescripcion());
+					art_.setId(art.getId());
+					item.setArticulo(art_);
+					item.setCantidad(Integer.parseInt(cantidad));
+					item.setCostoGs(Double.parseDouble(costo));
+					item.setIva(this.getTipoIva10());
+					list.add(item);
+				} else {
+					noEncontrado += codigo + "\n";
+				}
+			}
+			this.dto.getDetalles().addAll(list);
+			this.mensajePopupTemporal("SE IMPORTARON " + list.size() + " ÍTEMS");
+			Clients.showNotification(noEncontrado);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			Clients.showNotification(
+					"Hubo un problema al leer el archivo..",
+					Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+		}
 	}
 	
 	/**
@@ -1335,40 +1400,6 @@ public class CompraLocalControlBody extends BodyApp {
 	@NotifyChange("*")
 	public void correo() throws Exception {
 	}	
-
-	/***********************************************************************************************/	
-	
-	
-	/*************************************** UPLOAD DE ARCHIVOS CSV ********************************/
-	
-	private String nombreArchivoCSV;
-	
-	//Upload Orden Compra CSV
-	@SuppressWarnings("static-access")
-	@Command
-	public void uploadPedidoCompra(@BindingParam("file") Media file){
-		
-		if (this.dto.getDetalles().size() > 0) {
-			if (this.mensajeSiNo("Esta Orden ya tiene ítems.."
-					+ "\n Si continúa estos se reemplazarán por los ítems del archivo csv.. \n"
-					+ "\n Desea continuar..?") == false) {
-				return;
-			}
-		}
-		
-		String name = Configuracion.NRO_COMPRA_LOCAL_ORDEN + "_" + m.getIdUnique();
-		String path = Configuracion.pathOrdenCompra;
-		this.setPathCsvOrdenCompra(path + name + ".csv");
-		this.setLinkCsvImportado(Configuracion.pathOrdenCompraGenerico + name + ".csv");
-		this.nombreArchivoCSV = name;
-		
-		m.uploadFile(path, name, ".csv", (InputStream) new ByteArrayInputStream(file.getStringData().getBytes()));
-		this.csvOrdenCompra();
-		BindUtils.postNotifyChange(null, null, this, "*");
-		txNro.focus();
-	}
-	
-	/************************************************************************************************/
 	
 	
 	/**************************************** CSV ORDEN COMPRA **************************************/
@@ -1382,92 +1413,7 @@ public class CompraLocalControlBody extends BodyApp {
  	 */
 
 	private String pathCsvOrdenCompra = "";
-	private String linkCsvImportado = "";		
-	
-	public void csvOrdenCompra() {	
-		
-		// Se declaran los parametros para pasar a la clase CSV
-		String[][] cab = { { "Cliente", CSV.STRING }, { "Fecha", CSV.DATE },
-				{ "Codigo", CSV.STRING }, { "Tipo de Compra", CSV.STRING } };
-
-		String[][] cabDet = { { "codigo", CSV.STRING },
-				{ "cantidad", CSV.NUMERICO }, { "articulo", CSV.STRING },
-				{ "valor", CSV.NUMERICO }, { "total", CSV.NUMERICO } };
-
-		RegisterDomain rr = RegisterDomain.getInstance();
-		try {
-
-			CSV csv = new CSV(cab, cabDet, this.getPathCsvOrdenCompra());
-			List<CompraLocalOrdenDetalleDTO> detalles = new ArrayList<CompraLocalOrdenDetalleDTO>();
-			if (this.verificarCabeceraCSV(csv.getCabecera("Codigo")) == false) {
-				this.mensajeError("El Proveedor seleccionado es distinto al ingresado en el archivo csv.. "
-						+ "\n Favor verifique..");
-				return;
-			}
-
-			csv.start();
-			while (csv.hashNext()) {
-
-				Articulo art = rr.getArticulo(csv.getDetalleString("codigo"));	
-				MyArray articulo = null;
-
-				if (art == null) {
-					
-					if (rr.getArticuloByCodigoInterno(csv.getDetalleString("codigo")) != null) {
-						this.mensajeError("El articulo con código: " + csv.getDetalleString("codigo")
-										+ "\n no corresponde al Proveedor: " + this.dto.getProveedor().getRazonSocial()
-										+ "\n Favor verifique..");
-						return;
-					}
-					
-				} else {									
-					articulo = new MyArray();
-					articulo.setId(art.getId());
-					articulo.setPos1(art.getCodigoInterno());
-					articulo.setPos2(art.getDescripcion());
-				}				
-				
-				CompraLocalOrdenDetalleDTO d = this.nvoItemOrden(
-						articulo, csv.getDetalleDouble("cantidad"), csv.getDetalleDouble("valor"));
-				detalles.add(d);				
-			}
-			
-			this.dto.setDetalles(detalles);
-				
-			this.addEventoAgenda(ControlAgendaEvento.COTIZACION, this.dto.getNumero(),
-					0, Configuracion.TEXTO_PEDIDO_COMPRA_CSV_IMPORTADO + this.nombreArchivoCSV, this.linkCsvImportado);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			mensajeError(e.getMessage());
-		}
-	}
-	
-	
-	//El costo que recibe como parametro debe ser en Guaranies
-	private CompraLocalOrdenDetalleDTO nvoItemOrden(MyArray articulo, Double cantidad, double costoGs) throws Exception {
-
-		double costoDs = (costoGs / this.dto.getTipoCambio());
-		
-		CompraLocalOrdenDetalleDTO item = new CompraLocalOrdenDetalleDTO();
-		item.setArticulo(articulo);
-		item.setCantidad(cantidad.intValue());
-		item.setCostoGs(costoGs);
-		item.setCostoDs(costoDs);
-		item.setUltCostoGs(this.getUltimoCosto(articulo.getId(), this.dto.getTipoMovimiento()));
-		
-		return item;
-	}
-	
-	
-	// Verifica los datos de cabecera al importar el Pedido Compra CSV
-	public boolean verificarCabeceraCSV(String codigoProveedor) throws Exception {
-		boolean out = true;
-		if (this.dto.getProveedor().getCodigoEmpresa().compareTo(codigoProveedor) != 0) {
-			out = false;
-		}
-		return out;
-	}	
+	private String linkCsvImportado = "";
 	
 	
 	/***************************************** VALIDACIONES ****************************************/	
@@ -1818,6 +1764,18 @@ public class CompraLocalControlBody extends BodyApp {
 	 */
 	private MyPair getTipoIvaExenta() {
 		MyArray iva = this.getDtoUtil().getTipoIvaExento();
+		MyPair out = new MyPair();
+		out.setId(iva.getId());
+		out.setText((String) iva.getPos1());
+		out.setSigla((String) iva.getPos2());
+		return out;
+	}
+	
+	/**
+	 * @return tipo de iva 10..
+	 */
+	private MyPair getTipoIva10() {
+		MyArray iva = this.getDtoUtil().getTipoIva10();
 		MyPair out = new MyPair();
 		out.setId(iva.getId());
 		out.setText((String) iva.getPos1());
