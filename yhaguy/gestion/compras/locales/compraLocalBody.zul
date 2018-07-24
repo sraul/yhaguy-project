@@ -151,16 +151,16 @@
 								onClick="@command('insertarItemOrden', presupuesto=false)" 
 								label=" Insertar" />
 							<space />
-							<button mold="bs" upload="true, accept=.csv"
-								onUpload="@command('uploadFile', file=event.media)" width="150px"
-								height="30px" iconSclass="z-icon-upload"
-								label=" Importar Archivo" />
-							<space />
 							<button mold="bs" sclass="btn-primary btn-sm" width="120px"
 								iconSclass="z-icon-check"
 								onClick="@command('autorizarOrdenCompra')"
 								disabled="@load(vm.autorizarDisabled)" label=" Autorizar" 
 								visible="@load(vm.isOperacionHabilitada('autorizarOrdenCompra'))" />
+							<space />
+							<button mold="bs" upload="true, accept=.csv"
+								onUpload="@command('uploadFile', file=event.media)" width="150px"
+								height="30px" iconSclass="z-icon-upload"
+								label=" Importar Archivo" />
 							<space />
 							<hlayout visible="@load(vm.isOperacionHabilitada('habilitarOrdenCompra'))">
 								<field>Habilitar:</field>
