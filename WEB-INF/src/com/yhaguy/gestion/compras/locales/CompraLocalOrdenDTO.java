@@ -18,7 +18,7 @@ import com.yhaguy.gestion.empresa.ProveedorDTO;
 @SuppressWarnings("serial")
 public class CompraLocalOrdenDTO extends DTO {
 	
-	static final double MONTO_SUJETO_A_HABILITACION = 10000000;
+	static final double MONTO_SUJETO_A_HABILITACION = 900000000;
 	
 	private String numero = "...";
 	private Date fechaCreacion = new Date();

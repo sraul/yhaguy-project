@@ -3,7 +3,6 @@ package com.yhaguy.gestion.compras.locales;
 import com.coreweb.domain.Domain;
 import com.coreweb.dto.Assembler;
 import com.coreweb.dto.DTO;
-import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.CompraFiscal;
 import com.yhaguy.domain.CompraLocalFactura;
 import com.yhaguy.domain.CompraLocalFacturaDetalle;
@@ -145,10 +144,8 @@ class AssemblerCompraLocalFacturaDetalle extends Assembler{
 		this.domainToMyPair(domain, dto, "tipoDescuento");
 		this.domainToMyPair(domain, dto, "iva");
 		
-		RegisterDomain rr = RegisterDomain.getInstance();
-		Articulo art = rr.getArticuloById(dto.getArticulo().getId());
-		dto.getArticulo().setPos5(art.getArticuloFamilia().getDescripcion().toUpperCase());
-		dto.getArticulo().setPos6(art.getArticuloMarca().getDescripcion().toUpperCase());
+		dto.getArticulo().setPos5("");
+		dto.getArticulo().setPos6("");
 		
 		return dto;
 	}

@@ -1,7 +1,80 @@
 <zk>
-	<timer delay="4000" onTimer="test.setVisible(true)"></timer>
+	<timer delay="1500" onTimer="test.setVisible(true)"></timer>
 	<div id="test" visible="false">
 	<menubar id="menubar" visible="@load(vm.menuVisible)">
+	
+		<menu label="Abastecimiento" iconSclass="z-icon-shopping-cart">
+			<menupopup sclass="rounded">
+				<zk forEach="${vm.menuItem(self,'Proveedor')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'CompraLocal')}" />
+				<zk forEach="${vm.menuItem(self,'Importacion')}" />
+				<zk forEach="${vm.menuItem(self,'ImportacionSeguimiento')}" />
+				<zk	forEach="${vm.menuItem(self, 'NotaCreditoCompra', 'tipo=compra')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'OrdenPedidoGasto')}" />
+				<zk forEach="${vm.menuItem(self,'ExploradorGastos')}" />
+				<zk forEach="${vm.menuItem(self,'OrdenCompra')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'ListaPrecio')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'TesakaRetenciones')}" />
+				
+				<zk
+					forEach="${vm.menuItem(self, 'CompraDefiniciones')}" />
+			</menupopup>
+		</menu>
+		
+		<menu label="Stock" iconSclass="z-icon-archive">
+			<menupopup sclass="rounded">
+				<zk forEach="${vm.menuItem(self,'Articulo')}" />
+				<menuseparator />
+				<zk
+					forEach="${vm.menuItem(self,'TransferenciaInterna')}" />
+				<zk
+					forEach="${vm.menuItem(self,'TransferenciaExterna')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'AjusteStock')}" />
+				<zk forEach="${vm.menuItem(self,'Inventario')}" />
+				<zk forEach="${vm.menuItem(self,'RecalculoStock')}" />
+				<zk forEach="${vm.menuItem(self,'StockDefiniciones')}" />
+			</menupopup>
+		</menu>
+		
+		<menu label="Ventas" iconSclass="z-icon-tags">
+			<menupopup sclass="rounded">
+
+				<zk forEach="${vm.menuItem(self,'Cliente')}" />
+				<zk forEach="${vm.menuItem(self,'GeoLocalizacionClientes')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'VentaPresupuesto', 'tipo=presupuesto')}" />
+				<zk forEach="${vm.menuItem(self,'VentaPedido', 'tipo=pedido')}" />
+				<zk forEach="${vm.menuItem(self,'VentaFactura', 'tipo=factura')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self, 'SolicitudNotaCreditoVenta', 'tipo=solicitudNCVenta')}" />
+				<zk forEach="${vm.menuItem(self, 'NotaCreditoVenta', 'tipo=venta')}" />
+				<zk forEach="${vm.menuItem(self,'NotaDebito')}" />
+				<menuseparator />
+				<zk forEach="${vm.menuItem(self,'VentaMeta')}" />
+				<zk forEach="${vm.menuItem(self,'PreparacionPedidos')}" />
+				<zk forEach="${vm.menuItem(self,'ServicioTecnico')}" />
+				<zk forEach="${vm.menuItem(self,'ServicioTecnicoAutocentros')}" />
+				<zk forEach="${vm.menuItem(self,'ControlTalonarios')}" />
+				<zk forEach="${vm.menuItem(self,'RuteoVendedores')}" />
+				<zk forEach="${vm.menuItem(self,'VentaDefinicion', 'tab=cliente,empresa')}" />
+			</menupopup>
+		</menu>
+		
+		<menu label="Logística" iconSclass="z-icon-truck">
+			<menupopup sclass="rounded">
+
+				<zk forEach="${vm.menuItem(self,'Reparto')}" />
+				<zk forEach="${vm.menuItem(self,'PendientesReparto')}" />
+				<zk forEach="${vm.menuItem(self,'ControlCombustible')}" />
+				<menuseparator />
+				<zk	forEach="${vm.menuItem(self,'RepartoDefiniciones')}" />
+			</menupopup>
+		</menu>
 
 		<menu label=" Tesorería" iconSclass="z-icon-briefcase">
 			<menupopup sclass="rounded">
@@ -30,93 +103,8 @@
 				<zk forEach="${vm.menuItem(self,'BancoConciliacion') }" />
 				<zk forEach="${vm.menuItem(self,'LibroBanco')}" />
 			</menupopup>
-		</menu>
+		</menu>	
 
-		<menu label="Abastecimiento" iconSclass="z-icon-shopping-cart">
-			<menupopup sclass="rounded">
-				<zk forEach="${vm.menuItem(self,'Proveedor')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'CompraLocal')}" />
-				<zk forEach="${vm.menuItem(self,'Importacion')}" />
-				<zk forEach="${vm.menuItem(self,'ImportacionSeguimiento')}" />
-				<zk	forEach="${vm.menuItem(self, 'NotaCreditoCompra', 'tipo=compra')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'OrdenPedidoGasto')}" />
-				<zk forEach="${vm.menuItem(self,'ExploradorGastos')}" />
-				<zk forEach="${vm.menuItem(self,'OrdenCompra')}" />
-				<menuseparator />
-				
-				<zk forEach="${vm.menuItem(self,'TesakaRetenciones')}" />
-				
-				<zk
-					forEach="${vm.menuItem(self, 'CompraDefiniciones')}" />
-			</menupopup>
-		</menu>
-
-		<menu label="Ventas" iconSclass="z-icon-tags">
-			<menupopup sclass="rounded">
-
-				<zk forEach="${vm.menuItem(self,'Cliente')}" />
-				<zk forEach="${vm.menuItem(self,'GeoLocalizacionClientes')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'VentaPresupuesto', 'tipo=presupuesto')}" />
-				<zk forEach="${vm.menuItem(self,'VentaPedido', 'tipo=pedido')}" />
-				<zk forEach="${vm.menuItem(self,'VentaFactura', 'tipo=factura')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self, 'SolicitudNotaCreditoVenta', 'tipo=solicitudNCVenta')}" />
-				<zk forEach="${vm.menuItem(self, 'NotaCreditoVenta', 'tipo=venta')}" />
-				<zk forEach="${vm.menuItem(self,'NotaDebito')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'ListaPrecio')}" />
-				<zk forEach="${vm.menuItem(self,'VentaMeta')}" />
-				<zk forEach="${vm.menuItem(self,'PreparacionPedidos')}" />
-				<zk forEach="${vm.menuItem(self,'ServicioTecnico')}" />
-				<zk forEach="${vm.menuItem(self,'ServicioTecnicoAutocentros')}" />
-				<zk forEach="${vm.menuItem(self,'ControlTalonarios')}" />
-				<zk forEach="${vm.menuItem(self,'RuteoVendedores')}" />
-				<zk forEach="${vm.menuItem(self,'VentaDefinicion', 'tab=cliente,empresa')}" />
-			</menupopup>
-		</menu>
-
-		<menu label="Stock" iconSclass="z-icon-archive">
-			<menupopup sclass="rounded">
-				<zk forEach="${vm.menuItem(self,'Articulo')}" />
-				<menuseparator />
-				<zk
-					forEach="${vm.menuItem(self,'TransferenciaInterna')}" />
-				<zk
-					forEach="${vm.menuItem(self,'TransferenciaExterna')}" />
-				<menuseparator />
-				<zk forEach="${vm.menuItem(self,'AjusteStock')}" />
-				<zk forEach="${vm.menuItem(self,'Inventario')}" />
-				<zk forEach="${vm.menuItem(self,'RecalculoStock')}" />
-				<zk forEach="${vm.menuItem(self,'StockDefiniciones')}" />
-			</menupopup>
-		</menu>
-
-		<menu label="Logística" iconSclass="z-icon-truck">
-			<menupopup sclass="rounded">
-
-				<zk forEach="${vm.menuItem(self,'Reparto')}" />
-				<zk forEach="${vm.menuItem(self,'PendientesReparto')}" />
-				<zk forEach="${vm.menuItem(self,'ControlCombustible')}" />
-				<menuseparator />
-				<zk	forEach="${vm.menuItem(self,'RepartoDefiniciones')}" />
-			</menupopup>
-		</menu>
-
-		<menu label="RRHH" iconSclass="z-icon-user">
-			<menupopup sclass="rounded">
-
-				<zk forEach="${vm.menuItem(self,'Funcionarios')}" />
-				<zk forEach="${vm.menuItem(self,'FuncionarioCtaCte')}" />
-				<zk forEach="${vm.menuItem(self,'ComisionesVentas')}" />
-				<zk forEach="${vm.menuItem(self,'PremiosVentas')}" />
-				<menuitem label="EVALUACIÓN DEL PERSONAL" iconSclass="z-icon-caret-right"
-					disabled="true"/>
-				<zk forEach="${vm.menuItem(self,'LiquidacionSalario')}" />
-			</menupopup>
-		</menu>
 
 		<menu label="Contable" iconSclass="z-icon-bar-chart-o">
 			<menupopup sclass="rounded">
@@ -131,6 +119,19 @@
 				<menuitem label="LIBRO MAYOR" disabled="true" iconSclass="z-icon-caret-right" />
 				<menuitem label="SUMAS Y SALDOS" disabled="true" iconSclass="z-icon-caret-right" />
 				<menuitem label="BALANCE" disabled="true" iconSclass="z-icon-caret-right" />
+			</menupopup>
+		</menu>
+
+		<menu label="RRHH" iconSclass="z-icon-user">
+			<menupopup sclass="rounded">
+
+				<zk forEach="${vm.menuItem(self,'Funcionarios')}" />
+				<zk forEach="${vm.menuItem(self,'FuncionarioCtaCte')}" />
+				<zk forEach="${vm.menuItem(self,'ComisionesVentas')}" />
+				<zk forEach="${vm.menuItem(self,'PremiosVentas')}" />
+				<menuitem label="EVALUACIÓN DEL PERSONAL" iconSclass="z-icon-caret-right"
+					disabled="true"/>
+				<zk forEach="${vm.menuItem(self,'LiquidacionSalario')}" />
 			</menupopup>
 		</menu>
 

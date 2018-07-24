@@ -3,10 +3,8 @@ package com.yhaguy.gestion.compras.locales;
 import com.coreweb.domain.Domain;
 import com.coreweb.dto.Assembler;
 import com.coreweb.dto.DTO;
-import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.CompraLocalOrden;
 import com.yhaguy.domain.CompraLocalOrdenDetalle;
-import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.empresa.AssemblerProveedor;
 
 public class AssemblerCompraLocalOrden extends Assembler {
@@ -99,11 +97,8 @@ class AssemblerCompraLocalOrdenDetalle extends Assembler {
 		this.copiarValoresAtributos(domain, dto, attIguales);
 		this.domainToMyArray(domain, dto, "articulo", attArticulo);
 		this.domainToMyPair(domain, dto, "iva");
-		
-		RegisterDomain rr = RegisterDomain.getInstance();
-		Articulo art = rr.getArticuloById(dto.getArticulo().getId());
-		dto.getArticulo().setPos5(art.getArticuloFamilia().getDescripcion().toUpperCase());
-		dto.getArticulo().setPos6(art.getArticuloMarca().getDescripcion().toUpperCase());
+		dto.getArticulo().setPos5("");
+		dto.getArticulo().setPos6("");
 
 		return dto;
 	}
