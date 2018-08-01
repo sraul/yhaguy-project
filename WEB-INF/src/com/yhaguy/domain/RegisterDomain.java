@@ -5907,7 +5907,7 @@ public class RegisterDomain extends Register {
 	 * obtener depositos
 	 */
 	public List<Deposito> getDepositos() throws Exception {
-		String query = "select d from Deposito d where d.dbEstado != 'D'";
+		String query = "select d from Deposito d where d.dbEstado != 'D' order by d.orden";
 		return (List<Deposito>) this.hql(query);
 	}
 
