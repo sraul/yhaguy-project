@@ -708,7 +708,9 @@ public class MigracionCentral {
 	public static void machearArticulosSaldos() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		
-		String[] archivos = { "ARTICULO_STOCK_MCAL_TEMPORAL", "ARTICULO_STOCK_MAYORISTA", "ARTICULO_STOCK_MAYORISTA_TEMPORAL" };
+		String[] archivos = { "ARTICULO_STOCK_MINORISTA", "ARTICULO_STOCK_TEMPORAL_CENTRAL",
+				"ARTICULO_STOCK_REPOSICION_CENTRAL", "ARTICULO_STOCK_TEMPORAL_CENTRAL", "ARTICULO_STOCK_MCAL",
+				"ARTICULO_STOCK_MCAL_TEMPORAL", "ARTICULO_STOCK_MAYORISTA", "ARTICULO_STOCK_MAYORISTA_TEMPORAL" };
 		
 		for (int i = 0; i < archivos.length; i++) {
 			String src = DIR_MIGRACION + archivos[i] + ".csv"; 								
@@ -719,7 +721,7 @@ public class MigracionCentral {
 					{ "COSTO", CSV.STRING }, { "MAYORISTA", CSV.STRING }, { "DOLARES", CSV.STRING }, { "MINORISTA", CSV.STRING },
 					{ "AUTOCENTRO", CSV.STRING } };
 			
-			Deposito dep = rr.getDepositoById(i + 5);
+			Deposito dep = rr.getDepositoById(i + 1);
 			
 			CSV csv = new CSV(cab, det, src);
 			csv.start();
@@ -745,7 +747,7 @@ public class MigracionCentral {
 					
 					rr.saveObject(art, "sys");
 					rr.saveObject(ad, "sys");
-					System.out.println(codigo);
+					System.out.println(codigo + " - " + dep.getDescripcion());
 				} else {
 					System.err.println(codigo);
 				}
