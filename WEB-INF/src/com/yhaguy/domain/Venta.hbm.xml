@@ -22,9 +22,7 @@
 		<property name="numeroPedido" />	
 		<property name="numeroFactura" />
 		<property name="numeroNotaCredito" />
-		<property name="numeroReciboCobro">
-			<column name="numeroReciboCobro" default="" />
-		</property>
+		<property name="numeroReciboCobro" />
 		<property name="numeroPlanillaCaja" />
 		<property name="idEnlaceSiguiente" />
 		<property name="totalImporteGs"/>
@@ -92,13 +90,10 @@
 		<many-to-one name="modoVenta" class="com.coreweb.domain.Tipo"
 			column="idModoVenta" lazy="false" />		
 
-		<many-to-one name="reserva" class="com.yhaguy.domain.Reserva"
-			column="idreserva" lazy="false" />
-
 		<set name="formasPago" table="reciboformapago" inverse="false"
 			lazy="false" fetch="join" cascade="all">
 			<key>
-				<column name="venta" not-null="false"/>
+				<column name="id_venta" not-null="false"/>
 			</key>
 			<one-to-many entity-name="com.yhaguy.domain.ReciboFormaPago"/>
 		</set>
@@ -106,7 +101,7 @@
 		<set name="detalles" table="VentaDetalle" inverse="false"
 			lazy="false" fetch="join" cascade="all">
 			<key>
-				<column name="venta" not-null="false" />
+				<column name="id_venta" not-null="false" />
 			</key>
 			<one-to-many entity-name="com.yhaguy.domain.VentaDetalle"></one-to-many>
 		</set>

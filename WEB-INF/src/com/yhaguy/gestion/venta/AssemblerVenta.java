@@ -16,7 +16,6 @@ import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.domain.VentaDetalle;
-import com.yhaguy.domain.VentaFiscal;
 import com.yhaguy.gestion.caja.recibos.AssemblerReciboFormaPago;
 import com.yhaguy.gestion.empresa.AssemblerCliente;
 import com.yhaguy.gestion.empresa.ClienteDTO;
@@ -72,12 +71,6 @@ public class AssemblerVenta extends Assembler {
 
 		this.listaDTOToListaDomain(dto, domain, "detalles", true, true,
 				new AssemblerVentaPedidoDetalle());
-
-		// genera la venta fiscal..
-		if ((dto.esNuevo() == true)
-				&& ((dto.isFacturaContado() == true) || (dto.isFacturaCredito() == true))) {
-			this.saveVentaFiscal(dto);
-		}
 		
 		if (dto.isPedido()) {
 			EventQueues.lookup(Configuracion.EVENTO_NUEVO_PEDIDO,
@@ -135,36 +128,6 @@ public class AssemblerVenta extends Assembler {
 		out.setPos4(new MyPair(clienteDomain.getTipoCliente().getId(), null));
 
 		return out;
-	}
-
-	/**
-	 * Copia los datos de la Factura de Venta en la Clase VentaFiscal y lo graba
-	 * en la BD.. Esta informacion es con el fin de generar el libro ventas
-	 * desde una sola tabla..
-	 */
-	private void saveVentaFiscal(VentaDTO venta) throws Exception {
-
-		VentaFiscal vf = new VentaFiscal();
-		vf.setCondicion("");
-		vf.setEmision(venta.getFecha());
-		vf.setIdCliente(venta.getCliente().getId());
-		vf.setIdDeposito(venta.getDeposito().getId());
-		vf.setIdModoVenta(venta.getModoVenta().getId());
-		vf.setIdSucursal(venta.getSucursal().getId());
-		vf.setIdTipoMovimiento(venta.getTipoMovimiento().getId());
-		vf.setIdVenta(venta.getId());
-		vf.setImporteDs(venta.getTotalImporteDs());
-		vf.setImporteGs(venta.getTotalImporteGs());
-		vf.setMoneda((String) venta.getMoneda().getPos1());
-		vf.setNumero(venta.getNumero());
-		vf.setRazonSocial((String) venta.getCliente().getPos2());
-		vf.setRuc((String) venta.getCliente().getPos3());
-		vf.setSucursal(venta.getSucursal().getText());
-		vf.setTipoCambio(venta.getTipoCambio());
-		vf.setVencimiento(venta.getVencimiento());
-
-		RegisterDomain rr = RegisterDomain.getInstance();
-		rr.saveObject(vf, getLogin());
 	}
 }
 

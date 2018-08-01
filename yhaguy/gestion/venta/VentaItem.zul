@@ -115,12 +115,6 @@
 			</columns>
 			<rows>
 				<row>
-					<div></div>
-				</row>
-				<row>
-					<div></div>
-				</row>
-				<row>
 					<hlayout>
 						<space></space>
 						<label value="Cantidad:" />
@@ -131,9 +125,6 @@
 							constraint="@load(vm.constraintCantidad)"></spinner>
 						<space></space>
 					</hlayout>
-				</row>
-				<row>
-					<div></div>
 				</row>
 				<row>
 					<hlayout>
@@ -159,9 +150,6 @@
 					</hlayout>
 				</row>
 				<row>
-					<div></div>
-				</row>
-				<row>
 					<hlayout>
 						<space></space>
 						<label value="Descuento Unitario:" />
@@ -175,9 +163,6 @@
 							sclass="label-moneda" />
 						<space></space>
 					</hlayout>
-				</row>
-				<row>
-					<div></div>
 				</row>
 				<row>
 					<hlayout>
@@ -195,9 +180,6 @@
 							sclass="label-moneda" />
 						<space></space>
 					</hlayout>
-				</row>
-				<row>
-					<div></div>
 				</row>
 				<row>
 					<hlayout>

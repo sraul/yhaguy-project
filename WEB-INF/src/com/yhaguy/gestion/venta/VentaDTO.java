@@ -42,7 +42,6 @@ public class VentaDTO extends DTO {
 	private MyPair 	deposito = new MyPair();
 	private boolean reparto = false;
 	private String entrega = "";
-	private String venta = "";
 	private Date 	fecha = new Date();
 	private Date 	vencimiento = new Date();
 	private int 	cuotas = 0;
@@ -877,15 +876,6 @@ public class VentaDTO extends DTO {
 	public double getDescuentoMaximo() {
 		return descuentoMaximo;
 	}
-
-	public String getVenta() {
-		return venta;
-	}
-
-	public void setVenta(String venta) {
-		this.venta = venta;
-	}
-
 	public String getEntrega() {
 		return entrega;
 	}

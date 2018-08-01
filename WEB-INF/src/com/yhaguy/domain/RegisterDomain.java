@@ -8441,10 +8441,8 @@ public class RegisterDomain extends Register {
 	public static void main(String[] args) {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		try {			
-			List<Articulo> lps = rr.getArticulos();
-			for (Articulo art : lps) {
-				System.out.println(art.getCodigoInterno());
-			}
+			Venta vta = new Venta();
+			rr.saveObject(vta, "sys");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
