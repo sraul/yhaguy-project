@@ -19,6 +19,10 @@
 		<property name="rango_descuento_1" />
 		<property name="rango_descuento_2" />
 		<property name="rango_descuento_3" />
+		<property name="incremento_repuestos" />
+		<property name="incremento_filtros" />
+		<property name="incremento_neumaticos" />
+		<property name="incremento_lubricantes" />
 		
 		<set name="detalles" table="articulolistapreciodetalle"
 			inverse="false" lazy="false" fetch="join"

@@ -43,6 +43,9 @@
 			
 		<many-to-one name="funcionarioCargo" class="com.coreweb.domain.Tipo"
 			column="idcargo" lazy="false" />
+			
+		<many-to-one name="sucursal" class="com.yhaguy.domain.SucursalApp"
+			column="idsucursal" lazy="false" cascade="all" />
 
 		<many-to-one name="empresa" class="com.yhaguy.domain.Empresa"
 			column="idempresa" lazy="false" cascade="all" />

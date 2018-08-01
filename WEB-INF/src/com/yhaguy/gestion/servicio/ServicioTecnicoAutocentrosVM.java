@@ -13,6 +13,8 @@ import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Popup;
@@ -31,6 +33,8 @@ import com.yhaguy.domain.ServicioTecnico;
 import com.yhaguy.domain.ServicioTecnicoDetalle;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.reportes.formularios.ReportesViewModel;
+import com.yhaguy.inicio.AccesoDTO;
+import com.yhaguy.inicio.AssemblerAcceso;
 import com.yhaguy.util.Utiles;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -482,8 +486,9 @@ public class ServicioTecnicoAutocentrosVM extends SimpleViewModel {
 	 */
 	public List<String> getReceptores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		return out;
@@ -514,6 +519,24 @@ public class ServicioTecnicoAutocentrosVM extends SimpleViewModel {
 		if (this.filterFechaMM.isEmpty() && this.filterFechaDD.isEmpty())
 			return this.filterFechaAA;
 		return this.filterFechaAA + "-" + this.filterFechaMM + "-" + this.filterFechaDD;
+	}
+	
+	/**
+	 * @return el acceso..
+	 */
+	public AccesoDTO getAcceso() {
+		Session s = Sessions.getCurrent();
+		AccesoDTO out = (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
+		if (out == null) {
+			try {
+				AssemblerAcceso as = new AssemblerAcceso();
+				out = (AccesoDTO) as.obtenerAccesoDTO(Configuracion.USER_MOBILE);
+				s.setAttribute(Configuracion.ACCESO, out);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}			
+		return out;
 	}
 	
 	public ServicioTecnico getNvoServicio() {

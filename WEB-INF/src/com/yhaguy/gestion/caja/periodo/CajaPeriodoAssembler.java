@@ -34,7 +34,6 @@ import com.yhaguy.gestion.compras.gastos.subdiario.AssemblerGasto;
 import com.yhaguy.gestion.comun.ControlCuentaCorriente;
 import com.yhaguy.gestion.empresa.ctacte.ControlCtaCteEmpresa;
 import com.yhaguy.gestion.notacredito.NotaCreditoDTO;
-import com.yhaguy.gestion.notacredito.NotaCreditoDetalleDTO;
 import com.yhaguy.gestion.venta.VentaDTO;
 
 public class CajaPeriodoAssembler extends Assembler {
@@ -409,7 +408,7 @@ public class CajaPeriodoAssembler extends Assembler {
 		}		
 		
 		if (notaCredito.esNuevo() == false) {
-			this.actualizarCtaCteNotaCredito(notaCredito);
+			// actualizar cta cte nota credito..
 		}
 	}
 
@@ -474,38 +473,6 @@ public class CajaPeriodoAssembler extends Assembler {
 					importe, 0, importe, moneda, venta.getTipoMovimiento(),
 					caracterMovimiento, sucursal, "", venta.getTipoCambio());
 		}
-	}
-	
-	/**
-	 * Invoca a la API de Cta Cte para actualizar la NC..
-	 */
-	private void actualizarCtaCteNotaCredito(NotaCreditoDTO nc)
-			throws Exception {
-
-		ControlCtaCteEmpresa ctr = new ControlCtaCteEmpresa(null);
-		String siglaCaracter = Configuracion.SIGLA_CTA_CTE_CARACTER_MOV_CLIENTE;
-		MyPair caracterMovimiento = this.getCaracterMovimiento(siglaCaracter);
-
-		MyArray sucursal = new MyArray();
-		sucursal.setId(nc.getSucursal().getId());
-
-		long idEmpresa = (long) nc.getCliente().getPos4();
-		MyPair empresa = new MyPair(idEmpresa, "");
-		List<NotaCreditoDetalleDTO> items = nc.isMotivoDescuento() ? nc
-				.getDetallesFacturas() : nc.getDetallesArticulos();
-
-		boolean monedaLocal = this.isOperacionEnMonedaLocal(nc.getMoneda());
-		double importe = 0;
-
-		if (monedaLocal == true) {
-			importe = nc.getImporteGs();
-		} else {
-			importe = nc.getImporteDs();
-		}
-
-		ctr.addMovimientoNotaCredito(empresa, nc.getId(), nc.getNumero(),
-				nc.getFechaEmision(), importe, nc.getMoneda(),
-				nc.getTipoMovimiento(), caracterMovimiento, sucursal, items);
 	}
 	
 	/**

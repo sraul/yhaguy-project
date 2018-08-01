@@ -31,10 +31,23 @@ import com.yhaguy.BodyApp;
 import com.yhaguy.Configuracion;
 import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.Articulo;
+import com.yhaguy.domain.ArticuloAPI;
+import com.yhaguy.domain.ArticuloAplicacion;
+import com.yhaguy.domain.ArticuloFamilia;
+import com.yhaguy.domain.ArticuloGrupo;
+import com.yhaguy.domain.ArticuloIndicecarga;
+import com.yhaguy.domain.ArticuloLado;
+import com.yhaguy.domain.ArticuloLinea;
+import com.yhaguy.domain.ArticuloMarca;
+import com.yhaguy.domain.ArticuloModelo;
+import com.yhaguy.domain.ArticuloProcedencia;
+import com.yhaguy.domain.ArticuloSubGrupo;
+import com.yhaguy.domain.ArticuloSubLinea;
 import com.yhaguy.domain.ArticuloUbicacion;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.util.Barcode;
 
+@SuppressWarnings("unchecked")
 public class ArticuloControlBody extends BodyApp {
 	
 	static final String ZUL_ADD_PROVEEDOR = "/yhaguy/gestion/articulos/articuloProveedor.zul";
@@ -95,6 +108,7 @@ public class ArticuloControlBody extends BodyApp {
 	public void setDTOCorriente(DTO dto) {
 		this.dto = (ArticuloDTO) dto;
 		this.codigoInterno = this.dto.getCodigoInterno();
+		this.seleccionarFamilia();
 		Clients.evalJavaScript("setImage('" + this.dto.getUrlImagen_() + "')");
 	}
 
@@ -208,6 +222,7 @@ public class ArticuloControlBody extends BodyApp {
 	}
 	
 	@Command
+	@NotifyChange("*")
 	public void selectFamilia() {
 		this.seleccionarFamilia();
 	}
@@ -353,9 +368,7 @@ public class ArticuloControlBody extends BodyApp {
 	 * seleccion de familia..
 	 */
 	private void seleccionarFamilia() {
-		String flia = this.dto.getArticuloFamilia().getSigla();
-		int length = this.dto.getArticuloFamilia().getText().length();
-		String desc = this.dto.getArticuloFamilia().getText().substring(0, length - 1);
+		String flia = this.dto.getFamilia().getText();
 		switch (flia) {
 		case Articulo.FAMILIA_FILTROS:
 			this.inc_secuencia.setSrc(ZUL_SECUENCIA_FILTROS);
@@ -373,8 +386,9 @@ public class ArticuloControlBody extends BodyApp {
 			this.inc_secuencia.setSrc(ZUL_SECUENCIA_REPUESTOS);
 			break;
 		}
-		
-		this.setDescripcion_(desc.toUpperCase());
+		if (this.dto.esNuevo()) {
+			this.setDescripcion_(flia.toUpperCase());
+		}
 	}
 	
 	/**
@@ -382,7 +396,7 @@ public class ArticuloControlBody extends BodyApp {
 	 */
 	private void setDescripcion_(String descripcion) {
 		String desc = this.dto.getDescripcion();
-		if (desc.isEmpty()) {
+		if (desc.trim().isEmpty() || desc == null) {
 			this.dto.setDescripcion(descripcion);
 		} else {
 			this.dto.setDescripcion(desc + " " + descripcion);
@@ -550,6 +564,20 @@ public class ArticuloControlBody extends BodyApp {
 	}
 	
 	/**
+	 * @return las familias..
+	 */
+	public List<MyPair> getFamilias() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloFamilia> flias = rr.getObjects(ArticuloFamilia.class.getName());
+		for (ArticuloFamilia flia : flias) {
+			MyPair my = new MyPair(flia.getId().longValue(), flia.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
 	 * @return las marcas..
 	 */
 	public List<MyPair> getDatos() {
@@ -564,23 +592,154 @@ public class ArticuloControlBody extends BodyApp {
 	/**
 	 * @return las marcas..
 	 */
-	public List<MyPair> getMarcasFiltros() {
+	public List<MyPair> getMarcas() throws Exception {
 		List<MyPair> out = new ArrayList<MyPair>();
-		out.add(new MyPair(100, "TECFIL"));
-		out.add(new MyPair(100, "LANSS"));
-		out.add(new MyPair(100, "NAKATA"));
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloMarca> marcas = rr.getArticuloMarcas(this.dto.getFamilia().getText());
+		for (ArticuloMarca marca : marcas) {
+			MyPair my = new MyPair(marca.getId(), marca.getDescripcion());
+			out.add(my);
+		}
 		return out;
 	}
 	
 	/**
 	 * @return los grupos..
 	 */
-	public List<MyPair> getGrupoFiltros() {
+	public List<MyPair> getGrupos() throws Exception {
 		List<MyPair> out = new ArrayList<MyPair>();
-		out.add(new MyPair(100, "AIRE"));
-		out.add(new MyPair(100, "ACEITE"));
-		out.add(new MyPair(100, "COMBUSTIBLE"));
-		out.add(new MyPair(100, "HIDRAULICO"));
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloGrupo> grupos = rr.getObjects(ArticuloGrupo.class.getName());
+		for (ArticuloGrupo grupo : grupos) {
+			MyPair my = new MyPair(grupo.getId(), grupo.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los sub grupos..
+	 */
+	public List<MyPair> getSubGrupos() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloSubGrupo> grupos = rr.getObjects(ArticuloSubGrupo.class.getName());
+		for (ArticuloSubGrupo grupo : grupos) {
+			MyPair my = new MyPair(grupo.getId(), grupo.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return las lineas..
+	 */
+	public List<MyPair> getLineas() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloLinea> lineas = rr.getObjects(ArticuloLinea.class.getName());
+		for (ArticuloLinea linea : lineas) {
+			MyPair my = new MyPair(linea.getId(), linea.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return las sublineas..
+	 */
+	public List<MyPair> getSubLineas() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloSubLinea> lineas = rr.getObjects(ArticuloSubLinea.class.getName());
+		for (ArticuloSubLinea linea : lineas) {
+			MyPair my = new MyPair(linea.getId(), linea.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return las aplicaciones..
+	 */
+	public List<MyPair> getAplicaciones() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloAplicacion> aplicaciones = rr.getObjects(ArticuloAplicacion.class.getName());
+		for (ArticuloAplicacion aplicacion : aplicaciones) {
+			MyPair my = new MyPair(aplicacion.getId(), aplicacion.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los modelos..
+	 */
+	public List<MyPair> getModelos() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloModelo> modelos = rr.getObjects(ArticuloModelo.class.getName());
+		for (ArticuloModelo modelo : modelos) {
+			MyPair my = new MyPair(modelo.getId(), modelo.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los apis..
+	 */
+	public List<MyPair> getApis() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloAPI> apis = rr.getObjects(ArticuloAPI.class.getName());
+		for (ArticuloAPI api : apis) {
+			MyPair my = new MyPair(api.getId(), api.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return las procedencias..
+	 */
+	public List<MyPair> getProcedencias() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloProcedencia> procedencias = rr.getObjects(ArticuloProcedencia.class.getName());
+		for (ArticuloProcedencia procedencia : procedencias) {
+			MyPair my = new MyPair(procedencia.getId(), procedencia.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los indices de carga..
+	 */
+	public List<MyPair> getIndiceCargas() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloIndicecarga> indices = rr.getObjects(ArticuloIndicecarga.class.getName());
+		for (ArticuloIndicecarga indice : indices) {
+			MyPair my = new MyPair(indice.getId(), indice.getDescripcion());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los lados..
+	 */
+	public List<MyPair> getLados() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<ArticuloLado> lados = rr.getObjects(ArticuloLado.class.getName());
+		for (ArticuloLado lado : lados) {
+			MyPair my = new MyPair(lado.getId(), lado.getDescripcion());
+			out.add(my);
+		}
 		return out;
 	}
 	

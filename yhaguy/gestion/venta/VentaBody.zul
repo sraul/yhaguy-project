@@ -34,18 +34,7 @@
 						<textbox value="@load(vm.dto.sucursal.text)"
 							readonly="true" 
 							hflex="true"/>
-					</vlayout>
-					<vlayout spacing="0">
-						<field value="Depósito" />
-						<combobox model="@load(vm.depositosSucursal)"
-							value="@load(vm.dto.deposito.text)"
-							selectedItem="@bind(vm.dto.deposito)"
-							hflex="true">
-							<template name="model">
-								<comboitem label="@load(each.text)"/>
-							</template>
-						</combobox>
-					</vlayout>
+					</vlayout>					
 					<vlayout spacing="0">
 						<field value="Estado" />
 						<hlayout>
@@ -58,18 +47,26 @@
 						</hlayout>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Atendido por" />
-						<textbox readonly="true"
-							value="@load(vm.dto.atendido.pos1)" 
-							hflex="true"/>
+						<field value="Rubro" />
+						<textbox 
+							value="@load(vm.dto.empresa.rubro.descripcion)"
+							placeholder="Rubro Cliente.."
+							readonly="true" hflex="true" />
+					</vlayout>
+					<vlayout spacing="0">
+						<field value="Descuento máximo s/Lista %" />
+						<guaranibox 
+							placeholder="Descuento máximo por artículo.."
+							readonly="true" hflex="true" 
+							value="@load(vm.dto.descuentoMaximo)" />
 					</vlayout>
 				</row>
 				<row>
-					<cell colspan="5">
+					<cell colspan="4">
 						<vlayout>
 							<div />
 							<field value="Cliente" />
-							<hlayout valign="top">
+							<hlayout valign="top" visible="@load(vm.dto.detalles_.size() eq 0)">
 								<buscadorCliente value="@bind(vm.dto)"
 									campo="ruc" width="100px"
 									readonly="@load(!vm.clienteEditable)" 
@@ -88,8 +85,34 @@
 									tooltiptext="@load(vm.addClienteOcasionalIcono[1])"/>
 								<div width="5px"/>
 							</hlayout>
+							<hlayout valign="top" visible="@load(vm.dto.detalles_.size() ne 0)">
+								<textbox value="@load(vm.dto.cliente.pos3)" readonly="true"></textbox>
+								<textbox value="@load(vm.dto.cliente.pos2)" readonly="true" hflex="true"></textbox>
+								<textbox value="@load(vm.dto.cliente.pos2)" readonly="true" hflex="true"></textbox>
+							</hlayout>
 						</vlayout>
 					</cell>
+					<hlayout valign="top">
+						<vlayout spacing="0"
+							visible="@load(vm.dto.detalles_.size() eq 0)" hflex="true">
+							<field value="Depósito" />
+							<combobox
+								model="@load(vm.depositos)"
+								value="@load(vm.dto.deposito.text)"
+								selectedItem="@bind(vm.dto.deposito)" hflex="true">
+								<template name="model">
+									<comboitem label="@load(each.text)" />
+								</template>
+							</combobox>
+						</vlayout>
+						<vlayout spacing="0"
+							visible="@load(vm.dto.detalles_.size() ne 0)" hflex="true">
+							<field value="Depósito" />
+							<textbox value="@load(vm.dto.deposito.text)"
+								hflex="true" readonly="true">
+							</textbox>
+						</vlayout>
+					</hlayout>
 					<vlayout spacing="0">
 						<field value="Condición" />
 						<combobox
@@ -107,21 +130,52 @@
 							readonly="true" 
 							visible="@load(vm.dto.clienteOcasional eq null ? 'false' : 'true')"/>
 					</vlayout>
-					<vlayout spacing="0">
-						<field value="Vendedor" />
-						<hlayout>
-							<textbox value="@bind(vm.dto.vendedor.pos1)"
-								onOK="@command('buscarVendedor')" placeholder="Nombre.."
-								readonly="@load(!vm.clienteEditable)" 
-								hflex="true"/>
-							<button								
-								iconSclass="z-icon-search"
-								onClick="@command('buscarVendedor')"
-								disabled="@load(!vm.clienteEditable)" />
-						</hlayout>
-					</vlayout>
+					<hlayout valign="top">
+						<vlayout spacing="0"
+							visible="@load(vm.dto.detalles_.size() eq 0)" hflex="true">
+							<field value="Vendedor" />
+							<combobox hflex="true"
+								placeholder="Vendedor.." model="@load(vm.vendedores_)"
+								selectedItem="@bind(vm.dto.vendedor_)"
+								value="@load(vm.dto.vendedor_.pos1)" instant="true">
+								<template name="model">
+									<comboitem
+										label="@load(each.pos1)">
+									</comboitem>
+								</template>
+							</combobox>
+						</vlayout>
+						<vlayout spacing="0"
+							visible="@load(vm.dto.detalles_.size() ne 0)" hflex="true">
+							<field value="Vendedor" />
+							<textbox
+								value="@load(vm.dto.vendedor_.pos1)" hflex="true"
+								readonly="true">
+							</textbox>
+						</vlayout>
+					</hlayout>
 				</row>
 				<row>
+					<vlayout spacing="0">
+						<field value="Entrega" />
+						<combobox hflex="true" model="@load(vm.tipoEntregas)"
+							selectedItem="@bind(vm.dto.entrega)"
+							instant="true"
+							value="@load(vm.dto.entrega)"
+							onChange="@command('setReparto')">
+							<template name="model">
+								<comboitem label="@load(each)" />
+							</template>
+						</combobox>
+					</vlayout>
+					<cell colspan="2">
+						<vlayout>
+							<div />
+							<field value="Observación" />
+							<textbox value="@bind(vm.dto.observacion)"
+								hflex="true" />
+						</vlayout>
+					</cell>
 					<vlayout spacing="0">
 						<field value="Línea de Crédito" />
 						<hlayout>
@@ -156,22 +210,9 @@
 						</hlayout>
 					</vlayout>
 					<vlayout spacing="0">
-						<field value="Envío por Reparto?" />
-						<checkbox checked="@bind(vm.dto.reparto)" />
-					</vlayout>
-					<cell colspan="2">
-						<vlayout>
-							<div />
-							<field value="Observación" />
-							<textbox value="@bind(vm.dto.observacion)"
-								hflex="true" />
-						</vlayout>
-					</cell>
-					<vlayout spacing="0" visible="@load(vm.presupuesto)">
-						<field value="Validéz" />
+						<field value="Atendido Por" />
 						<hlayout>
-							<spinner value="@bind(vm.dto.validez)"></spinner>
-							<label value="Días"></label>
+							<textbox value="@bind(vm.dto.atendido.pos1)" hflex="true" readonly="true"></textbox>
 						</hlayout>						
 					</vlayout>
 				</row>
@@ -409,6 +450,9 @@
 		
 		<style>
 			.small-font {font-size:11px}
+			.z-textbox:focus, .z-doublebox:focus, .z-spinner-input:focus, .z-combobox-input:focus {
+    		background: #f0ad4e none;
+			}
 		</style>
 		
 	</window>

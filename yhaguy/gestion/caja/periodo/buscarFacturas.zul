@@ -45,7 +45,7 @@
 						</listbox>						
 					</hlayout>
 				</listcell>
-				<listcell label="@load(each.vendedor.pos1)" />
+				<listcell label="@load(each.vendedor_.pos1)" />
 				<listcell>
 					<hlayout>
 						<label value="@load(each.condicionPago.pos1)"

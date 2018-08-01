@@ -99,6 +99,14 @@ public class NotaCreditoDTO extends DTO {
 				.getDetallesArticulos();
 	}
 	
+	@DependsOn("detalles")
+	public String getNumeroFactura() {
+		if (this.getDetallesFacturas().size() == 0) {
+			return "- - -";
+		}
+		return (String) this.getDetallesFacturas().get(0).getVenta().getPos2();
+	}
+	
 	/**
 	 * @return el total del iva..
 	 */

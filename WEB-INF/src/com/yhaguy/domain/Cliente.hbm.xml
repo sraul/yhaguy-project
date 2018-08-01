@@ -14,6 +14,15 @@
 		<property name="idPersonaJedi" />
 		<property name="prioridad" />
 		<property name="completo" />
+		
+		<property name="descuentoBaterias" />
+		<property name="descuentoCubiertas" />
+		<property name="descuentoFiltros" />
+		<property name="descuentoLubricantes" />
+		<property name="descuentoRepuestos" />
+		
+		<property name="departamento" />
+		<property name="ciudad" />
 
 		<property name="observaciones" column="observaciones" type="text" length="1000" />
 
@@ -43,6 +52,9 @@
 			
 		<many-to-one name="cobrador" class="com.yhaguy.domain.Funcionario"
 			column="idCobrador" lazy="false" />
+			
+		<many-to-one name="vendedor" class="com.yhaguy.domain.Vendedor"
+			column="id_vendedor" lazy="false" />
 		
 		<set name="contactosInternos" table="contactoInterno" inverse="false"
 			lazy="false" fetch="join" cascade="all">

@@ -2,7 +2,9 @@ package com.yhaguy.gestion.venta.listaprecio;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -23,6 +25,7 @@ import com.coreweb.extras.reporte.DatosColumnas;
 import com.coreweb.util.MyArray;
 import com.yhaguy.Configuracion;
 import com.yhaguy.domain.Articulo;
+import com.yhaguy.domain.ArticuloFamilia;
 import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.ArticuloListaPrecioDetalle;
 import com.yhaguy.domain.ImportacionFacturaDetalle;
@@ -48,6 +51,7 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	private List<MyArray> detalles = new ArrayList<MyArray>();
 	
 	private Proveedor selectedProveedor;
+	private ArticuloFamilia selectedFamilia;
 	
 	private String filterCodigo = "";
 	private String filterImportacion = "";
@@ -55,9 +59,18 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	
 	private int listaPrecioSize = 0;
 	private int listaDetalleSize = 0;
-
+	
+	private double incrementoMayorista = 0;
+	private double incrementoMinorista = 0;
+	private double incrementoLista = 0;
+	
 	@Init(superclass = true)
 	public void init() {	
+		try {
+			this.selectFamilia();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}	
 	
 	@AfterCompose(superclass = true)
@@ -114,6 +127,35 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 	public void selectImportacion(@BindingParam("comp") Bandbox comp) throws Exception {
 		this.selectImportacion_();
 		comp.close();
+	}
+	
+	@Command
+	public void updateItem(@BindingParam("item") MyArray item) {
+		double costo = (double) item.getPos5();
+		double precio = (double) item.getPos8();
+		double minorista = precio * this.incrementoMinorista;
+		double lista = minorista / this.incrementoLista;
+		item.setPos9(Utiles.obtenerPorcentajeDelValor((precio - costo), costo));
+		item.setPos10(minorista);
+		item.setPos11(lista);
+		BindUtils.postNotifyChange(null, null, item, "pos9");
+		BindUtils.postNotifyChange(null, null, item, "pos10");
+		BindUtils.postNotifyChange(null, null, item, "pos11");
+	}
+	
+	@Command
+	public void confirmarPrecios() throws Exception {
+		if (!this.mensajeSiNo("Esta seguro de confirmar los precios..")) return;
+		this.confirmarPrecios_();
+	}
+	
+	/**
+	 * set familia repuestos..
+	 */
+	private void selectFamilia() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ArticuloFamilia flia = rr.getArticuloFamilia("REPUESTOS");
+		this.selectedFamilia = flia;
 	}
 	
 	/**
@@ -249,23 +291,54 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		ImportacionPedidoCompra imp = rr.getImportacionPedidoCompraById((long) this.selectedImportacion[0]);
 		for (ImportacionFacturaDetalle det : imp.getImportacionFactura_().get(0).getDetalles()) {
+			double costoGs = det.getCostoDs() * imp.getResumenGastosDespacho().getTipoCambio();
+			double incrementoGs = costoGs * imp.getResumenGastosDespacho().getCoeficiente();
+			double incrementoDs = det.getCostoDs() * imp.getResumenGastosDespacho().getCoeficiente();
+			double costoFinalGs = costoGs + incrementoGs;
+			double precioFinalGs = costoFinalGs * this.incrementoMayorista;
+			double precioFinalGs_ = this.redondearPrecio(Utiles.getRedondeo(precioFinalGs));
+			double minoristaGs = precioFinalGs_ * this.incrementoMinorista;
+			double listaGs = minoristaGs / this.incrementoLista;
+			double listaGs_ = this.redondearPrecio(Utiles.getRedondeo(listaGs));
 			MyArray my = new MyArray();
-			my.setId(det.getArticulo().getId());
+			my.setId(det.getId());
 			my.setPos1(imp.getNumeroPedidoCompra());
 			my.setPos2(det.getArticulo().getCodigoInterno());
 			my.setPos3(det.getArticulo().getCostoGs());
-			my.setPos4(det.getCostoDs());
-			my.setPos5(det.getCostoGs());
+			my.setPos4(det.getCostoDs() + incrementoDs);
+			my.setPos5(costoFinalGs);
 			my.setPos6(det.getArticulo().getPrecioGs());
-			my.setPos7(det.getCostoGs() * 1.60);
-			my.setPos8(det.getCostoGs() * 1.60);
+			my.setPos7(precioFinalGs_);
+			my.setPos8(precioFinalGs_);
+			my.setPos9(Utiles.obtenerPorcentajeDelValor((precioFinalGs_ - costoFinalGs), costoFinalGs));
+			my.setPos10(minoristaGs);
+			my.setPos11(listaGs_);
 			this.detalles.add(my);
 		}
 	}
 	
 	/**
-	 * @return las listas de precio..
+	 * @return el precio redondeado..
 	 */
+	private double redondearPrecio(double precioGs) {
+		int lenght = String.valueOf(new Double(precioGs).intValue()).length();		
+		switch (lenght) {
+		case 4:
+			return this.redondear100(precioGs);
+			
+		case 5:
+			return this.redondear500(precioGs);
+			
+		case 6:
+			return this.redondear1000(precioGs);
+			
+		case 7:
+			return this.redondear5000(precioGs);
+		}		
+		return precioGs;
+	}
+	
+	@DependsOn("selectedFamilia")
 	public List<MyArray> getListasDePrecio() throws Exception {
 		List<MyArray> out = new ArrayList<MyArray>();
 		RegisterDomain rr = RegisterDomain.getInstance();
@@ -281,17 +354,54 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 			my.setPos6(item.getDesde());
 			my.setPos7(item.getHasta());
 			my.setPos8(item.getFormula());
-			my.setPos9(item.getAuxi());
+			my.setPos9(item.getIncremento(this.selectedFamilia.getDescripcion()));
 			my.setPos10(item.getOrden());
 			my.setPos11("LISTA - " + item.getOrden());
 			my.setPos12("" + item.getRango_descuento_1() + "%");
 			my.setPos13("" + item.getRango_descuento_2() + "%");
 			my.setPos14("" + item.getRango_descuento_3() + "%");
 			out.add(my);
+			if (item.getDescripcion().equals("MAYORISTA")) {
+				this.incrementoMayorista = (double) my.getPos9();
+			}
+			if (item.getDescripcion().equals("MINORISTA")) {
+				this.incrementoMinorista = (double) my.getPos9();
+			}
+			if (item.getDescripcion().equals("LISTA")) {
+				this.incrementoLista = (double) my.getPos9();
+			}
+		}
+		if (this.selectedImportacion != null) {
+			this.selectImportacion_();
 		}
 		this.listaPrecioSize = out.size();
 		BindUtils.postNotifyChange(null, null, this, "listaPrecioSize");
+		BindUtils.postNotifyChange(null, null, this, "detalles");
 		return out;
+	}
+	
+	/**
+	 * confirmacion de precios..
+	 */
+	private void confirmarPrecios_() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ImportacionPedidoCompra imp = rr.getImportacionPedidoCompraById((long) this.selectedImportacion[0]);
+		Map<Long, Double> mayoristas = new HashMap<Long, Double>();
+		Map<Long, Double> minoristas = new HashMap<Long, Double>();
+		Map<Long, Double> listas = new HashMap<Long, Double>();
+		for (MyArray item : this.detalles) {
+			mayoristas.put(item.getId(), (Double) item.getPos8());
+			minoristas.put(item.getId(), (Double) item.getPos10());
+			listas.put(item.getId(), (Double) item.getPos11());
+			System.out.println(item.getPos1());
+		}
+		for (ImportacionFacturaDetalle det : imp.getImportacionFactura_().get(0).getDetalles()) {
+			det.setPrecioFinalGs(mayoristas.get(det.getId()));
+			det.setMinoristaGs(minoristas.get(det.getId()));
+			det.setListaGs(listas.get(det.getId()));
+		}
+		rr.saveObject(imp, this.getLoginNombre());
+		Clients.showNotification("PRECIOS CONFIRMADOS..");
 	}
 	
 	/**
@@ -415,6 +525,44 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 		return rr.getImportaciones(this.filterImportacion);
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<ArticuloFamilia> getFamilias() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getObjects(ArticuloFamilia.class.getName());
+	}
+	
+	private double redondear100(double valor) {
+		String valorEntero = String.valueOf(new Double(valor).intValue());
+		String digitos = valorEntero.substring(valorEntero.length() - 2, valorEntero.length());
+		double digitos_ = Double.parseDouble(digitos);
+		return valor + (100 - digitos_);
+	}
+	
+	private double redondear500(double valor) {
+		String valorEntero = String.valueOf(new Double(valor).intValue());
+		String digitos = valorEntero.substring(valorEntero.length() - 3, valorEntero.length());
+		double digitos_ = Double.parseDouble(digitos);
+		double redondeo = 500 - digitos_;
+		if(redondeo < 0) redondeo = 500 - (redondeo * -1);
+		return valor + redondeo;
+	}
+
+	private double redondear1000(double valor) {
+		String valorEntero = String.valueOf(new Double(valor).intValue());
+		String digitos = valorEntero.substring(valorEntero.length() - 3, valorEntero.length());
+		double digitos_ = Double.parseDouble(digitos);
+		return valor + (1000 - digitos_);
+	}
+	
+	private double redondear5000(double valor) {
+		String valorEntero = String.valueOf(new Double(valor).intValue());
+		String digitos = valorEntero.substring(valorEntero.length() - 4, valorEntero.length());
+		double digitos_ = Double.parseDouble(digitos);
+		double redondeo = 5000 - digitos_;
+		if(redondeo < 0) redondeo = 5000 - (redondeo * -1);
+		return valor + redondeo;
+	}
+	
 	private AccesoDTO getAcceso() {
 		Session s = Sessions.getCurrent();
 		return (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
@@ -490,6 +638,14 @@ public class VentaListaPrecioViewModel extends SimpleViewModel {
 
 	public void setDetalles(List<MyArray> detalles) {
 		this.detalles = detalles;
+	}
+
+	public ArticuloFamilia getSelectedFamilia() {
+		return selectedFamilia;
+	}
+
+	public void setSelectedFamilia(ArticuloFamilia selectedFamilia) {
+		this.selectedFamilia = selectedFamilia;
 	}
 }
 

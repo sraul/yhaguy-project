@@ -19,7 +19,9 @@ import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Doublebox;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Longbox;
+import org.zkoss.zul.Spinner;
 import org.zkoss.zul.Window;
 
 import com.coreweb.componente.BuscarElemento;
@@ -48,6 +50,19 @@ import com.yhaguy.util.Utiles;
 
 public class VentaItemControl extends SoloViewModel {
 	
+	public static final long ID_SUC_PRINCIPAL = 2;
+	
+	private String codInterno = "";
+	private String codOriginal = "";
+	private String codProveedor = "";
+	private String descripcion = "";
+	
+	private long stock = 0;
+	
+	private Articulo selectedItem;
+	
+	private List<MyArray> existencia;
+	
 	static final String[] ATRIBUTOS = new String[] { "articulo.codigoInterno",
 			"articulo.codigoProveedor", "articulo.codigoOriginal",
 			"articulo.descripcion", "stock", "articulo.id" };
@@ -66,6 +81,12 @@ public class VentaItemControl extends SoloViewModel {
 	
 	@Wire
 	private Doublebox dbxPrecio;
+	
+	@Wire
+	private Listbox listArt;
+	
+	@Wire
+	private Spinner sp_cant;
 
 	private VentaDetalleDTO det;
 	private VentaDTO dto;
@@ -143,12 +164,11 @@ public class VentaItemControl extends SoloViewModel {
 
 		wp = new WindowPopup();
 		wp.setDato(this);
-		wp.setCheckAC(new ValidadorVentaPedidoItem(this.det, this.cantInicial,
-				this.tipo));
+		wp.setCheckAC(new ValidadorVentaPedidoItem(this.det, this.cantInicial, this.tipo));
 		wp.setModo(modo);
 		wp.setTitulo("Ítem de Venta");
-		wp.setWidth("600px");
-		wp.setHigth("550px");
+		wp.setWidth("100%");
+		wp.setHigth("80%");
 		wp.show(Configuracion.VENTA_ITEM_ZUL);
 	}
 
@@ -298,32 +318,27 @@ public class VentaItemControl extends SoloViewModel {
 		} else {
 			this.setPrecioVenta();
 		}
-		this.det.setDescuentoPorcentaje(0);
+		if (this.det.isListaPrecioMayorista()) {
+			this.det.setDescuentoPorcentaje(0);
+		} else {
+			this.det.setDescuentoPorcentaje(this.dto.getDescuentoMaximo());
+		}		
 		this.det.setDescuentoUnitarioGs(0);
+		this.updateDescuento();
 		
 		// verifica si se habilito el precio minimo..
 		double precioMinimo = this.getPrecioMinimo();
 		if(precioMinimo > 0)
 			this.det.setPrecioMinimoGs(precioMinimo);		
-		this.dbxPrecio.focus();
 	}
 	
 	/**
 	 * setea el precio de venta..
 	 */
-	private void setPrecioVenta() throws Exception {
-		double costo = this.getCostoArticulo();
-		int margen = (int) this.det.getListaPrecio().getPos2();
-		int margenMin = Configuracion.PORCENTAJE_RENTABILIDAD_MINIMA;
-		double ganancia = this.m.obtenerValorDelPorcentaje(costo, margen);
-		double gananciaMin = this.m.obtenerValorDelPorcentaje(costo, margenMin);
-		double porcIva = 10;
-		double iva = this.m.obtenerValorDelPorcentaje((costo + ganancia),
-				porcIva);
-		double ivaMin = this.m.obtenerValorDelPorcentaje((costo + gananciaMin),
-				porcIva);
-		this.det.setPrecioGs(costo + ganancia + iva);
-		this.det.setPrecioMinimoGs(costo + gananciaMin + ivaMin);
+	private void setPrecioVenta() throws Exception {		
+		this.det.setPrecioGs(this.getPrecioArticulo((String) this.det.getListaPrecio().getPos1()));
+		this.det.setPrecioMinimoGs(this.det.getPrecioGs());
+		this.getListasDePrecioHabilitadas().get(0).setPos3(this.det.getPrecioGs());
 	}
 	
 	/**
@@ -398,6 +413,22 @@ public class VentaItemControl extends SoloViewModel {
 	}
 	
 	/**
+	 * @return el precio del articulo..
+	 */
+	private double getPrecioArticulo(String listaPrecio) throws Exception {
+		Articulo art = this.selectedItem;
+		switch (listaPrecio) {
+			case ArticuloListaPrecio.LISTA:
+				return art.getPrecioListaGs();
+			case ArticuloListaPrecio.MAYORISTA:
+				return art.getPrecioGs();
+			case ArticuloListaPrecio.MINORISTA:
+				return art.getPrecioMinoristaGs();
+		}
+		return art.getPrecioListaGs();
+	}
+	
+	/**
 	 * @return el precio minimo habilitado..
 	 */
 	private double getPrecioMinimo() throws Exception {
@@ -461,6 +492,16 @@ public class VentaItemControl extends SoloViewModel {
 		return "Historial de Ventas - Cliente: " + this.cliente.getPos2();
 	}
 	
+	public String getConstraint() throws Exception {
+		return "min 0 max " + Utiles.getNumberFormat(this.det.isListaPrecioMayorista() ? 5.0 : this.dto.getDescuentoMaximo());
+	}
+	
+	@DependsOn("selectedItem")
+	public String getConstraintCantidad() throws Exception {
+		if(this.selectedItem == null) return "min 0 max 0";
+		return "min 0 max " + this.getStock(this.selectedItem.getId(), this.dto.getDeposito().getId());
+	}
+	
 	/******************************** DESCUENTO *********************************/
 	
 	private Converter<Double, Double, Component> convert = new DescuentoConverter();
@@ -498,10 +539,24 @@ public class VentaItemControl extends SoloViewModel {
 		this.descontar(this.det.getDescuentoUnitarioGs(), porcDescuento, cmp);
 	}
 	
-	/****************************************************************************/
+	@Command @NotifyChange("*") 
+	public void updateDescuento() {
+		double precio = this.det.getPrecioGs();
+		double porcDescuento = this.det.getDescuentoPorcentaje();
+		this.det.setDescuentoUnitarioGs(Utiles.obtenerValorDelPorcentaje(precio, porcDescuento));
+	}
 	
-	
-	/********************************** UTILES **********************************/
+	@Command
+	@NotifyChange({ "existencia", "stock", "det", "listasDePrecioHabilitadas", "selectedItem" })
+	public void obtenerValores() throws Exception {
+		MyArray art = new MyArray(this.selectedItem.getCodigoInterno());
+		art.setId(this.selectedItem.getId());
+		this.det.setArticulo(art);
+		this.det.setDescripcion(this.selectedItem.getDescripcion());
+		this.obtenerPrecioVenta();
+		this.obtenerExistencia();
+		this.sp_cant.focus();
+	}
 	
 	@Command 
 	@NotifyChange("*")
@@ -532,6 +587,14 @@ public class VentaItemControl extends SoloViewModel {
 		}
 		this.obtenerPrecioVenta();
 		this.dbxPrecio.focus();
+	}
+	
+	/**
+	 * obtiene el stock..
+	 */
+	private void obtenerExistencia() throws Exception {
+		long idArticulo = this.selectedItem.getId();
+		this.existencia = this.getExistencia(idArticulo);
 	}
 	
 	/**
@@ -581,12 +644,16 @@ public class VentaItemControl extends SoloViewModel {
 				out = false;
 			}
 			
-			//verifica disponibilidad de stock si se esta insertando..
-			if ((this.tipo.compareTo(VentaControlBody.TIPO_PEDIDO) == 0) 
-					&& (this.item.esNuevo() == true)
-						&& (this.item.getCantidad() > this.item.getStockDisponible())) {
-				this.mensajeError += "\n - Stock insuficiente, favor verifique..";
-				out = false;
+			try {
+				//verifica disponibilidad de stock si se esta insertando..
+				if ((this.tipo.compareTo(VentaControlBody.TIPO_PEDIDO) == 0) 
+						&& (this.item.esNuevo() == true)
+							&& (this.item.getCantidad() > getStock(this.item.getArticulo().getId(), dto.getDeposito().getId()))) {
+					this.mensajeError += "\n - Stock insuficiente, favor verifique..";
+					out = false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			
 			//verifica la disponibilidad de stock si se esta modificando..
@@ -642,6 +709,43 @@ public class VentaItemControl extends SoloViewModel {
 	 */
 	
 	/**
+	 * @return los precios del articulo..
+	 */
+	private List<MyArray> getExistencia(long idArticulo) throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		this.stock = 0;
+		
+		for (MyPair dep : this.getDepositos()) {
+			MyArray my = new MyArray();
+			my.setPos1(dep.getText());
+			my.setPos2(this.getStock(idArticulo, dep.getId()));
+			out.add(my);
+			this.stock += (long) my.getPos2();
+		}		
+		return out;
+	}
+	
+	/**
+	 * @return el stock del articulo..
+	 */
+	private long getStock(long idArticulo, long idDeposito) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		ArticuloDeposito adp = rr.getArticuloDeposito(idArticulo, idDeposito);
+		if(adp == null)
+			return 0;
+		return adp.getStock();
+	}
+	
+	/**
+	 * @return los depositos de la sucursal..
+	 */
+	private List<MyPair> getDepositos() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		out.add(this.dto.getDeposito());
+		return out;
+	}
+	
+	/**
 	 * @return las listas de precio..
 	 * pos1:descripcion
 	 * pos2:margen
@@ -666,6 +770,65 @@ public class VentaItemControl extends SoloViewModel {
 	public List<MyArray> getListasDePrecioHabilitadas() throws Exception {
 		List<MyArray> out = new ArrayList<MyArray>();
 		out.add(this.det.getListaPrecio());
+		return out;
+	}
+	
+	/**
+	 * @return los descuentos..
+	 */
+	public List<Double> getDescuentos() throws Exception {
+		return this.det.isListaPrecioMayorista() ? this.getDescuentosMayorista() : this.getDescuentosLista();
+	}
+	
+	/**
+	 * @return los descuentos lista..
+	 */
+	public List<Double> getDescuentosLista() throws Exception {
+		double maxDescuento = this.dto.getDescuentoMaximo();
+		Double[] descs = { 0.0, 10.0, 15.0, 20.0, 25.0, 30.0, 35.0 };
+		List<Double> out = new ArrayList<Double>();
+		for (int i = 0; i < descs.length; i++) {
+			if (descs[i].doubleValue() <= maxDescuento) {
+				out.add(descs[i]);
+			}
+		}
+		return out;
+	}
+	
+	/**
+	 * @return los descuentos mayoristas..
+	 */
+	public List<Double> getDescuentosMayorista() throws Exception {
+		List<Double> out = new ArrayList<Double>();
+		out.add(0.0);
+		out.add(1.0);
+		out.add(2.0);
+		out.add(3.0);
+		out.add(4.0);
+		out.add(5.0);
+		return out;
+	}
+	
+	@DependsOn({ "codInterno", "codOriginal", "codProveedor", "descripcion" })
+	public List<Articulo> getArticulos() {
+		List<Articulo> out = new ArrayList<Articulo>();
+		
+		if (this.codInterno.isEmpty() && this.codOriginal.isEmpty()
+				&& this.codProveedor.isEmpty() && this.descripcion.isEmpty())
+			return new ArrayList<Articulo>();
+
+		try {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			List<Articulo> arts = rr.getArticulos(this.codInterno,
+					this.codOriginal, this.codProveedor, this.descripcion);
+			out = arts;
+			
+		} catch (Exception e) {
+			return new ArrayList<Articulo>();
+		}		
+		if (out.size() > 0) {
+			this.selectedItem = out.get(0);
+		}
 		return out;
 	}
 	
@@ -724,6 +887,62 @@ public class VentaItemControl extends SoloViewModel {
 
 	public void setDto(VentaDTO dto) {
 		this.dto = dto;
+	}
+
+	public String getCodInterno() {
+		return codInterno;
+	}
+
+	public void setCodInterno(String codInterno) {
+		this.codInterno = codInterno;
+	}
+
+	public String getCodOriginal() {
+		return codOriginal;
+	}
+
+	public void setCodOriginal(String codOriginal) {
+		this.codOriginal = codOriginal;
+	}
+
+	public String getCodProveedor() {
+		return codProveedor;
+	}
+
+	public void setCodProveedor(String codProveedor) {
+		this.codProveedor = codProveedor;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public Articulo getSelectedItem() {
+		return selectedItem;
+	}
+
+	public void setSelectedItem(Articulo selectedItem) {
+		this.selectedItem = selectedItem;
+	}
+
+	public long getStock() {
+		return stock;
+	}
+
+	public void setStock(long stock) {
+		this.stock = stock;
+	}
+
+	public List<MyArray> getExistencia() {
+		return existencia;
+	}
+
+	public void setExistencia(List<MyArray> existencia) {
+		this.existencia = existencia;
 	}
 }
 

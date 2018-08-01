@@ -20,6 +20,7 @@
 		<property name="saldo" />
 		<property name="tipoCambio" />
 		<property name="numeroImportacion" />
+		<property name="cartera" />
 		
 		<property name="idVendedor">
 			<column name="idVendedor" default="0" />

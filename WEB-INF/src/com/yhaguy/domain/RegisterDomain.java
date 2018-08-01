@@ -304,7 +304,7 @@ public class RegisterDomain extends Register {
 	}
 
 	public SucursalApp getSucursalAppByNombre(String nombre) throws Exception {
-		String query = "select sucursal from SucursalApp sucursal where sucursal.nombre like '"
+		String query = "select sucursal from SucursalApp sucursal where sucursal.nombre = '"
 				+ nombre + "'";
 		Object o = this.hqlToObject(query);
 		SucursalApp sucursal = (SucursalApp) o;
@@ -335,9 +335,6 @@ public class RegisterDomain extends Register {
 	}
 
 	public Empresa getEmpresaByRuc(String ruc) throws Exception {
-		// estaba que retornada una lista, pero debería ser una sola
-		// no deberíamos tener dos empresas con el mismo RUC
-
 		Empresa out = (Empresa) getObject(Empresa.class.getName(), "ruc", ruc);
 		return out;
 	}
@@ -737,11 +734,13 @@ public class RegisterDomain extends Register {
 		return list;
 
 	}
-
+	
 	public List<Deposito> getAllDepositos() throws Exception {
-		List l = getObjects(com.yhaguy.domain.Deposito.class.getName(),
-				new Vector(), new Vector());
-		return l;
+		List<Deposito> list = null;
+		String query = "select d from Deposito d order by d.orden";
+		list = this.hql(query);
+		return list;
+
 	}
 
 	public List<ArticuloDeposito> getArticulosPorDeposito(Long id)
@@ -2326,6 +2325,18 @@ public class RegisterDomain extends Register {
 		}
 		return null;
 	}
+	
+	/**
+	 * @return el Cliente segun idpersona..
+	 */
+	public Cliente getClienteByIdpersona(String idpersona) throws Exception {
+		String query = "Select c from Cliente c where c.idPersonaJedi = '" + idpersona + "'";
+		List<Cliente> out = this.hql(query);
+		if (out.size() > 0) {
+			return out.get(0);
+		}
+		return null;
+	}
 
 	public Date getFechaUltimaMigracion(IiD caja) throws Exception {
 		String query = "select max(m.fechaHasta) from VentaMigracion m where m.idCaja = "
@@ -2359,13 +2370,15 @@ public class RegisterDomain extends Register {
 	/**
 	 * @return las ventas que fueron marcadas para reparto..
 	 */
-	public List<Venta> getVentasParaReparto(long idTmPedidoVenta)
-			throws Exception {
-
-		String query = " select v from Venta v where (v.tipoMovimiento.id = "
-				+ idTmPedidoVenta
-				+ ") AND (v.reparto = 'true') AND (v.estado.sigla = '"
-				+ Configuracion.SIGLA_VENTA_ESTADO_CERRADO + "')";
+	public List<Venta> getVentasParaReparto(String numero, long idSucursal) throws Exception {
+		String query = " select v from Venta v where v.numero like '%" + numero + "%' "
+				+ "AND v.estadoComprobante IS NULL AND (v.tipoMovimiento.sigla = '"
+				+ Configuracion.SIGLA_TM_FAC_VENTA_CREDITO
+				+ "' or v.tipoMovimiento.sigla = '"
+				+ Configuracion.SIGLA_TM_FAC_VENTA_CONTADO
+				+ "') AND (v.reparto = 'true') AND (v.estado.sigla = '"
+				+ Configuracion.SIGLA_VENTA_ESTADO_FACTURADO + "')"
+				+ " AND v.sucursal.id = " + idSucursal;
 
 		List<Venta> out = this.hql(query);
 		return out;
@@ -2416,14 +2429,11 @@ public class RegisterDomain extends Register {
 	/**
 	 * @return las transferencias externas pendientes de reparto..
 	 */
-	public List<Transferencia> getTransferenciasParaReparto(long idTipoTransf,
-			long idEstadoTransf) throws Exception {
-
+	public List<Transferencia> getTransferenciasParaReparto(long idTipoTransf, long idEstadoTransf, long idSucursal) throws Exception {
 		String query = " select t from Transferencia t where t.transferenciaTipo.id = "
 				+ idTipoTransf
-				+ " and t.transferenciaEstado.id = "
-				+ idEstadoTransf;
-
+				+ " and t.transferenciaEstado.id = " + idEstadoTransf
+				+ " and t.sucursal.id = " + idSucursal;
 		List<Transferencia> out = this.hql(query);
 		return out;
 	}
@@ -3489,8 +3499,7 @@ public class RegisterDomain extends Register {
 			Date hasta) throws Exception {
 		String query = "select v from Venta v where (v.fecha between ? and ?)"
 				+ " and v.estado.sigla = ?"
-				+ " and v.sucursal.id = ?"
-				+ " and ( (v.reparto = 'true' and v.repartidor != '') or (v.reparto = 'false' and v.repartidor = '') )";
+				+ " and v.sucursal.id = ?";
 
 		List<Object> listParams = new ArrayList<Object>();
 		listParams.add(desde);
@@ -3530,10 +3539,12 @@ public class RegisterDomain extends Register {
 	/**
 	 * @return los pedidos pendientes de aprobar para baterias..
 	 */
-	public List<Venta> getPedidosPendientesAprobacion(Date desde, Date hasta) throws Exception {
+	public List<Venta> getPedidosPendientesAprobacion(Date desde, Date hasta, long idSucursal) throws Exception {
 		String query = "select v from Venta v where (v.fecha between ? and ?)"
 				+ " and (v.estado.sigla = ? or v.estado.sigla = ?)"
-				+ " and v.tipoMovimiento.sigla = ?" + " order by v.fecha";
+				+ " and v.tipoMovimiento.sigla = ?"
+				+ " and v.sucursal.id = " + idSucursal 
+				+ " order by v.fecha";
 
 		List<Object> listParams = new ArrayList<Object>();
 		listParams.add(desde);
@@ -5934,7 +5945,8 @@ public class RegisterDomain extends Register {
 	public Operacion getOperacion(long idOperacion) throws Exception {
 		String query = "select o from Operacion o where o.dbEstado != 'D' and o.id = "
 				+ idOperacion;
-		return (Operacion) (this.hql(query)).get(0);
+		List<Operacion> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
 	}
 
 	/**
@@ -7064,8 +7076,8 @@ public class RegisterDomain extends Register {
 	 * 
 	 * @return los funcionarios de deposito..
 	 */
-	public List<Funcionario> getFuncionariosDeposito() throws Exception {
-		String query = "select f from Funcionario f where f.deposito = 'TRUE'"
+	public List<Funcionario> getFuncionariosDeposito(long idSucursal) throws Exception {
+		String query = "select f from Funcionario f where f.deposito = 'TRUE' and f.sucursal.id = " + idSucursal
 				+ " order by f.empresa.razonSocial";
 		List<Funcionario> list = this.hql(query);
 		return list;
@@ -7558,11 +7570,29 @@ public class RegisterDomain extends Register {
 	 * [1]:razonSocial
 	 * [2]:limiteCredito
 	 * [3]:ventaCredito
+	 * [4]:descuentoRepuestos
 	 */
 	public Object[] getCliente(long idCliente) throws Exception {
-		String query = "select c.id, c.empresa.razonSocial, c.limiteCredito, c.ventaCredito from Cliente c where c.id = " + idCliente;
+		String query = "select c.id, c.empresa.razonSocial, c.limiteCredito, c.ventaCredito, c.descuentoRepuestos"
+				+ " from Cliente c where c.id = "
+				+ idCliente;
 		List<Object[]> list = this.hql(query);
-		return list.size() > 0 ? list.get(0) : null;	
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return el cliente segun id..
+	 * [0]:id
+	 * [1]:vendedor.id
+	 * [2]:vendedor.nombre
+	 * [3]:vendedor.dependencia
+	 */
+	public Object[] getClienteVendedor(long idCliente) throws Exception {
+		String query = "select c.id, c.vendedor.id, c.vendedor.nombre, c.vendedor.dependencia"
+				+ " from Cliente c where c.id = "
+				+ idCliente;
+		List<Object[]> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
 	}
 	
 	/**
@@ -8208,6 +8238,204 @@ public class RegisterDomain extends Register {
 	public List<BancoChequera> getChequeras(long idBanco) throws Exception {
 		String query = "select b from BancoChequera b where b.banco.id = " + idBanco;
 		return this.hql(query);
+	}
+	
+	/**
+	 * @return el rubro empresa..
+	 */
+	public EmpresaRubro getEmpresaRubro(String descripcion) throws Exception {
+		String query = "select r from EmpresaRubro r where r.descripcion = '" + descripcion + "'";
+		List<EmpresaRubro> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloFamilia..
+	 */
+	public ArticuloFamilia getArticuloFamilia(String descripcion) throws Exception {
+		String query = "select f from ArticuloFamilia f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloFamilia> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloGrupo..
+	 */
+	public ArticuloGrupo getArticuloGrupo(String descripcion) throws Exception {
+		String query = "select f from ArticuloGrupo f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloGrupo> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+
+	/**
+	 * @return ArticuloMarca..
+	 */
+	public ArticuloMarca getArticuloMarca(String descripcion) throws Exception {
+		String query = "select f from ArticuloMarca f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloMarca> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloAplicacion..
+	 */
+	public ArticuloAplicacion getArticuloAplicacion(String descripcion) throws Exception {
+		String query = "select f from ArticuloAplicacion f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloAplicacion> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloModelo..
+	 */
+	public ArticuloModelo getArticuloModelo(String descripcion) throws Exception {
+		String query = "select f from ArticuloModelo f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloModelo> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloLinea..
+	 */
+	public ArticuloLinea getArticuloLinea(String descripcion) throws Exception {
+		String query = "select f from ArticuloLinea f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloLinea> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloSubLinea..
+	 */
+	public ArticuloSubLinea getArticuloSubLinea(String descripcion) throws Exception {
+		String query = "select f from ArticuloSubLinea f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloSubLinea> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloSubGrupo..
+	 */
+	public ArticuloSubGrupo getArticuloSubGrupo(String descripcion) throws Exception {
+		String query = "select f from ArticuloSubGrupo f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloSubGrupo> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloAPI..
+	 */
+	public ArticuloAPI getArticuloAPI(String descripcion) throws Exception {
+		String query = "select f from ArticuloAPI f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloAPI> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloProcedencia..
+	 */
+	public ArticuloProcedencia getArticuloProcedencia(String descripcion) throws Exception {
+		String query = "select f from ArticuloProcedencia f where upper(f.descripcion) = '" + descripcion.toUpperCase() + "'";
+		List<ArticuloProcedencia> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloMarca segun familia..
+	 */
+	public List<ArticuloMarca> getArticuloMarcas(String familia) throws Exception {
+		String query = "select f from ArticuloMarca f where upper(f.familia) = '" + familia.toUpperCase() + "'";
+		List<ArticuloMarca> list = this.hql(query);
+		return list;
+	}
+	
+	/**
+	 * @return los rucs..
+	 */
+	public RucSet getRucValido(String ruc) throws Exception {
+		String query = "select r from RucSet r where r.ruc like '" + ruc + "%";
+		List<RucSet> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return ArticuloFamilias..
+	 */
+	public List<ArticuloFamilia> getArticuloFamilias() throws Exception {
+		String query = "select f from ArticuloFamilia f order by f.descripcion";
+		List<ArticuloFamilia> list = this.hql(query);
+		return list;
+	}
+	
+	/**
+	 * @return EmpresaRubros..
+	 */
+	public List<EmpresaRubro> getEmpresaRubros() throws Exception {
+		String query = "select r from EmpresaRubro r order by r.descripcion";
+		List<EmpresaRubro> list = this.hql(query);
+		return list;
+	}
+	
+	/**
+	 * @return los clientes..
+	 */
+	public List<Cliente> getClientesPorRubro(String rubro, String ruc, String razonsocial) throws Exception {
+		String query = "select c from Cliente c where lower(c.empresa.razonSocial) like '%" 
+				+ razonsocial.toLowerCase() + "%'"
+				+ " and c.empresa.ruc like '%" + ruc + "%'"
+				+ " and c.empresa.rubro.descripcion = '" + rubro + "'"
+				+ " order by c.empresa.razonSocial";
+		return this.hqlLimit(query, 100);
+	}
+	
+	/**
+	 * @return los vendedores..
+	 */
+	public List<Vendedor> getVendedores_() throws Exception {
+		String query = "select v from Vendedor v order by v.nombre";
+		return this.hql(query);
+	}
+	
+	/**
+	 * @return el vendedor..
+	 */
+	public Vendedor getVendedor_(String nombreFuncionario) throws Exception {
+		String query = "select v from Vendedor v where v.funcionario = '" + nombreFuncionario + "'";
+		List<Vendedor> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return el vendedor..
+	 */
+	public Vendedor getVendedor(String nombre) throws Exception {
+		String query = "select v from Vendedor v where v.nombre = '" + nombre + "'";
+		List<Vendedor> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return el ArticuloListaPrecio..
+	 */
+	public ArticuloListaPrecio getArticuloListaPrecio(String nombre) throws Exception {
+		String query = "select a from ArticuloListaPrecio a where a.descripcion = '" + nombre + "'";
+		List<ArticuloListaPrecio> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
+	}
+	
+	/**
+	 * @return el deposito..
+	 */
+	public Deposito getDepositoById(long id) throws Exception {
+		return (Deposito) getObject(com.yhaguy.domain.Deposito.class.getName(), id);
+	}
+	
+	/**
+	 * @return la empresa..
+	 */
+	public Empresa getEmpresa(String razonsocial) throws Exception {
+		String query = "select e from Empresa e where e.razonSocial = '" + razonsocial + "'";
+		List<Empresa> list = this.hql(query);
+		return list.size() > 0 ? list.get(0) : null;
 	}
 	
 	public static void main(String[] args) {

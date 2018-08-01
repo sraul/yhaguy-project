@@ -1,6 +1,8 @@
 package com.yhaguy;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.zkoss.bind.annotation.AfterCompose;
@@ -122,6 +124,29 @@ public abstract class BodyApp extends Body {
 			MyPair dep = new MyPair(deposito.getId(), deposito.getDescripcion());
 			out.add(dep);
 		}
+		return out;
+	}
+	
+	/**
+	 * @return los depositos..
+	 */
+	public List<MyPair> getDepositos() throws Exception {
+		List<MyPair> out = new ArrayList<MyPair>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<Deposito> deps = rr.getAllDepositos();
+		for (Deposito deposito : deps) {
+			MyPair dep = new MyPair(deposito.getId(), deposito.getDescripcion(), deposito.getAuxi());
+			out.add(dep);
+		}
+		Collections.sort(out, new Comparator<MyPair>() {
+			@Override
+			public int compare(MyPair o1, MyPair o2) {
+				Long id1 = o1.getId();
+				Long id2 = o2.getId();
+				int compare = id1.compareTo(id2);				
+				return compare;
+			}
+		});
 		return out;
 	}
 	

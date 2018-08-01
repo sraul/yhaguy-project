@@ -13,15 +13,20 @@ import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 
 import com.coreweb.control.SimpleViewModel;
 import com.coreweb.util.AutoNumeroControl;
+import com.yhaguy.Configuracion;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.ServicioTecnico;
 import com.yhaguy.domain.ServicioTecnicoDetalle;
 import com.yhaguy.domain.Venta;
+import com.yhaguy.inicio.AccesoDTO;
+import com.yhaguy.inicio.AssemblerAcceso;
 
 public class ServicioTecnicoMobileVM extends SimpleViewModel {
 	
@@ -146,8 +151,9 @@ public class ServicioTecnicoMobileVM extends SimpleViewModel {
 	 */
 	public List<String> getReceptores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		for (Funcionario func : rr.getFuncionariosCobradores()) {
@@ -162,6 +168,24 @@ public class ServicioTecnicoMobileVM extends SimpleViewModel {
 				return compare;
 			}
 		});		
+		return out;
+	}
+	
+	/**
+	 * @return el acceso..
+	 */
+	public AccesoDTO getAcceso() {
+		Session s = Sessions.getCurrent();
+		AccesoDTO out = (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
+		if (out == null) {
+			try {
+				AssemblerAcceso as = new AssemblerAcceso();
+				out = (AccesoDTO) as.obtenerAccesoDTO(Configuracion.USER_MOBILE);
+				s.setAttribute(Configuracion.ACCESO, out);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}			
 		return out;
 	}
 	

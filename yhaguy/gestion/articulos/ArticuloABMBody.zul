@@ -81,7 +81,7 @@
 							
 								<!-- ________________ DATOS GENERALES ________________ -->
 
-								<include id="inc_secuencia" src="/yhaguy/gestion/articulos/secuencia/secuencia_filtros.zul"></include>
+								<include id="inc_secuencia" src="/yhaguy/gestion/articulos/secuencia/secuencia.zul"></include>
 
 
 							</tabpanel>

@@ -22,6 +22,11 @@ import com.yhaguy.util.Utiles;
 public class Venta extends Domain {
 	
 	public static final double MARGEN_LINEA_CREDITO = 30;
+	
+	public static final String ENTREGA_REPARTO = "REPARTO";
+	public static final String ENTREGA_EMPAQUE = "EMPAQUE";
+	public static final String ENTREGA_TRANSPORTADORA = "TRANSPORTADORA";
+	public static final String ENTREGA_COLECTIVO = "COLECTIVO";
 
 	/** Presupuesto o Pedido */
 	private TipoMovimiento tipoMovimiento;
@@ -44,7 +49,8 @@ public class Venta extends Domain {
 	private Funcionario atendido;
 	
 	/** El vendedor */
-	private Funcionario vendedor;
+	private Funcionario vendedor;	
+	private Vendedor vendedor_;
 
 	private Cliente cliente;
 
@@ -55,6 +61,7 @@ public class Venta extends Domain {
 	
 	/** Si la venta es por Reparto **/
 	private boolean reparto;
+	private String entrega;
 	
 	/** Si la venta esta dentro de una Planilla de caja cerrada **/
 	private boolean planillaCajaCerrada;
@@ -750,5 +757,21 @@ public class Venta extends Domain {
 
 	public void setTimbrado(String timbrado) {
 		this.timbrado = timbrado;
+	}
+
+	public Vendedor getVendedor_() {
+		return vendedor_;
+	}
+
+	public void setVendedor_(Vendedor vendedor_) {
+		this.vendedor_ = vendedor_;
+	}
+
+	public String getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(String entrega) {
+		this.entrega = entrega;
 	}
 }

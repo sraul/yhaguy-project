@@ -36,6 +36,9 @@
 		<property name="cuentaBloqueada">
 			<column name="cuentaBloqueada" default="false" />
 		</property>
+		
+		<many-to-one name="rubro" class="com.yhaguy.domain.EmpresaRubro"
+			column="idrubro" lazy="false" />
 
 		<many-to-one name="vendedor" class="com.yhaguy.domain.Funcionario"
 			column="idvendedor" lazy="false" />

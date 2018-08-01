@@ -504,7 +504,7 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 	private List<MyPair> getDepositos() throws Exception {
 		List<MyPair> out = new ArrayList<MyPair>();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<Deposito> deps = rr.getDepositosPorSucursal(ID_SUC_PRINCIPAL);
+		List<Deposito> deps = rr.getDepositos();
 		for (Deposito dep : deps) {
 			out.add(new MyPair(dep.getId(), dep.getDescripcion()));
 		}

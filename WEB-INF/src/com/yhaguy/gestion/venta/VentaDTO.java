@@ -19,6 +19,7 @@ import com.yhaguy.domain.CajaPeriodo;
 import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.HistoricoLineaCredito;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.SucursalApp;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
 import com.yhaguy.gestion.comun.ReservaDTO;
@@ -34,11 +35,14 @@ public class VentaDTO extends DTO {
 	private long 	idEnlaceSiguiente = 0;
 	private MyArray atendido = new MyArray();	
 	private MyArray vendedor = new MyArray();
+	private MyArray vendedor_ = new MyArray();
 	private MyArray cliente = new MyArray();	
 	private ClienteDTO clienteOcasional; 
 	private MyArray condicionPago = new MyArray();
 	private MyPair 	deposito = new MyPair();
 	private boolean reparto = false;
+	private String entrega = "";
+	private String venta = "";
 	private Date 	fecha = new Date();
 	private Date 	vencimiento = new Date();
 	private int 	cuotas = 0;
@@ -57,6 +61,7 @@ public class VentaDTO extends DTO {
 	private double totalImporteDs = 0;
 	private double tipoCambio;
 	private int validez = 3;
+	private double descuentoMaximo = 0;
 	
 	private String numeroPresupuesto = "";
 	private String numeroPedido = "";
@@ -99,6 +104,32 @@ public class VentaDTO extends DTO {
 				Clients.showNotification(
 						"SALDO INSUFICIENTE PARA VENTA CRÉDITO..",
 						Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * obtiene el vendedor a partir del cliente..
+	 */
+	private void obtenerVendedor(long idCliente) {
+		try {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			Object[] cli = rr.getCliente(idCliente);
+			if (cli != null) {
+				double desc = (double) cli[4];
+				if (desc == 0) {
+					this.setDescuentoMaximo(this.getEmpresa().getRubro().getDescuentoRepuestos());
+				} else {
+					this.setDescuentoMaximo(desc);
+				}
+			}
+			Object[] cli_ = rr.getClienteVendedor(idCliente);
+			if (cli_ != null) {
+				MyArray vendedor = new MyArray(cli_[2], cli_[3]);
+				vendedor.setId((Long) cli_[1]);
+				this.setVendedor_(vendedor);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -416,7 +447,7 @@ public class VentaDTO extends DTO {
 	/**
 	 * @return el nombre del vendedor..
 	 */
-	public String getVendedor_() {
+	public String getVendedor__() {
 		return (String) this.vendedor.getPos1();
 	}
 	
@@ -509,8 +540,10 @@ public class VentaDTO extends DTO {
 	}
 
 	public void setCliente(MyArray cliente) {
+		System.out.println("------------------ " + cliente.getId());
 		this.cliente = cliente;
 		this.clienteOcasional = null;
+		this.obtenerVendedor(cliente.getId());
 		BindUtils.postGlobalCommand(null, null, "validarCuenta", null);
 		this.validarCuenta();
 	}
@@ -527,8 +560,16 @@ public class VentaDTO extends DTO {
 		return deposito;
 	}
 
-	public void setDeposito(MyPair deposito) {
+	public void setDeposito(MyPair deposito) throws Exception {
 		this.deposito = deposito;
+		if (!deposito.esNuevo()) {
+			if (!deposito.getSigla().isEmpty()) {
+				RegisterDomain rr = RegisterDomain.getInstance();
+				SucursalApp suc = rr.getSucursalAppById(Long.parseLong(deposito.getSigla()));
+				this.sucursal = new MyPair(suc.getId(), suc.getDescripcion());
+				BindUtils.postNotifyChange(null, null, this, "sucursal");
+			}
+		}
 	}
 
 	public Date getFecha() {
@@ -819,5 +860,37 @@ public class VentaDTO extends DTO {
 
 	public List<VentaDetalleDTO> getDetalles() {
 		return detalles;
+	}
+
+	public void setVendedor_(MyArray vendedor_) {
+		this.vendedor_ = vendedor_;
+	}
+
+	public MyArray getVendedor_() {
+		return vendedor_;
+	}
+
+	public void setDescuentoMaximo(double descuentoMaximo) {
+		this.descuentoMaximo = descuentoMaximo;
+	}
+
+	public double getDescuentoMaximo() {
+		return descuentoMaximo;
+	}
+
+	public String getVenta() {
+		return venta;
+	}
+
+	public void setVenta(String venta) {
+		this.venta = venta;
+	}
+
+	public String getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(String entrega) {
+		this.entrega = entrega;
 	}
 }

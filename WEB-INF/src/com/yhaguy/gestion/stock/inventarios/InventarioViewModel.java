@@ -354,8 +354,9 @@ public class InventarioViewModel extends BodyApp {
 	 */
 	public List<String> getContadores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		return out;

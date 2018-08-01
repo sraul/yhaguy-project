@@ -130,12 +130,13 @@ public class AssemblerRepartoDetalle extends Assembler {
 		double totalUnitario = 0;
 
 		for (VentaDetalle item : venta.getDetalles()) {
+			String flia = item.getArticulo().getFamilia() != null ? item.getArticulo().getFamilia().getDescripcion() : "S/FAMILIA";
 			MyArray det = new MyArray();
 			det.setId(item.getId());
 			det.setPos1(item.getArticulo().getCodigoInterno());
 			det.setPos2(item.getArticulo().getDescripcion());
 			det.setPos3(item.getCantidad());
-			det.setPos4(item.getArticulo().getArticuloFamilia().getDescripcion());
+			det.setPos4(flia);
 			det.setPos5(item.getCantidadEntregada());
 
 			cantArt = cantArt + item.getCantidad();
@@ -181,12 +182,12 @@ public class AssemblerRepartoDetalle extends Assembler {
 		double costoTotal = 0;
 
 		for (TransferenciaDetalle item : transf.getDetalles()) {
+			String flia = item.getArticulo().getFamilia() != null ? item.getArticulo().getFamilia().getDescripcion() : "S/FAMILIA";
 			MyArray det = new MyArray();
 			det.setPos1(item.getArticulo().getCodigoInterno());
 			det.setPos2(item.getArticulo().getDescripcion());
 			det.setPos3(item.getCantidad());
-			det.setPos4(item.getArticulo().getArticuloFamilia()
-					.getDescripcion());
+			det.setPos4(flia);
 			
 			cantArt = cantArt + item.getCantidadEnviada();
 			costoTotal = costoTotal + item.getCosto();

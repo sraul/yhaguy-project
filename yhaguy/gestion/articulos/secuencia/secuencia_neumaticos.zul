@@ -13,38 +13,29 @@
 				<label sclass="requerido">*</label>
 				<field value="Familia:" />
 			</hlayout>			
-			<hlayout>
-				<combobox model="@load(vm.dtoUtil.articuloFamilia)"
-					value="@load(vm.dto.articuloFamilia)"
-					selectedItem="@bind(vm.dto.articuloFamilia)" hflex="true"
-					style="margin-right:20px"
-					visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'true' : 'false')">
-					<template name="model">
-						<comboitem label="@load(each)" />
-					</template>
-				</combobox>
-				<textbox value="@load(vm.dto.articuloFamilia.text)" readonly="true"
-					visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'false' : 'true')"
-					hflex="true" style="margin-right:20px"></textbox>
-			</hlayout>
-			<field value="Peso:" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')" />
+			<textbox value="@load(vm.dto.familia.text)" readonly="true"
+				visible="@load(vm.dto.familia.esNuevo() ? 'false' : 'true')"
+				hflex="true" style="margin-right:20px">
+			</textbox>
+			<field value="Peso:" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')" />
 			<doublespinner hflex="true" value="@bind(vm.dto.peso)"
-				style="margin-right:20px" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+				style="margin-right:20px" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			</doublespinner>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloFamilia.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.familia.esNuevo() ? 'false' : 'true')">
 			<hlayout>
 				<label sclass="requerido">*</label>
 				<field value="Medida:" />
 			</hlayout>			
-			<textbox value="@bind(vm.dto.medida)" style="margin-right:20px" hflex="true"></textbox>
-			<field value="Estado:" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')" />
+			<textbox value="@bind(vm.dto.medida)" style="margin-right:20px" hflex="true"
+				onChange="@command('setDescripcion', desc=vm.dto.medida)"></textbox>
+			<field value="Estado:" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')" />
 			<combobox model="@load(vm.dtoUtil.articuloEstado)"
 				value="@load(vm.dto.articuloEstado.text.toUpperCase())"
 				selectedItem="@bind(vm.dto.articuloEstado)" hflex="true"
 				style="margin-right:20px" instant="true"
-				visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+				visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 				<template name="model">
 					<comboitem label="@load(each.text.toUpperCase())" />
 				</template>
@@ -56,78 +47,82 @@
 				<label sclass="requerido">*</label>
 				<field value="Índice de Carga:" />
 			</hlayout>
-			<combobox model="@load(vm.datos)"
-				value="@load(vm.dto.articuloIndiceCarga.text)"
-				selectedItem="@bind(vm.dto.articuloIndiceCarga)" hflex="true"
-				style="margin-right:20px">
+			<combobox model="@load(vm.indiceCargas)"
+				value="@load(vm.dto.indiceCarga.text)"
+				selectedItem="@bind(vm.dto.indiceCarga)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.indiceCarga.text)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
 			</combobox>
-			<field value="FOB/CIF Local:" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')" />
-			<textbox style="margin-right:20px" hflex="true" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"></textbox>
+			<field value="FOB/CIF Local:" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')" />
+			<textbox style="margin-right:20px" hflex="true" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"></textbox>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloIndiceCarga.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.indiceCarga.esNuevo() ? 'false' : 'true')">
 			<hlayout>
 				<label sclass="requerido">*</label>
 				<field value="Marca:" />
 			</hlayout>			
-			<combobox model="@load(vm.marcasNeumaticos)"
-				value="@load(vm.dto.articuloMarca)"
-				selectedItem="@bind(vm.dto.articuloMarca)" hflex="true"
-				style="margin-right:20px">
+			<combobox model="@load(vm.marcas)"
+				value="@load(vm.dto.marca)"
+				selectedItem="@bind(vm.dto.marca)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.marca.text)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
 			</combobox>
-			<field value="Volúmen:" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')" />
+			<field value="Volúmen:" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')" />
 			<combobox hflex="true" style="margin-right:20px"
-				visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"></combobox>
+				visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"></combobox>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloMarca.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.marca.esNuevo() ? 'false' : 'true')">
 			<hlayout>
 				<label sclass="requerido">*</label>
 				<field value="Modelo:" />
 			</hlayout>
-			<combobox model="@load(vm.datos)"
-				value="@load(vm.dto.articuloModelo)"
-				selectedItem="@bind(vm.dto.articuloModelo)" hflex="true"
-				style="margin-right:20px">
+			<combobox model="@load(vm.modelos)"
+				value="@load(vm.dto.modelo)"
+				selectedItem="@bind(vm.dto.modelo)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.modelo.text)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
 			</combobox>
-			<field value="NCM:" visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"/>
+			<field value="NCM:" visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"/>
 			<combobox hflex="true" style="margin-right:20px"
-				visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"></combobox>
+				visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"></combobox>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloModelo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.modelo.esNuevo() ? 'false' : 'true')">
 			<hlayout>
 				<label sclass="requerido">*</label>
 				<field value="Sub Grupo:" />
 			</hlayout>
-			<combobox model="@load(vm.subGrupoNeumaticos)"
-				value="@load(vm.dto.articuloSubGrupo.text)"
-				selectedItem="@bind(vm.dto.articuloSubGrupo)" hflex="true"
-				style="margin-right:20px">
+			<combobox model="@load(vm.subGrupos)"
+				value="@load(vm.dto.subgrupo.text)"
+				selectedItem="@bind(vm.dto.subgrupo)" hflex="true"
+				style="margin-right:20px"
+				onSelect="@command('setDescripcion', desc=vm.dto.subgrupo.text)">
 				<template name="model">
 					<comboitem label="@load(each)" />
 				</template>
 			</combobox>
 			<field value="Proveedor:" 
-				visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"/>
+				visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"/>
 			<combobox hflex="true" style="margin-right:20px"
-				visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')"></combobox>
+				visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')"></combobox>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Grupo:" />
-			<combobox model="@load(vm.grupoNeumaticos)"
-				value="@load(vm.dto.articuloGrupo.text)"
-				selectedItem="@bind(vm.dto.articuloGrupo)" hflex="true"
+			<combobox model="@load(vm.grupos)"
+				value="@load(vm.dto.grupo.text)"
+				selectedItem="@bind(vm.dto.grupo)" hflex="true"
 				style="margin-right:20px">
 				<template name="model">
 					<comboitem label="@load(each)" />
@@ -137,11 +132,11 @@
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 		
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Aplicación:" />
-			<combobox model="@load(vm.dtoUtil.articuloMarca)"
-				value="@load(vm.dto.articuloAplicacion)"
-				selectedItem="@bind(vm.dto.articuloAplicacion)" hflex="true"
+			<combobox model="@load(vm.aplicaciones)"
+				value="@load(vm.dto.aplicacion)"
+				selectedItem="@bind(vm.dto.aplicacion)" hflex="true"
 				style="margin-right:20px">
 				<template name="model">
 					<comboitem label="@load(each)" />
@@ -151,11 +146,11 @@
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Línea:" />
-			<combobox model="@load(vm.lineaNeumaticos)"
-				value="@load(vm.dto.articuloLinea.text.toUpperCase())"
-				selectedItem="@bind(vm.dto.articuloLinea)" hflex="true"
+			<combobox model="@load(vm.lineas)"
+				value="@load(vm.dto.linea.text.toUpperCase())"
+				selectedItem="@bind(vm.dto.linea)" hflex="true"
 				style="margin-right:20px" instant="true">
 				<template name="model">
 					<comboitem label="@load(each.text.toUpperCase())" />
@@ -165,35 +160,42 @@
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Sub Línea:" />
-			<combobox hflex="true" style="margin-right:20px"></combobox>
+			<combobox model="@load(vm.subLineas)"
+				value="@load(vm.dto.sublinea.text.toUpperCase())"
+				selectedItem="@bind(vm.dto.sublinea)" hflex="true"
+				style="margin-right:20px" instant="true">
+				<template name="model">
+					<comboitem label="@load(each.text.toUpperCase())" />
+				</template>
+			</combobox>
 			<field value="Máximo:" />
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Unidad por Caja:" />
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 			<field value="Remate:" />
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Presentación:" />
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 			<field value="Descontinuado:" />
 			<combobox hflex="true" style="margin-right:20px"></combobox>
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="SKU:" />
 			<textbox hflex="true" style="margin-right:20px" />
 			<field value="80 / 20:" />
 			<textbox hflex="true" style="margin-right:20px" />
 		</row>
 
-		<row visible="@load(vm.dto.articuloSubGrupo.esNuevo() ? 'false' : 'true')">
+		<row visible="@load(vm.dto.subgrupo.esNuevo() ? 'false' : 'true')">
 			<field value="Ítem de Servicio:" />
 			<hlayout>
 				<checkbox checked="@bind(vm.dto.servicio)" />

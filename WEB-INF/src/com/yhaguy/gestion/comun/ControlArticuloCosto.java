@@ -37,8 +37,26 @@ public class ControlArticuloCosto {
 			double costoGs, String user) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		Articulo art = rr.getArticuloById(idArticulo);
-		art.setCostoGs(costoGs);
-		rr.saveObject(art, user);
+		if (art != null) {
+			art.setCostoGs(costoGs);
+			rr.saveObject(art, user);
+		}
+	}
+	
+
+	/**
+	 * actualiza el precio del articulo..
+	 */
+	public static void actualizarPrecio(long idArticulo, double mayoristaGs, double minoristaGs, double listaGs,
+			String user) throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Articulo art = rr.getArticuloById(idArticulo);
+		if (art != null) {
+			art.setPrecioGs(mayoristaGs);
+			art.setPrecioMinoristaGs(minoristaGs);
+			art.setPrecioListaGs(listaGs);
+			rr.saveObject(art, user);
+		}
 	}
 	
 	/**

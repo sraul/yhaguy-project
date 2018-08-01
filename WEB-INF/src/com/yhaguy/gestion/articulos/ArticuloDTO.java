@@ -37,6 +37,19 @@ public class ArticuloDTO extends DTO {
 	private MyPair articuloLinea = new MyPair();
 	private MyPair articuloUnidadMedida = new MyPair();
 	
+	private MyPair familia = new MyPair();
+	private MyPair marca = new MyPair();
+	private MyPair grupo = new MyPair();
+	private MyPair subgrupo = new MyPair();
+	private MyPair linea = new MyPair();
+	private MyPair sublinea = new MyPair();
+	private MyPair aplicacion = new MyPair();
+	private MyPair modelo = new MyPair();
+	private MyPair API = new MyPair();
+	private MyPair procedencia = new MyPair();
+	private MyPair indiceCarga = new MyPair();
+	private MyPair lado = new MyPair();
+	
 	private MyPair articuloGrupo = new MyPair();
 	private MyPair articuloSubGrupo = new MyPair();
 	private MyPair articuloModelo = new MyPair();
@@ -381,6 +394,102 @@ public class ArticuloDTO extends DTO {
 
 	public void setArticuloLado(MyPair articuloIndiceLado) {
 		this.articuloLado = articuloIndiceLado;
+	}
+
+	public MyPair getFamilia() {
+		return familia;
+	}
+
+	public void setFamilia(MyPair familia) {
+		this.familia = familia;
+	}
+
+	public MyPair getMarca() {
+		return marca;
+	}
+
+	public void setMarca(MyPair marca) {
+		this.marca = marca;
+	}
+
+	public MyPair getGrupo() {
+		return grupo;
+	}
+
+	public void setGrupo(MyPair grupo) {
+		this.grupo = grupo;
+	}
+
+	public MyPair getSubgrupo() {
+		return subgrupo;
+	}
+
+	public void setSubgrupo(MyPair subgrupo) {
+		this.subgrupo = subgrupo;
+	}
+
+	public MyPair getLinea() {
+		return linea;
+	}
+
+	public void setLinea(MyPair linea) {
+		this.linea = linea;
+	}
+
+	public MyPair getSublinea() {
+		return sublinea;
+	}
+
+	public void setSublinea(MyPair sublinea) {
+		this.sublinea = sublinea;
+	}
+
+	public MyPair getAplicacion() {
+		return aplicacion;
+	}
+
+	public void setAplicacion(MyPair aplicacion) {
+		this.aplicacion = aplicacion;
+	}
+
+	public MyPair getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(MyPair modelo) {
+		this.modelo = modelo;
+	}
+
+	public MyPair getAPI() {
+		return API;
+	}
+
+	public void setAPI(MyPair aPI) {
+		API = aPI;
+	}
+
+	public MyPair getProcedencia() {
+		return procedencia;
+	}
+
+	public void setProcedencia(MyPair procedencia) {
+		this.procedencia = procedencia;
+	}
+
+	public MyPair getIndiceCarga() {
+		return indiceCarga;
+	}
+
+	public void setIndiceCarga(MyPair indiceCarga) {
+		this.indiceCarga = indiceCarga;
+	}
+
+	public MyPair getLado() {
+		return lado;
+	}
+
+	public void setLado(MyPair lado) {
+		this.lado = lado;
 	}
 
 }

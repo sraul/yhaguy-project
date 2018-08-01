@@ -2901,6 +2901,15 @@ public class ImportacionPedidoCompraControlBody extends BodyApp {
 							this.dto.getTipoMovimiento().getId(),
 							this.getLoginNombre());
 		}	
+		
+		for (ImportacionFacturaDetalleDTO item : this.dto.getImportacionFactura().get(0).getDetalles()) {
+			long idArticulo = item.getArticulo().getId();
+			double mayoristaGs = item.getPrecioFinalGs();
+			double minoristaGs = item.getMinoristaGs();
+			double listaGs = item.getListaGs();
+			ControlArticuloCosto.actualizarPrecio(idArticulo, mayoristaGs, minoristaGs, listaGs, this.getLoginNombre());
+		}
+		
 		this.actualizarCtaCte();
 	}	
 	

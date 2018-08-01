@@ -17,6 +17,7 @@
 				<zk forEach="${vm.menuItem(self,'OrdenCompra')}" />
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'ListaPrecio')}" />
+				<zk forEach="${vm.menuItem(self,'EscalaDescuento')}" />
 				<menuseparator />
 				<zk forEach="${vm.menuItem(self,'TesakaRetenciones')}" />
 				
@@ -167,6 +168,10 @@
 		.z-menuitem-text {margin-left:5px}
 		.z-menu, .z-menuitem { margin: 5px}
 		.requerido { color:red; font-weight:bold; font-size:11pt }
+		.z-textbox:focus, .z-doublebox:focus, .z-spinner-input:focus, .z-combobox-input:focus {
+    		background: #f0ad4e none;
+		}
+		.z-doublebox, .z-textbox, .z-combobox-input, z-intbox { background: #EEF7FA }
 	</style>
 
 </zk>

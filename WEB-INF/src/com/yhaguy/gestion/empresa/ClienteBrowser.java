@@ -11,7 +11,7 @@ public class ClienteBrowser extends Browser{
 
 	@Override
 	public void setingInicial() {
-		this.setWidthWindows("1020px");
+		this.setWidthWindows("100%");
 		this.setHigthWindows("80%");
 	}
 	
@@ -23,7 +23,6 @@ public class ClienteBrowser extends Browser{
 		ColumnaBrowser col2 = new ColumnaBrowser();
 		ColumnaBrowser col3 = new ColumnaBrowser();
 		ColumnaBrowser col4 = new ColumnaBrowser();
-		ColumnaBrowser col5 = new ColumnaBrowser();
 		ColumnaBrowser col6 = new ColumnaBrowser();
 		ColumnaBrowser col7 = new ColumnaBrowser();
 
@@ -41,25 +40,20 @@ public class ClienteBrowser extends Browser{
 		col4.setTitulo("Cédula");
 		col4.setWidthColumna("150px");
 		
-		col5.setCampo("empresa.tipoPersona.descripcion");
-		col5.setTitulo("Tipo");
-		col5.setWidthColumna("150px");
-		
 		col6.setCampo("categoriaCliente.descripcion");
 		col6.setTitulo("Categoría");
 		col6.setWidthColumna("150px");
 		col6.setVisible(false);
 		
-		col7.setCampo("tipoCliente.descripcion"); 	
-		col7.setTitulo("Clasificación");
-		col7.setWidthColumna("150px");
+		col7.setCampo("empresa.rubro.descripcion"); 	
+		col7.setTitulo("Rubro");
+		col7.setWidthColumna("170px");
 		
 		List<ColumnaBrowser> columnas = new ArrayList<ColumnaBrowser>();
 		columnas.add(col1);
 		columnas.add(col2);
 		columnas.add(col3);
 		columnas.add(col4);
-		//columnas.add(col5);
 		columnas.add(col6);
 		columnas.add(col7);
 		

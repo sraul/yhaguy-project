@@ -11,15 +11,20 @@ import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.util.Clients;
 
 import com.coreweb.control.SimpleViewModel;
+import com.yhaguy.Configuracion;
 import com.yhaguy.domain.AjusteStock;
 import com.yhaguy.domain.AjusteStockDetalle;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.inicio.AccesoDTO;
+import com.yhaguy.inicio.AssemblerAcceso;
 
 public class InventarioMobileVM extends SimpleViewModel {
 	
@@ -95,10 +100,29 @@ public class InventarioMobileVM extends SimpleViewModel {
 	 */
 	public List<String> getContadores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
+		return out;
+	}
+	
+	/**
+	 * @return el acceso..
+	 */
+	public AccesoDTO getAcceso() {
+		Session s = Sessions.getCurrent();
+		AccesoDTO out = (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
+		if (out == null) {
+			try {
+				AssemblerAcceso as = new AssemblerAcceso();
+				out = (AccesoDTO) as.obtenerAccesoDTO(Configuracion.USER_MOBILE);
+				s.setAttribute(Configuracion.ACCESO, out);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}	
+		}			
 		return out;
 	}
 	

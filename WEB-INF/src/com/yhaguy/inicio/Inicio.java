@@ -24,7 +24,6 @@ import com.yhaguy.util.Utiles;
 
 public class Inicio {
 
-
 	@SuppressWarnings({ "static-access" })
 	public synchronized static void init() {
 		// Para setear cualquier cosa antes de empezar

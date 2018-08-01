@@ -1,0 +1,182 @@
+<window apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.yhaguy.gestion.venta.descuentos.EscalaDescuentosVM')"
+	height="100%">
+
+	<hbox vflex="true" hflex="true">
+		<vbox hflex="2" vflex="true" spacing="0">
+			<hlayout sclass="button-container" style="background:#EEF7FA">
+				<field value="ESCALA DE DESCUENTOS" />
+			</hlayout>			
+			<listbox sclass="small-list" vflex="60%"
+				model="@load(vm.rubros)"
+				selectedItem="@bind(vm.selectedRubro_)">
+				<auxhead>
+					<auxheader label="Rubro Cliente"></auxheader>
+				</auxhead>
+				<listhead style="text-align:center">
+					<listheader></listheader>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.descripcion)"></listcell>
+					</listitem>
+				</template>
+			</listbox>
+			<div height="5px"></div>			
+			<listbox sclass="small-list" vflex="40%"
+				model="@load(vm.selectedRubro_.escalaDescuentos)"
+				emptyMessage="SELECCIONE UN RUBRO..">
+				<auxhead>
+					<auxheader colspan="3" label="Familia Articulo"></auxheader>
+				</auxhead>
+				<listhead style="text-align:center">
+					<listheader></listheader>
+					<listheader width="100px"></listheader>
+					<listheader width="20px" align="left"></listheader>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each[0])"></listcell>
+						<listcell>
+							<doublebox value="@bind(each[1])" hflex="true" vflex="true"
+								onChange="@command('updateRubro', item=each)"></doublebox>
+						</listcell>
+						<listcell label="%"></listcell>
+					</listitem>
+				</template>
+			</listbox>
+		</vbox>
+		<vbox hflex="5" vflex="true" spacing="0">
+			<hlayout sclass="button-container" style="background:#EEF7FA">
+				<field value="POR CLIENTE" />
+			</hlayout>
+			<listbox sclass="small-list" vflex="true" hflex="true"
+				emptyMessage="SIN DATOS.."
+				model="@load(vm.clientes)">
+				<custom-attributes org.zkoss.zul.listbox.autoSort="true" />
+				<listhead style="text-align:center">
+					<listheader label="Rubro" width="170px"></listheader>
+					<listheader label="Ruc" width="110px"></listheader>
+					<listheader label="Razón Social"></listheader>
+					<listheader label="Vendedor" width="150px"></listheader>
+					<listheader align="right"
+						width="120px"
+						label="" style="color:transparent">
+					</listheader>
+					<listheader align="right"
+						width="120px"
+						label="" style="color:transparent">
+					</listheader>
+					<listheader align="right"
+						width="120px"
+						label="" style="color:transparent">
+					</listheader>
+					<listheader align="right"
+						width="120px"
+						label="" style="color:transparent">
+					</listheader>
+					<listheader align="right"
+						width="120px"
+						label="" style="color:transparent">
+					</listheader>
+					<listheader width="20px"></listheader>
+				</listhead>
+				<auxhead>
+					<auxheader>
+						<combobox hflex="true" model="@load(vm.rubros)"
+							selectedItem="@bind(vm.selectedRubro)"
+							instant="true">
+							<template name="model">
+								<comboitem label="@load(each.descripcion)"></comboitem>
+							</template>							
+						</combobox>
+					</auxheader>
+					<auxheader>
+						<hbox hflex="true">
+							<textbox hflex="true" placeholder="Ruc.."
+								sclass="filter" value="@bind(vm.filterRuc)"
+								instant="true">
+							</textbox>
+							<div width="10px"></div>
+						</hbox>
+					</auxheader>
+					<auxheader>
+						<hbox hflex="true">
+							<textbox hflex="true" placeholder="Razón Social.."
+								sclass="filter" value="@bind(vm.filterRazonSocial)"
+								instant="true">
+							</textbox>
+							<div width="10px"></div>
+						</hbox>
+					</auxheader>
+					<auxheader>
+						<hbox hflex="true">
+							<textbox hflex="true" placeholder="Vendedor.."
+								sclass="filter" 
+								instant="true">
+							</textbox>
+							<div width="10px"></div>
+						</hbox>
+					</auxheader>
+					<auxheader label="Baterias"></auxheader>
+					<auxheader label="Cubiertas"></auxheader>
+					<auxheader label="Filtros"></auxheader>
+					<auxheader label="Lubricantes"></auxheader>
+					<auxheader label="Repuestos"></auxheader>
+					<auxheader></auxheader>
+				</auxhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.empresa.rubro.descripcion)"></listcell>
+						<listcell label="@load(each.ruc)"></listcell>
+						<listcell label="@load(each.razonSocial)"></listcell>
+						<listcell label=""></listcell>
+						<listcell>
+							<doublebox
+								value="@bind(each.descuentoBaterias)" hflex="true" vflex="true"
+								onChange="@command('updateCliente', cliente=each)"></doublebox>
+						</listcell>
+						<listcell>
+							<doublebox
+								value="@bind(each.descuentoCubiertas)" hflex="true" vflex="true"
+								onChange="@command('updateCliente', cliente=each)"></doublebox>
+						</listcell>
+						<listcell>
+							<doublebox
+								value="@bind(each.descuentoFiltros)" hflex="true" vflex="true"
+								onChange="@command('updateCliente', cliente=each)"></doublebox>
+						</listcell>
+						<listcell>
+							<doublebox 
+								value="@bind(each.descuentoLubricantes)" hflex="true" vflex="true"
+								onChange="@command('updateCliente', cliente=each)"></doublebox>
+						</listcell>
+						<listcell>
+							<doublebox 
+								value="@bind(each.descuentoRepuestos)" hflex="true" vflex="true"
+								onChange="@command('updateCliente', cliente=each)"></doublebox>
+						</listcell>
+						<listcell label="%"></listcell>
+					</listitem>
+				</template>
+				<listfoot>
+					<listfooter>
+						<hlayout>
+							<field value="ítems" />
+						</hlayout>
+					</listfooter>
+				</listfoot>
+			</listbox>
+			<style>
+				input[type="checkbox"] {
+    			margin: 0px;
+    			margin-top: 0px;
+    			padding: 0px;
+    			line-height: normal;
+				}
+				.z-doublebox {min-height:20px; background: #EEF7FA}
+			</style>
+		</vbox>
+	</hbox>
+
+</window>

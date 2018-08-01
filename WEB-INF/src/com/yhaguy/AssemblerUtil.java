@@ -201,8 +201,7 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		dto.setCtaCteEmpresaEstado(this
 				.listaTiposToListaMyPair(ctaCteEmpresaEstado));
 
-		CtaCteLineaCredito ctaCteEmpresaLineaCreditoDefault = rr
-				.getCtaCteEmpresaLineaCreditoByDescripcion(Configuracion.CTA_CTE_EMPRESA_LINEA_CREDITO_DEFAULT);
+		CtaCteLineaCredito ctaCteEmpresaLineaCreditoDefault = rr.getCtaCteEmpresaLineaCreditoByDescripcion(Configuracion.CTA_CTE_EMPRESA_LINEA_CREDITO_DEFAULT);
 		MyArray linea = new MyArray();
 		linea.setId(ctaCteEmpresaLineaCreditoDefault.getId());
 		linea.setPos1(ctaCteEmpresaLineaCreditoDefault.getDescripcion());
@@ -1170,8 +1169,7 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		dto.setRegimenTributarioNoExenta(this.tipoToMyPair(tipoRegimen1));
 
 		// Grupos de Empresa
-		EmpresaGrupoSociedad egs = rr
-				.getGrupoEmpresaByDescripcion(Configuracion.EMPRESA_GRUPO_NO_DEFINIDO);
+		EmpresaGrupoSociedad egs = rr.getGrupoEmpresaByDescripcion(Configuracion.EMPRESA_GRUPO_NO_DEFINIDO);
 		MyPair egsmp = new MyPair(egs.getId(), egs.getDescripcion());
 		dto.setGrupoEmpresaNoDefinido(egsmp);
 
@@ -1261,70 +1259,11 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		dto.setMotivoNotaCreditoDifPrecio(this.tipoToMyPair(motivoDiferenciaPrecio));
 
 		// Tipos de detalle en Notas de Credito
-		Tipo notaCreditoDetalleFactura = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_NC_DETALLE_FACTURA);
-		Tipo notaCreditoDetalleArticulo = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_NC_DETALLE_ARTICULO);
+		Tipo notaCreditoDetalleFactura = rr.getTipoPorSigla(Configuracion.SIGLA_TIPO_NC_DETALLE_FACTURA);
+		Tipo notaCreditoDetalleArticulo = rr.getTipoPorSigla(Configuracion.SIGLA_TIPO_NC_DETALLE_ARTICULO);
 
-		dto.setNotaCreditoDetalleFactura(this
-				.tipoToMyPair(notaCreditoDetalleFactura));
-		dto.setNotaCreditoDetalleArticulo(this
-				.tipoToMyPair(notaCreditoDetalleArticulo));
-
-		// Regla de precio, falta todo lo de articulo, venta, vendero
-		dto.setReglaCliente(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.REGLA_PRECIO_CLIENTE));
-		dto.setReglaClienteCategoria(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_CLIENTE));
-		dto.setReglaClienteRubro(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_RUBRO_EMPRESAS));
-
-		dto.setReglaArticulo(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.REGLA_PRECIO_ARTICULO));
-		dto.setReglaArticuloMarca(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_ARTICULO_MARCA));
-		dto.setReglaArticuloFamilia(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_ARTICULO_FAMILIA));
-		dto.setReglaArticuloParte(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_ARTICULO_PARTE));
-		dto.setReglaArticuloRubro(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_ARTICULO_LINEA));// rubro
-
-		dto.setReglaVenta(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.REGLA_PRECIO_VENTA));
-		dto.setReglaVentaModoVenta(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_VENTA_MODO));
-		dto.setReglaVentaSucursales(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_SUCURSAL));
-
-		dto.setReglaVendedor(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.REGLA_PRECIO_VENDEDOR));
-		dto.setReglaVendedorRubro(this.getTipo(Configuracion.REGLA_PRECIO,
-				Configuracion.ID_TIPO_VENDEDOR_RUBRO));
-
-		// Regla de precio por volumem
-		List<Tipo> tiposEstadoReglaVolumen = rr
-				.getTipos(Configuracion.ID_TIPO_ESTADO_REGLA_PRECIO_VOLUMEN);
-
-		dto.setTipoEstadoReglaPrecioVolumen(this
-				.listaTiposToListaMyPair(tiposEstadoReglaVolumen));
-
-		Tipo tiposEstadoReglaVolumen1 = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_REGLA_PRECIO_MAYOR);
-		Tipo tiposEstadoReglaVolumen2 = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_REGLA_PRECIO_MENOR);
-		Tipo tiposEstadoReglaVolumen3 = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_REGLA_PRECIO_IGUAL);
-		Tipo tiposEstadoReglaVolumen4 = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_REGLA_PRECIO_DIFERENTE);
-		Tipo tiposEstadoReglaVolumen5 = rr
-				.getTipoPorSigla(Configuracion.SIGLA_TIPO_REGLA_PRECIO_NINGUNO);
-
-		dto.setTipoEstadoMayor(this.tipoToMyPair(tiposEstadoReglaVolumen1));
-		dto.setTipoEstadoMenor(this.tipoToMyPair(tiposEstadoReglaVolumen2));
-		dto.setTipoEstadoIgual(this.tipoToMyPair(tiposEstadoReglaVolumen3));
-		dto.setTipoEstadoDiferente(this.tipoToMyPair(tiposEstadoReglaVolumen4));
-		dto.setTipoEstadoNinguno(this.tipoToMyPair(tiposEstadoReglaVolumen5));
+		dto.setNotaCreditoDetalleFactura(this.tipoToMyPair(notaCreditoDetalleFactura));
+		dto.setNotaCreditoDetalleArticulo(this.tipoToMyPair(notaCreditoDetalleArticulo));
 
 		// ========== tarejtas ===================
 		Hashtable<String, MyArray> txId = new Hashtable<>();
@@ -1459,7 +1398,7 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		this.cargarProcesadoras(dto);
 
 		// Datos por defecto para MRA
-		this.cargarDatosMRA(dto);
+		//this.cargarDatosMRA(dto);
 
 		// modo de creación de un cheque
 		dto.setModosDeCreacionCheque(this.listaTiposToListaMyPair(rr
@@ -1475,10 +1414,8 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		dto.setBancosTerceros(this.listaTiposToListaMyPair(bancos));
 
 		// Cliente ocasional
-		Cliente _clienteOcasional = rr
-				.getClienteByCodigoMRA(Configuracion.CODIGO_CLIENTE_OCASIONAL);
-		MyPair clienteOcasional = new MyPair(_clienteOcasional.getId(),
-				_clienteOcasional.getRazonSocial());
+		Cliente _clienteOcasional = rr.getClienteByCodigoMRA(Configuracion.CODIGO_CLIENTE_OCASIONAL);
+		MyPair clienteOcasional = new MyPair(_clienteOcasional.getId(), _clienteOcasional.getRazonSocial());
 		dto.setClienteOcasional(clienteOcasional);
 
 		return dto;
@@ -1529,7 +1466,7 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 	/**
 	 * Setea datos por defecto, para la implementacion de MRA..
 	 */
-	private void cargarDatosMRA(UtilDTO dto) throws Exception {
+	/*private void cargarDatosMRA(UtilDTO dto) throws Exception {
 
 		RegisterDomain rr = RegisterDomain.getInstance();
 		Funcionario _vendedor = rr.getFuncionarioById(1);
@@ -1545,7 +1482,7 @@ public class AssemblerUtil extends AssemblerCoreUtil {
 		dto.setMRA_modoVenta(modoVenta);
 		dto.setMRA_sucursal(sucursal);
 		dto.setMRA_vendedor(vendedor);
-	}
+	}*/
 
 	/**
 	 * Retorna el TipoMovimiento en forma de MyArray pos1:descripcion -

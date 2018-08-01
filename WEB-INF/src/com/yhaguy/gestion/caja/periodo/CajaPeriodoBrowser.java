@@ -12,6 +12,12 @@ import com.yhaguy.util.Utiles;
 
 public class CajaPeriodoBrowser extends Browser {
 
+	private String sucursal;
+	
+	public CajaPeriodoBrowser(String sucursal) {
+		this.sucursal = sucursal;
+	}
+	
 	@Override
 	public void setingInicial() {
 		this.setWidthWindows("1200px");
@@ -28,6 +34,7 @@ public class CajaPeriodoBrowser extends Browser {
 		ColumnaBrowser col4 = new ColumnaBrowser();
 		ColumnaBrowser col5 = new ColumnaBrowser();
 		ColumnaBrowser col6 = new ColumnaBrowser();
+		ColumnaBrowser col7 = new ColumnaBrowser();
 		
 		col1.setCampo("numero");
 		col1.setTitulo("Número");
@@ -52,6 +59,10 @@ public class CajaPeriodoBrowser extends Browser {
 		col6.setCampo("tipo");
 		col6.setTitulo("Tipo");
 		
+		col7.setCampo("caja.sucursal.descripcion");
+		col7.setTitulo("Sucursal");
+		col7.setValue(this.sucursal);
+		
 		List<ColumnaBrowser> columnas = new ArrayList<ColumnaBrowser>();
 		columnas.add(col1);
 		columnas.add(col2);
@@ -59,6 +70,7 @@ public class CajaPeriodoBrowser extends Browser {
 		columnas.add(col4);
 		columnas.add(col5);
 		columnas.add(col6);
+		columnas.add(col7);
 		
 		return columnas;
 	}

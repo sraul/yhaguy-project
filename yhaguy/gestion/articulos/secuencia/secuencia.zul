@@ -13,10 +13,11 @@
 				<label sclass="requerido">*</label>
 				<field value="Familia:" />
 			</hlayout>
-			<combobox model="@load(vm.dtoUtil.articuloFamilia)"
-				value="@load(vm.dto.articuloFamilia)"
-				selectedItem="@bind(vm.dto.articuloFamilia)" hflex="true"
+			<combobox model="@load(vm.familias)"
+				value="@load(vm.dto.familia.text)"
+				selectedItem="@bind(vm.dto.familia)" hflex="true"
 				style="margin-right:20px"
+				visible="@load(vm.dto.familia.esNuevo() ? 'true' : 'false')"
 				onSelect="@command('selectFamilia')">
 				<template name="model">
 					<comboitem label="@load(each)" />

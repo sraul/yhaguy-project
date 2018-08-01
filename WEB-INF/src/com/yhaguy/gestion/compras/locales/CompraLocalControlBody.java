@@ -47,9 +47,7 @@ import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.Articulo;
 import com.yhaguy.domain.ArticuloDeposito;
 import com.yhaguy.domain.CompraLocalOrden;
-import com.yhaguy.domain.Deposito;
 import com.yhaguy.domain.RegisterDomain;
-import com.yhaguy.gestion.articulos.buscador.BuscadorArticulosViewModel;
 import com.yhaguy.gestion.compras.timbrado.WindowTimbrado;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
 import com.yhaguy.gestion.comun.ControlArticuloStock;
@@ -1588,19 +1586,6 @@ public class CompraLocalControlBody extends BodyApp {
 			this.totalStock += stock;
 		}
 		BindUtils.postNotifyChange(null, null, this, "totalStock");
-		return out;
-	}
-	
-	/**
-	 * @return los depositos de la sucursal..
-	 */
-	private List<MyPair> getDepositos() throws Exception {
-		List<MyPair> out = new ArrayList<MyPair>();
-		RegisterDomain rr = RegisterDomain.getInstance();
-		List<Deposito> deps = rr.getDepositosPorSucursal(BuscadorArticulosViewModel.ID_SUC_PRINCIPAL);
-		for (Deposito dep : deps) {
-			out.add(new MyPair(dep.getId(), dep.getDescripcion()));
-		}
 		return out;
 	}
 	

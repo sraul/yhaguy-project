@@ -30,6 +30,7 @@
 		<property name="totalImporteGs"/>
 		<property name="totalImporteDs"/>
 		<property name="tipoCambio" />	
+		<property name="entrega" />
 		
 		<property name="validez">
 			<column name="validez" default="0" />
@@ -72,6 +73,9 @@
 		
 		<many-to-one name="vendedor" class="com.yhaguy.domain.Funcionario"
 			column="idVendedor" lazy="false" />
+
+		<many-to-one name="vendedor_" class="com.yhaguy.domain.Vendedor"
+			column="id_vendedor" lazy="false" />
 
 		<many-to-one name="cliente" class="com.yhaguy.domain.Cliente"
 			column="idcliente" lazy="false" />

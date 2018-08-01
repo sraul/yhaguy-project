@@ -78,6 +78,8 @@ public class CajaPeriodoControlBody extends BodyApp {
 	
 	static final String ZUL_IMPRESION_FACTURA_BAT = "/yhaguy/gestion/caja/periodo/impresion_factura_bat.zul";
 	static final String ZUL_IMPRESION_FACTURA = "/yhaguy/gestion/caja/periodo/impresion_factura.zul";
+	static final String ZUL_IMPRESION_NOTACREDITO = "/yhaguy/gestion/caja/periodo/impresion_notacredito.zul";
+	static final String ZUL_IMPRESION_RECIBO = "/yhaguy/gestion/caja/periodo/impresion_recibo.zul";
 
 	private CajaPeriodoDTO dto = new CajaPeriodoDTO();
 	private MyArray selectedChequera = new MyArray();
@@ -135,7 +137,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 
 	@Override
 	public Browser getBrowser() {
-		return new CajaPeriodoBrowser();
+		return new CajaPeriodoBrowser(this.getAcceso().getSucursalOperativa().getText());
 	}
 
 	@Override
@@ -536,12 +538,10 @@ public class CajaPeriodoControlBody extends BodyApp {
 	private ReciboFormaPagoDTO nvoFormaPago = new ReciboFormaPagoDTO();
 	private VentaDTO selectedVenta;
 
-	private static String[] attVentas = { "fecha", "numero",
-			"cliente.empresa.razonSocial", "vendedor.empresa.razonSocial",
+	private static String[] attVentas = { "fecha", "numero", "cliente.empresa.razonSocial", "vendedor_.nombre",
 			"condicionPago.descripcion" };
 
-	private static String[] colVentas = { "Fecha", "Número", "Cliente",
-			"Vendedor", "Condición" };
+	private static String[] colVentas = { "Fecha", "Número", "Cliente", "Vendedor", "Condición" };
 
 	private static String[] tipos = { Config.TIPO_DATE, Config.TIPO_STRING,
 			Config.TIPO_STRING, Config.TIPO_STRING, Config.TIPO_STRING,
@@ -563,8 +563,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		String where = "c.estado.sigla like '"
 				+ sigla
 				+ "' and c.sucursal.id = "
-				+ idSuc
-				+ " and ( (c.tipoReservaReparto != null and c.repartidor != '') or (c.tipoReservaReparto = null and c.repartidor = '') )";
+				+ idSuc;
 
 		BuscarElemento b = new BuscarElemento();
 		b.setTitulo("Pedidos Pendientes de Facturar - Sucursal: "
@@ -675,7 +674,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		boolean servicio = false;
 		for (VentaDTO ventaDTO : ventas) {
 			total_vtas += ventaDTO.getTotalImporteGsSinIva();
-			if (ventaDTO.getVendedor_().toUpperCase().equals("SERVICIO")) {
+			if (ventaDTO.getVendedor__().toUpperCase().equals("SERVICIO")) {
 				servicio = true;
 			}
 		}
@@ -719,7 +718,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 	private boolean isStockDisponible(VentaDTO pedido) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		for (VentaDetalleDTO item : pedido.getDetalles()) {
-			long stock = rr.getStockDisponible(item.getArticulo().getId(), Configuracion.ID_DEPOSITO_PRINCIPAL);
+			long stock = rr.getStockDisponible(item.getArticulo().getId(), pedido.getDeposito().getId());
 			if (stock < item.getCantidad()) {
 				return false;
 			}
@@ -1533,9 +1532,9 @@ public class CajaPeriodoControlBody extends BodyApp {
 	 * Despliega el Reporte de Cobro..
 	 */
 	private void imprimirCobro() throws Exception {
-		String source = ReportesViewModel.SOURCE_RECIBO_COBRO;
+		//String source = ReportesViewModel.SOURCE_RECIBO_COBRO;
 		Map<String, Object> params = new HashMap<String, Object>();
-		JRDataSource dataSource = new ReciboCobroDataSource();
+		//JRDataSource dataSource = new ReciboCobroDataSource();
 		params.put("RazonSocial", this.reciboDTO.getRazonSocial());
 		params.put("Ruc", this.reciboDTO.getRuc());
 		params.put("Numero", this.reciboDTO.getNumero());
@@ -1543,7 +1542,9 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("ImporteTotal",
 				FORMATTER.format(this.reciboDTO.getTotalImporteGs()));
 		params.put("Usuario", this.getUs().getNombre());
-		this.imprimirComprobante(source, params, dataSource);
+		//this.imprimirComprobante(source, params, dataSource);
+		this.win = (Window) Executions.createComponents(ZUL_IMPRESION_RECIBO, this.mainComponent, params);
+		this.win.doModal();
 	}
 	
 	/**
@@ -1593,13 +1594,6 @@ public class CajaPeriodoControlBody extends BodyApp {
 	 */
 	private void imprimirVenta(VentaDTO venta) throws Exception {
 		this.selectedVenta = venta;
-		
-		String source = ReportesViewModel.SOURCE_VENTA_;
-		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
-			source = ReportesViewModel.SOURCE_VENTA_BATERIAS;
-		}
-		
-		JRDataSource dataSource = new VentaDataSource(venta);
 		String vencimiento = this.m.dateToString(venta.getVencimiento(), Misc.DD_MM_YYYY);
 
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -1608,7 +1602,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("Ruc", venta.getRuc());
 		params.put("Direccion", venta.getDireccion());
 		params.put("Telefono", venta.getTelefono());
-		params.put("Vendedor", venta.getVendedor_().toUpperCase());
+		params.put("Vendedor", venta.getVendedor__().toUpperCase());
 		params.put("FechaEmision", venta.getFechaEmision());
 		params.put("Vencimiento", vencimiento);
 		params.put("CR", venta.isCondicionContado() ? "" : "X");
@@ -1633,9 +1627,9 @@ public class CajaPeriodoControlBody extends BodyApp {
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
 			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA_BAT, this.mainComponent, params);
 			this.win.doModal();
-			//this.imprimirComprobante(source, params, dataSource);
 		} else {
-			this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA, this.mainComponent, params);
+			this.win.doModal();
 		}
 	}
 	
@@ -1652,7 +1646,7 @@ public class CajaPeriodoControlBody extends BodyApp {
 		params.put("Ruc", venta.getRuc());
 		params.put("Direccion", venta.getDireccion());
 		params.put("Telefono", venta.getTelefono());
-		params.put("Vendedor", venta.getVendedor_().toUpperCase());
+		params.put("Vendedor", venta.getVendedor__().toUpperCase());
 		params.put("FechaEmision", venta.getFechaEmision());
 		params.put("Vencimiento", vencimiento);
 		params.put("CR", venta.isCondicionContado() ? "" : "X");
@@ -1677,11 +1671,9 @@ public class CajaPeriodoControlBody extends BodyApp {
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
 			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA_BAT, this.mainComponent, params);
 			this.win.doModal();
-			//this.imprimirComprobante(source, params, dataSource);
 		} else {
 			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_FACTURA, this.mainComponent, params);
 			this.win.doModal();
-			//this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
 		}
 	}
 
@@ -1756,7 +1748,8 @@ public class CajaPeriodoControlBody extends BodyApp {
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
 			this.imprimirComprobante(source, params, dataSource);
 		} else {
-			this.imprimirComprobante_nc(source, params, dataSource, ReportesViewModel.FORMAT_HTML);
+			this.win = (Window) Executions.createComponents(ZUL_IMPRESION_NOTACREDITO, this.mainComponent, params);
+			this.win.doModal();
 		}
 	}
 

@@ -40,6 +40,19 @@ public class AssemblerArticulo extends Assembler {
 		this.myPairToDomain(dto, domain, "articuloParte");
 		this.myPairToDomain(dto, domain, "articuloLinea");
 		this.myPairToDomain(dto, domain, "articuloUnidadMedida");
+		
+		this.myPairToDomain(dto, domain, "familia");
+		this.myPairToDomain(dto, domain, "marca");
+		this.myPairToDomain(dto, domain, "grupo");
+		this.myPairToDomain(dto, domain, "subgrupo");
+		this.myPairToDomain(dto, domain, "linea");
+		this.myPairToDomain(dto, domain, "sublinea");
+		this.myPairToDomain(dto, domain, "aplicacion");
+		this.myPairToDomain(dto, domain, "modelo");
+		this.myPairToDomain(dto, domain, "API");
+		this.myPairToDomain(dto, domain, "procedencia");
+		this.myPairToDomain(dto, domain, "indiceCarga");
+		this.myPairToDomain(dto, domain, "lado");
 
 		this.myArrayToDomain(dto, domain, "articuloPresentacion");
 
@@ -64,6 +77,19 @@ public class AssemblerArticulo extends Assembler {
 		this.domainToMyPair(domain, dto, "articuloParte");
 		this.domainToMyPair(domain, dto, "articuloLinea");
 		this.domainToMyPair(domain, dto, "articuloUnidadMedida");
+		
+		this.domainToMyPair(domain, dto, "familia");
+		this.domainToMyPair(domain, dto, "marca");
+		this.domainToMyPair(domain, dto, "grupo");
+		this.domainToMyPair(domain, dto, "subgrupo");
+		this.domainToMyPair(domain, dto, "linea");
+		this.domainToMyPair(domain, dto, "sublinea");
+		this.domainToMyPair(domain, dto, "aplicacion");
+		this.domainToMyPair(domain, dto, "modelo");
+		this.domainToMyPair(domain, dto, "API");
+		this.domainToMyPair(domain, dto, "procedencia");
+		this.domainToMyPair(domain, dto, "indiceCarga");
+		this.domainToMyPair(domain, dto, "lado");
 
 		this.listaDomainToListaDTO(domain, dto, "proveedorArticulos",
 				new AssemblerProveedorArticulo());

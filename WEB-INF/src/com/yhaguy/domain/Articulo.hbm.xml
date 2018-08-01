@@ -19,9 +19,13 @@
 		<property name="observacion" />
 		<property name="peso" />
 		<property name="volumen" />
+		<property name="peso_" />
+		<property name="volumen_" />
 		<property name="costoGs" />
 		<property name="costoDs" />
 		<property name="precioGs" />
+		<property name="precioMinoristaGs" />
+		<property name="precioListaGs" />
 		<property name="fechaAlta" />
 		<property name="prioridad" />
 		<property name="completo" />
@@ -32,16 +36,42 @@
 		
 		<many-to-one name="articuloEstado" class="com.coreweb.domain.Tipo"
 			column="idArticuloEstado" lazy="false" />
-		<many-to-one name="articuloFamilia" class="com.coreweb.domain.Tipo"
-			column="idArticuloFamilia" lazy="false" />
-		<many-to-one name="articuloMarca" class="com.coreweb.domain.Tipo"
-			column="idArticuloMarca" lazy="false" />
-		<many-to-one name="articuloParte" class="com.coreweb.domain.Tipo"
-			column="idArticuloParte" lazy="false" />
-		<many-to-one name="articuloLinea" class="com.coreweb.domain.Tipo"
-			column="idArticuloLinea" lazy="false" />
-		<many-to-one name="articuloUnidadMedida" class="com.coreweb.domain.Tipo"
-			column="idArticuloUnidadMedida" lazy="false" />
+						
+		<many-to-one name="familia" class="com.yhaguy.domain.ArticuloFamilia"
+			column="id_familia" lazy="false" />
+			
+		<many-to-one name="marca" class="com.yhaguy.domain.ArticuloMarca"
+			column="id_marca" lazy="false" />
+			
+		<many-to-one name="grupo" class="com.yhaguy.domain.ArticuloGrupo"
+			column="id_grupo" lazy="false" />
+			
+		<many-to-one name="subgrupo" class="com.yhaguy.domain.ArticuloSubGrupo"
+			column="id_subgrupo" lazy="false" />
+			
+		<many-to-one name="linea" class="com.yhaguy.domain.ArticuloLinea"
+			column="id_linea" lazy="false" />
+			
+		<many-to-one name="sublinea" class="com.yhaguy.domain.ArticuloSubLinea"
+			column="id_sublinea" lazy="false" />
+			
+		<many-to-one name="aplicacion" class="com.yhaguy.domain.ArticuloAplicacion"
+			column="id_aplicacion" lazy="false" />
+			
+		<many-to-one name="modelo" class="com.yhaguy.domain.ArticuloModelo"
+			column="id_modelo" lazy="false" />
+			
+		<many-to-one name="API" class="com.yhaguy.domain.ArticuloAPI"
+			column="id_api" lazy="false" />
+			
+		<many-to-one name="procedencia" class="com.yhaguy.domain.ArticuloProcedencia"
+			column="id_procedencia" lazy="false" />
+			
+		<many-to-one name="indiceCarga" class="com.yhaguy.domain.ArticuloIndicecarga"
+			column="id_indicecarga" lazy="false" />
+			
+		<many-to-one name="lado" class="com.yhaguy.domain.ArticuloLado"
+			column="id_lado" lazy="false" />
 
 		<many-to-one name="articuloPresentacion" class="com.yhaguy.domain.ArticuloPresentacion"
 			column="idArticuloPresentacion" lazy="false" />

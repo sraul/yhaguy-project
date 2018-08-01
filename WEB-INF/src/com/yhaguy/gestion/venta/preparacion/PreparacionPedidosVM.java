@@ -96,6 +96,7 @@ public class PreparacionPedidosVM extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		venta.setEstado(rr.getTipoPorSigla(Configuracion.SIGLA_VENTA_ESTADO_CERRADO));
 		venta.setFecha(new Date());
+		venta.setAuxi("");
 		rr.saveObject(venta, this.getLoginNombre());
 		this.distribuirPedidos();
 		this.editando = false;
@@ -211,8 +212,9 @@ public class PreparacionPedidosVM extends SimpleViewModel {
 	public List<Venta> getPedidosPendientes() throws Exception {
 		Date desde = Utiles.getFecha(Utiles.getDateToString(Utiles.agregarDias(new Date(), -7), 
 				Utiles.DD_MM_YYYY + " 00:00:00"));
+		long idSucursal = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		return rr.getPedidosPendientesAprobacion(desde, new Date());
+		return rr.getPedidosPendientesAprobacion(desde, new Date(), idSucursal);
 	}
 	
 	/**
@@ -371,8 +373,9 @@ public class PreparacionPedidosVM extends SimpleViewModel {
 	 */
 	public List<String> getPreparadores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		return out;

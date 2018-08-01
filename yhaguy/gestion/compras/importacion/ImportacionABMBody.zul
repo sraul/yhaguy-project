@@ -7,15 +7,11 @@
 		<tabbox id="tbx" width="100%" vflex="1">
 			<tabs>
 				<tab id="tab1" label="Datos Generales" width="170px" />
-				<tab id="tab2" label="Solicitud Cotización"
-					width="170px" />
+				<tab id="tab2" label="Solicitud Cotización" width="170px" />
 				<tab id="tab3" label="Proforma" width="170px" />
-				<tab id="tab4" label="Factura Importación"
-					width="170px" />
-				<tab id="tab5" label="Recepción Mercaderías"
-					width="170px" />
-				<tab id="tab6" label="Resumen de Despacho"
-					width="170px" />
+				<tab id="tab4" label="Factura Importación" width="170px" />
+				<tab id="tab5" label="Recepción Mercaderías" width="170px" />
+				<tab id="tab6" label="Resumen de Despacho" width="170px" />
 				<tab id="tab7" label="Costo Final" width="170px" />
 				<tab id="tab8" label="Precios" width="170px" />
 			</tabs>
@@ -1270,40 +1266,26 @@
 							</template>
 						</combobox>
 					</hlayout>
-					<listbox vflex="true" sclass="small-list">
+					<listbox vflex="true" sclass="small-list"
+						model="@load(vm.selectedImportacionFactura.detalles)">
 						<custom-attributes org.zkoss.zul.listbox.autoSort="true" />
 						<listhead>
-							<listheader label="Código" style="text-align:center" width="150px" sort="auto(pos1)" onCreate='self.sort(true)' />
+							<listheader label="Código" style="text-align:center" width="150px" sort="auto(articulo.codigoInterno)" onCreate='self.sort(true)' />
 							<listheader label="Descripción" style="text-align:center" />
-							<listheader label="Costo Actual Gs." style="text-align:center" align="right" width="120px" />
-							<listheader label="Costo Final Gs." style="text-align:center" align="right" width="120px" />
-							<listheader label="Costo Final U$D" style="text-align:center" align="right"  width="120px" />
-							<listheader label="Costo Final Iva Inc." style="text-align:center" align="right" width="140px" />
-							<listheader label="Precio Actual" style="text-align:center" align="right" width="120px" />
-							<listheader label="Precio Sugerido" style="text-align:center" align="right" width="120px" />
-							<listheader label="Precio Final" style="text-align:center" align="right" width="100px" />
-							<listheader label="Margen Gs." style="text-align:center" align="right" width="120px" />
-							<listheader label="Margen %" style="text-align:center" align="right" width="120px" />
+							<listheader label="Mayorista Gs." style="text-align:center" align="right" width="200px" />
+							<listheader label="Margen %" style="text-align:center" align="right" width="100px" />
+							<listheader label="Minorista Gs." style="text-align:center" align="right" width="200px" />
+							<listheader label="Lista Gs." style="text-align:center" align="right" width="200px" />
 						</listhead>
 						<template name="model">
 							<listitem>
-								<listcell label="@load(each.pos1)" />
-								<listcell label="@load(each.pos2)" />
-								<listcell label="@load(each.pos7) @converter(vm.cnv.monedaLocal)" />
-								<listcell label="@load(each.pos5) @converter(vm.cnv.monedaLocal)" />
-								<listcell label="@load(each.pos6) @converter(vm.cnv.monedaExtranjera)" />
-								<listcell label="@load(each.pos10) @converter(vm.cnv.monedaLocal)" />
-								<listcell>
-									<hlayout valign="bottom">
-										<label value="@load(each.pos8) @converter(vm.cnv.monedaLocal)"></label>
-										<div width="5px" />
-										<checkbox tooltiptext="mantener este precio.."></checkbox>
-									</hlayout>
-								</listcell>
-								<listcell label="@load(each.pos9) @converter(vm.cnv.monedaLocal)" />
-								<listcell label="@load(each.pos9) @converter(vm.cnv.monedaLocal)" />
-								<listcell label="@load(each.pos11) @converter(vm.cnv.monedaLocal)" />
-								<listcell label="@load(each.pos12) @converter(vm.cnv.monedaLocal)" />
+								<listcell label="@load(each.articulo.codigoInterno)" />
+								<listcell label="@load(each.descripcion)" />
+								<listcell label="@load(each.precioFinalGs) @converter(vm.cnv.monedaLocal)" />
+								<listcell label="@load(each.getMargen(vm.dto.resumenGastosDespacho.tipoCambio, vm.dto.resumenGastosDespacho.coeficiente)) 
+									@converter('formatedNumber', format='###,##0.00')" />
+								<listcell label="@load(each.minoristaGs) @converter(vm.cnv.monedaLocal)" />
+								<listcell label="@load(each.listaGs) @converter(vm.cnv.monedaLocal)" />
 							</listitem>
 						</template>
 						<listfoot>
@@ -1312,7 +1294,6 @@
 									<label value="@load(vm.itemsCostoFinalSize)" style="font-weight:bold" />
 								</hlayout>
 							</listfooter>
-							<listfooter span="10"></listfooter>
 						</listfoot>
 					</listbox>
 				</tabpanel>				

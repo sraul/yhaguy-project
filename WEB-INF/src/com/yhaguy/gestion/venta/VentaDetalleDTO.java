@@ -6,6 +6,7 @@ import com.coreweb.dto.DTO;
 import com.coreweb.util.MyArray;
 import com.coreweb.util.MyPair;
 import com.yhaguy.Configuracion;
+import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.RegisterDomain;
 
 @SuppressWarnings("serial")
@@ -49,9 +50,14 @@ public class VentaDetalleDTO extends DTO {
 	 */
 	private double coef_descuento = 0;
 	
+	@DependsOn("listaPrecio")
+	public boolean isListaPrecioMayorista() {
+		return this.listaPrecio.getId().longValue() == ArticuloListaPrecio.ID_MAYORISTA;
+	}
+	
 	@DependsOn({ "precioGs", "cantidad", "descuentoUnitarioGs" })
 	public double getImporteGs() {
-		return (this.precioGs * this.cantidad) - this.descuentoUnitarioGs;
+		return (this.precioGs * this.cantidad) - (this.descuentoUnitarioGs * this.cantidad);
 	}
 	
 	@DependsOn({ "precioGs", "cantidad" })
@@ -105,6 +111,13 @@ public class VentaDetalleDTO extends DTO {
 		if (this.isIva5() == false)
 			return 0;
 		return this.getMisc().calcularIVA((this.getImporteGs()), 5);
+	}
+	
+	@DependsOn("precioGs")
+	public double getIva10Unitario() {
+		if (this.isIva10() == false)
+			return 0;
+		return this.getMisc().calcularIVA((this.precioGs), 10);
 	}
 	
 	/**

@@ -64,9 +64,6 @@ public class NotaCreditoDataSource implements JRDataSource, Cloneable {
 
 	@Override
 	public boolean next() throws JRException {
-		System.out.println("---- INDEX: " + index);
-		System.out.println("---- NOTACREDITO: " + notacredito);
-		System.out.println("---- DETALLES: " + getDetalles());
 		if (index < this.getDetalles().size() - 1) {
 			index++;
 			return true;

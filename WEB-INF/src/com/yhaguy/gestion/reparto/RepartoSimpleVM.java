@@ -108,14 +108,12 @@ public class RepartoSimpleVM extends SoloViewModel {
 	 * @return las transferencias para reparto..
 	 */
 	public List<MyArray> getTransferencias() throws Exception {
-
 		long idTipoTransf = this.getIdTipoTransfExterna();
 		long idEstadoTransf = this.getIdEstadoTransfConfirmada();
+		long idSuc = this.dato.getAcceso().getSucursalOperativa().getId();
 
 		RegisterDomain rr = RegisterDomain.getInstance();
-		List<Transferencia> transferencias = rr.getTransferenciasParaReparto(
-				idTipoTransf, idEstadoTransf);
-
+		List<Transferencia> transferencias = rr.getTransferenciasParaReparto(idTipoTransf, idEstadoTransf, idSuc);
 		return this.getTransferenciasMyArray(transferencias);
 	}	
 
@@ -123,15 +121,14 @@ public class RepartoSimpleVM extends SoloViewModel {
 	 * @return las ventas para reparto..
 	 */
 	public List<MyArray> getVentas(String numero) throws Exception {
-		long idTmPedidoVenta = this.getIdTmPedidoVenta();
-
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Venta> ventas;
+		long idSuc = this.dato.getAcceso().getSucursalOperativa().getId();
 		
 		if (Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS)) {
 			ventas = rr.getVentasParaRepartoBaterias(numero);
 		} else {
-			ventas = rr.getVentasParaReparto(idTmPedidoVenta);
+			ventas = rr.getVentasParaReparto(numero, idSuc);
 		}
 
 		return this.getVentasMyArray(ventas);
@@ -173,6 +170,7 @@ public class RepartoSimpleVM extends SoloViewModel {
 		out.setPos9(tipoMovimiento);
 		out.setPos10(venta.getCliente().getDireccion());
 		out.setPos11(venta.getPesoTotal());
+		out.setPos12(venta.getSucursal().getDescripcion());
 		
 		return out;
 	}
@@ -208,6 +206,7 @@ public class RepartoSimpleVM extends SoloViewModel {
 		out.setPos8(detalles[2]);
 		out.setPos9(tipoMovimiento);
 		out.setPos11(0.0);
+		out.setPos12(transf.getSucursal().getDescripcion());
 		return out;
 	}
 	
@@ -222,12 +221,13 @@ public class RepartoSimpleVM extends SoloViewModel {
 		double totalUnitario = 0;
 
 		for (VentaDetalle item : venta.getDetalles()) {
+			String flia = item.getArticulo().getFamilia() != null ? item.getArticulo().getFamilia().getDescripcion() : "S/FAMILIA";
 			MyArray det = new MyArray();
 			det.setId(item.getId());
 			det.setPos1(item.getArticulo().getCodigoInterno());
 			det.setPos2(item.getArticulo().getDescripcion());
 			det.setPos3(item.getCantidad());
-			det.setPos4(item.getArticulo().getArticuloFamilia().getDescripcion());
+			det.setPos4(flia);
 			det.setPos5(item.getCantidadEntregada());
 
 			cantArt = cantArt + item.getCantidad();
@@ -251,12 +251,12 @@ public class RepartoSimpleVM extends SoloViewModel {
 		double costoTotal = 0;
 
 		for (TransferenciaDetalle item : transf.getDetalles()) {
+			String flia = item.getArticulo().getFamilia() != null ? item.getArticulo().getFamilia().getDescripcion() : "S/FAMILIA";
 			MyArray det = new MyArray();
 			det.setPos1(item.getArticulo().getCodigoInterno());
 			det.setPos2(item.getArticulo().getDescripcion());
 			det.setPos3(item.getCantidad());
-			det.setPos4(item.getArticulo().getArticuloFamilia()
-					.getDescripcion());
+			det.setPos4(flia);
 			
 			cantArt = cantArt + item.getCantidadEnviada();
 			costoTotal = costoTotal + item.getCosto();
@@ -286,14 +286,6 @@ public class RepartoSimpleVM extends SoloViewModel {
 	
 	private MyArray getTmRemision() {
 		return this.getUtil().getTmNotaRemision();
-	}
-	
-	private MyArray getTmPedidoVenta() {
-		return this.getUtil().getTmPedidoVenta();
-	}
-	
-	private long getIdTmPedidoVenta() {
-		return this.getTmPedidoVenta().getId().longValue();
 	}
 	
 	private long getIdTipoTransfExterna() {

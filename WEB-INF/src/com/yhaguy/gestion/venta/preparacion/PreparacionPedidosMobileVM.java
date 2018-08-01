@@ -14,6 +14,8 @@ import org.zkoss.bind.annotation.DependsOn;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventQueues;
 import org.zkoss.zk.ui.select.Selectors;
@@ -26,6 +28,7 @@ import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.domain.VentaDetalle;
+import com.yhaguy.inicio.AccesoDTO;
 import com.yhaguy.util.Utiles;
 
 public class PreparacionPedidosMobileVM extends SimpleViewModel {
@@ -33,6 +36,8 @@ public class PreparacionPedidosMobileVM extends SimpleViewModel {
 	private String filterNumero = "";
 	private String selectedPreparador;
 	private Venta selectedVenta;
+	
+	private AccesoDTO acceso = null;
 	
 	@Init
 	public void init() {
@@ -156,7 +161,7 @@ public class PreparacionPedidosMobileVM extends SimpleViewModel {
 		Date desde = Utiles.getFecha(Utiles.getDateToString(Utiles.agregarDias(new Date(), -7), Utiles.DD_MM_YYYY + " 00:00:00"));
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Venta> out = new ArrayList<Venta>();
-		for (Venta venta : rr.getPedidosPendientesAprobacion(desde, new Date())) {
+		for (Venta venta : rr.getPedidosPendientesAprobacion(desde, new Date(), this.getAcceso().getSucursalOperativa().getId())) {
 			if (venta.getPreparadoPor().equals(this.selectedPreparador)) {
 				out.add(venta);
 			}
@@ -169,11 +174,20 @@ public class PreparacionPedidosMobileVM extends SimpleViewModel {
 	 */
 	public List<String> getPreparadores() throws Exception {
 		List<String> out = new ArrayList<String>();
+		long idSuc = this.getAcceso().getSucursalOperativa().getId();
 		RegisterDomain rr = RegisterDomain.getInstance();
-		for (Funcionario func : rr.getFuncionariosDeposito()) {
+		for (Funcionario func : rr.getFuncionariosDeposito(idSuc)) {
 			out.add(func.getRazonSocial().toUpperCase());
 		}
 		return out;
+	}
+	
+	public AccesoDTO getAcceso() {
+		if (this.acceso == null){
+			Session s = Sessions.getCurrent();
+			this.acceso = (AccesoDTO) s.getAttribute(Configuracion.ACCESO);
+		}
+		return acceso;
 	}
 	
 	public String getFilterNumero() {

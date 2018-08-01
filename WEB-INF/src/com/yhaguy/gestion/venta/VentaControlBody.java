@@ -45,8 +45,8 @@ import com.yhaguy.domain.ArticuloDeposito;
 import com.yhaguy.domain.ArticuloListaPrecio;
 import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
-import com.yhaguy.domain.Deposito;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.Vendedor;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.gestion.bancos.libro.ControlBancoMovimiento;
 import com.yhaguy.gestion.caja.recibos.ReciboFormaPagoDTO;
@@ -197,7 +197,7 @@ public class VentaControlBody extends BodyApp {
 		} else {
 			where += sigla;
 		}		
-		return new VentaBrowser(where, this.tipo);
+		return new VentaBrowser(where, this.getSucursal().getText(), this.tipo);
 	}	
 	
 	@Override
@@ -392,6 +392,7 @@ public class VentaControlBody extends BodyApp {
 		out.setCondicionPago(desde.getCondicionPago());
 		out.setDeposito(desde.getDeposito());
 		out.setVendedor(desde.getVendedor());
+		out.setVendedor_(desde.getVendedor_());
 		out.setDetalles(this.crearDetalleDesde(desde.getDetallesDesglose(desglose)));
 		out.setEstado(estado);
 		out.setFecha(new Date());
@@ -401,6 +402,7 @@ public class VentaControlBody extends BodyApp {
 		out.setSucursal(desde.getSucursal());
 		out.setVencimiento(desde.getVencimiento());
 		out.setModoVenta(desde.getModoVenta());
+		out.setEntrega(desde.getEntrega());
 		out.setReparto(desde.isReparto());
 		out.setPuntoPartida(desde.getPuntoPartida());
 		out.setFechaTraslado(desde.getFechaTraslado());
@@ -424,7 +426,7 @@ public class VentaControlBody extends BodyApp {
 							Configuracion.NRO_VENTA_PEDIDO, 7));
 
 		} else if (crearFacturaContado == true) {
-			out.setDeposito(new MyPair(Deposito.ID_DEPOSITO_PRINCIPAL));
+			out.setDeposito(desde.getDeposito());
 			out.setAtendido(desde.getAtendido());
 			out.setNumeroPresupuesto(desde.getNumeroPresupuesto());
 			out.setNumeroPedido(desde.getNumero());
@@ -433,7 +435,7 @@ public class VentaControlBody extends BodyApp {
 			out.setNumero(desde.getNumerosFacturas().get(desglose - 1));
 
 		} else if (crearFacturaCredito == true) {
-			out.setDeposito(new MyPair(Deposito.ID_DEPOSITO_PRINCIPAL));
+			out.setDeposito(desde.getDeposito());
 			out.setAtendido(desde.getAtendido());
 			out.setNumeroPresupuesto(desde.getNumeroPresupuesto());
 			out.setNumeroPedido(desde.getNumero());
@@ -459,7 +461,7 @@ public class VentaControlBody extends BodyApp {
 			if (crearPedido == false) {
 				for (VentaDetalleDTO item : out.getDetalles()) {
 					RegisterDomain rr = RegisterDomain.getInstance();
-					ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), Configuracion.ID_DEPOSITO_PRINCIPAL);
+					ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), out.getDeposito().getId());
 					ControlArticuloStock.actualizarStock(adp.getId(), item.getCantidad() * -1, this.getLoginNombre());
 					ControlArticuloStock.addMovimientoStock(out.getId(), out
 							.getTipoMovimiento().getId(), item.getCantidad()
@@ -1248,13 +1250,39 @@ public class VentaControlBody extends BodyApp {
 		vendedor.setId(usuarioFuncionario.getId());
 		vendedor.setPos1(usuarioFuncionario.getPos1());
 		
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Cliente cliente = rr.getClienteById(utilDto.getClienteOcasional().getId());
+		Vendedor vend = rr.getVendedor_((String) usuarioFuncionario.getPos1());
+		MyArray vendedor_ = new MyArray();
+		if (vend != null) {
+			vendedor_.setId(vend.getId());
+			vendedor_.setPos1(vend.getNombre());
+			vendedor_.setPos2(vend.getDependencia());
+		}
+		
+		MyArray cli = new MyArray();
+		cli.setPos1(cliente.getCodigoEmpresa()); 
+		cli.setPos2(cliente.getRazonSocial()); 
+		cli.setPos3(cliente.getRuc()); 
+		cli.setPos4(cliente.getIdEmpresa());
+		cli.setPos5(new MyPair(cliente.getTipoCliente().getId()));
+		cli.setPos6(cliente.getDireccion());
+		cli.setPos7(cliente.getTelefono());
+		cli.setPos8(cliente.getNombreFantasia());
+		cli.setPos9(cliente.isCuentaBloqueada());
+		cli.setPos10(cliente.getNombre());
+		cli.setPos11(cliente.isVentaCredito());
+		cli.setPos12(cliente.getLimiteCredito());
+		
 		out.setTipoMovimiento(this.tipoMovimiento);
 		out.setEstado(this.estado);	
 		out.setCondicionPago(utilDto.getCondicionPagoContado());
 		out.setMoneda(this.utilDto.getMonedaGuaraniConSimbolo());
 		out.setTipoCambio(this.utilDto.getCambioCompraBCP(out.getMoneda()));
+		out.setCliente(cli);
 		out.setAtendido(usuarioFuncionario);
 		out.setVendedor(vendedor);
+		out.setVendedor_(vendedor_);
 		out.setSucursal(sucursal);
 		out.setDeposito(deposito);
 		out.setModoVenta(this.getUsuarioPropiedad().getModoVenta(utilDto.getModosVenta()));
@@ -1264,11 +1292,7 @@ public class VentaControlBody extends BodyApp {
 			out.setReparto(true);
 			out.setVendedor(new MyArray());
 		}
-		
-		// en mra el pedido lo prepara el vendedor de mostrador..
-		if (Configuracion.empresa.equals(Configuracion.EMPRESA_MRA)) {
-			out.setPreparadoPor((String) usuarioFuncionario.getPos1());
-		}
+		BindUtils.postNotifyChange(null, null, this, "*");
 	}
 	
 	/**
@@ -1292,6 +1316,16 @@ public class VentaControlBody extends BodyApp {
 	public void refreshTipoCambio(){
 		this.dto.setTipoCambio(this.utilDto.getCambioCompraBCP(this.dto.getMoneda()));
 		BindUtils.postNotifyChange(null, null, this.dto, "tipoCambio");
+	}
+	
+	@Command
+	public void setReparto() {
+		String entrega = this.dto.getEntrega();
+		if (entrega.equals(Venta.ENTREGA_REPARTO)) {
+			this.dto.setReparto(true);
+		} else {
+			this.dto.setReparto(false);
+		}
 	}
 	
 	//Para habilitar/deshabilitar el checkmark..
@@ -1632,11 +1666,12 @@ public class VentaControlBody extends BodyApp {
 	
 	/************************ GETTER/SETTER ************************/
 	
-	@DependsOn({ "dto.cliente", "dto.vendedor", "dto.deposito" })
+	@DependsOn({ "dto.cliente", "dto.vendedor_", "dto.deposito", "dto.entrega" })
 	public boolean isDetalleVisible() {
 		return (this.dto.getCliente().esNuevo() == false
 				|| this.dto.getClienteOcasional() != null)
-					&& (!this.dto.getVendedor().esNuevo())
+					&& (!this.dto.getVendedor_().esNuevo())
+					&& (!this.dto.getEntrega().isEmpty())
 					&& (this.dto.getDeposito().esNuevo() == false);
 	}
 	
@@ -1655,6 +1690,33 @@ public class VentaControlBody extends BodyApp {
 	@DependsOn({ "deshabilitado", "dto" })
 	public boolean isCerrarDisabled() throws Exception {
 		return this.isDeshabilitado() || this.dto.esNuevo() || Configuracion.empresa.equals(Configuracion.EMPRESA_BATERIAS);
+	}
+	
+	/**
+	 * @return los tipos de entrega..
+	 */
+	public List<String> getTipoEntregas() {
+		List<String> out = new ArrayList<String>();
+		out.add(Venta.ENTREGA_REPARTO);
+		out.add(Venta.ENTREGA_EMPAQUE);
+		out.add(Venta.ENTREGA_TRANSPORTADORA);
+		out.add(Venta.ENTREGA_COLECTIVO);
+		return out;
+	}
+	
+	/**
+	 * @return los vendedores..
+	 */
+	public List<MyArray> getVendedores_() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<Vendedor> list = rr.getVendedores_();
+		for (Vendedor vendedor : list) {
+			MyArray my = new MyArray(vendedor.getNombre(), vendedor.getDependencia());
+			my.setId(vendedor.getId());
+			out.add(my);
+		}
+		return out;
 	}
 	
 	/**
@@ -1687,7 +1749,9 @@ public class VentaControlBody extends BodyApp {
 			out.setPos2(cli.getListaPrecio().getMargen());
 			out.setPos3(cli.getListaPrecio().getFormula());
 		} else {
-			ArticuloListaPrecio lp = rr.getListaDePrecio(2);
+			String dependencia = (String) this.dto.getVendedor_().getPos2();
+			long idlistaprecio = dependencia.equals(Vendedor.VENDEDOR_EXTERNO) ? ArticuloListaPrecio.ID_MAYORISTA : ArticuloListaPrecio.ID_LISTA;
+			ArticuloListaPrecio lp = rr.getListaDePrecio(idlistaprecio);
 			if (lp != null) {
 				out = new MyArray(lp.getDescripcion(), lp.getMargen(), lp.getFormula());
 				out.setId(lp.getId());
@@ -1707,13 +1771,6 @@ public class VentaControlBody extends BodyApp {
 		out.add(this.getDtoUtil().getCondicionPagoContado());
 		out.add(this.getDtoUtil().getCondicionPagoCredito90());
 		return out;
-	}
-	
-	/**
-	 * @return los depositos..
-	 */
-	public List<MyPair> getDepositos() {
-		return this.getDtoUtil().getDepositosMyPair();
 	}
 	
 	public VentaDTO getDto() {

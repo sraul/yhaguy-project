@@ -28,7 +28,7 @@ public class AssemblerVenta extends Assembler {
 			"numeroPresupuesto", "numeroPedido", "numeroFactura", "numeroPlanillaCaja",
 			"totalImporteGs", "totalImporteDs", "reparto",
 			"puntoPartida", "fechaTraslado", "fechaFinTraslado", "repartidor",
-			"cedulaRepartidor", "marcaVehiculo", "chapaVehiculo", "denominacion", "validez" };
+			"cedulaRepartidor", "marcaVehiculo", "chapaVehiculo", "denominacion", "validez", "entrega" };
 
 	private static String[] attCliente = { "codigoEmpresa", "razonSocial",
 			"ruc", "idEmpresa", "tipoCliente", "direccion", "telefono",
@@ -59,6 +59,7 @@ public class AssemblerVenta extends Assembler {
 		this.myArrayToDomain(dto, domain, "estado");
 		this.myArrayToDomain(dto, domain, "atendido");
 		this.myArrayToDomain(dto, domain, "vendedor");
+		this.myArrayToDomain(dto, domain, "vendedor_");
 		this.myArrayToDomain(dto, domain, "condicionPago");
 		this.myPairToDomain(dto, domain, "modoVenta");
 		this.myPairToDomain(dto, domain, "estadoComprobante");
@@ -99,6 +100,7 @@ public class AssemblerVenta extends Assembler {
 		this.domainToMyArray(dom, dto, "estado", attTipo);
 		this.domainToMyArray(domain, dto, "atendido", new String[] { "descripcion" });
 		this.domainToMyArray(domain, dto, "vendedor", new String[] { "descripcion" });
+		this.domainToMyArray(domain, dto, "vendedor_", new String[] { "nombre", "dependencia" });
 		this.domainToMyArray(domain, dto, "cliente", attCliente);
 		this.domainToMyArray(domain, dto, "condicionPago", attCondicionPago);
 		this.domainToMyPair(dom, dto, "deposito");

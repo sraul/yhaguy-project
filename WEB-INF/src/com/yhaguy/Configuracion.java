@@ -831,11 +831,11 @@ public class Configuracion extends Config {
 	public static String SIGLA_TIPO_BANCOS_TERCEROS_GNB = "BCO-TER-GNB";
 	public static String SIGLA_TIPO_BANCOS_TERCEROS_DOBRASIL = "BCO-TER-DBRA";
 
-	public static String SIGLA_TIPO_CTA_CONTABLE_ACTIVO = "CTA-CBL-ACT";
-	public static String SIGLA_TIPO_CTA_CONTABLE_PASIVO = "CTA-CBL-PAS";
-	public static String SIGLA_TIPO_CTA_CONTABLE_PATRIMONIO = "CTA-CBL-PAT-NET";
-	public static String SIGLA_TIPO_CTA_CONTABLE_INGRESO = "CTA-CBL-ING";
-	public static String SIGLA_TIPO_CTA_CONTABLE_EGRESO = "CTA-CBL-EGR";
+	public static final String SIGLA_TIPO_CTA_CONTABLE_ACTIVO = "CTA-CBL-ACT";
+	public static final String SIGLA_TIPO_CTA_CONTABLE_PASIVO = "CTA-CBL-PAS";
+	public static final  String SIGLA_TIPO_CTA_CONTABLE_PATRIMONIO = "CTA-CBL-PAT-NET";
+	public static final  String SIGLA_TIPO_CTA_CONTABLE_INGRESO = "CTA-CBL-ING";
+	public static final  String SIGLA_TIPO_CTA_CONTABLE_EGRESO = "CTA-CBL-EGR";
 	
 	public static final String SIGLA_TIPO_RUBRO_EMP_ASEGURADORA = "RUB-EMP-ASE";
 

@@ -23,6 +23,7 @@ public class CtaCteEmpresaMovimiento extends Domain {
 	private double saldo = 0;
 	private double tipoCambio = 0;
 	private long idVendedor;
+	private String cartera;
 	private TipoMovimiento tipoMovimiento;
 	private Tipo tipoCaracterMovimiento;
 	private Tipo moneda;
@@ -364,5 +365,13 @@ public class CtaCteEmpresaMovimiento extends Domain {
 
 	public void setTipoCambio(double tipoCambio) {
 		this.tipoCambio = tipoCambio;
+	}
+
+	public String getCartera() {
+		return cartera;
+	}
+
+	public void setCartera(String cartera) {
+		this.cartera = cartera;
 	}
 }

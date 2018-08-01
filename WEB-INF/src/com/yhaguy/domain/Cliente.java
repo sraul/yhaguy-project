@@ -21,14 +21,25 @@ public class Cliente extends Domain {
 	private boolean ventaCredito;
 	private double limiteCredito;
 	
+	private double descuentoBaterias;
+	private double descuentoCubiertas;
+	private double descuentoFiltros;
+	private double descuentoLubricantes;
+	private double descuentoRepuestos;
+	
+	private String departamento;
+	private String ciudad;
+	
 	private Empresa empresa;
 	private Tipo estadoCliente;
 	private Tipo categoriaCliente;
 	private Tipo tipoCliente;
-	private ArticuloListaPrecio listaPrecio;
 	private CuentaContable cuentaContable;
 	private Set<ContactoInterno> contactosInternos = new HashSet<ContactoInterno>();
 	private Funcionario cobrador;
+	
+	private Vendedor vendedor;
+	private ArticuloListaPrecio listaPrecio;
 	
 	/**
 	 * @return true si el cliente coincide con el ruc..
@@ -322,5 +333,69 @@ public class Cliente extends Domain {
 
 	public void setListaPrecio(ArticuloListaPrecio listaPrecio) {
 		this.listaPrecio = listaPrecio;
+	}
+
+	public double getDescuentoBaterias() {
+		return descuentoBaterias;
+	}
+
+	public void setDescuentoBaterias(double descuentoBaterias) {
+		this.descuentoBaterias = descuentoBaterias;
+	}
+
+	public double getDescuentoCubiertas() {
+		return descuentoCubiertas;
+	}
+
+	public void setDescuentoCubiertas(double descuentoCubiertas) {
+		this.descuentoCubiertas = descuentoCubiertas;
+	}
+
+	public double getDescuentoFiltros() {
+		return descuentoFiltros;
+	}
+
+	public void setDescuentoFiltros(double descuentoFiltros) {
+		this.descuentoFiltros = descuentoFiltros;
+	}
+
+	public double getDescuentoLubricantes() {
+		return descuentoLubricantes;
+	}
+
+	public void setDescuentoLubricantes(double descuentoLubricantes) {
+		this.descuentoLubricantes = descuentoLubricantes;
+	}
+
+	public double getDescuentoRepuestos() {
+		return descuentoRepuestos;
+	}
+
+	public void setDescuentoRepuestos(double descuentoRepuestos) {
+		this.descuentoRepuestos = descuentoRepuestos;
+	}
+
+	public Vendedor getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedor vendedor) {
+		this.vendedor = vendedor;
+	}
+
+	public String getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(String departamento) {
+		this.departamento = departamento;
+	}
+
+	public String getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(String ciudad) {
+		this.ciudad = ciudad;
 	}
 }

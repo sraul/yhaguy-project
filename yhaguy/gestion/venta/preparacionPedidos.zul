@@ -4,7 +4,10 @@
 	id="win" onCreate="@command('distribuirPedidos_')"
 	onLater="@command('clearProgress')">
 	
-	<hbox style="margin:0px 10px 0px 10px; border-bottom:solid 1px #428bca" width="99%">
+	<hbox style="margin:5px 10px 5px 10px; border-bottom:solid 1px #428bca" width="99%">
+		<space></space>
+		<label value="@load(vm.acceso.sucursalOperativa.text)"
+			sclass="label label-primary" style="font-size:10pt"></label>
 		<space></space>
 		<a label="PEDIDOS PARA PREPARAR:" sclass="subtitulo_"
 			onClick="@command('mostrarPedidosEnCola')"></a>

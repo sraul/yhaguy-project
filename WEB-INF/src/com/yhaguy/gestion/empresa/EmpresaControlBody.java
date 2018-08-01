@@ -29,6 +29,7 @@ import com.yhaguy.ID;
 import com.yhaguy.domain.CtaCteEmpresaMovimiento;
 import com.yhaguy.domain.Empresa;
 import com.yhaguy.domain.EmpresaGrupoSociedad;
+import com.yhaguy.domain.EmpresaRubro;
 import com.yhaguy.domain.Localidad;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.comun.ControlLogicaEmpresa;
@@ -953,8 +954,6 @@ public abstract class EmpresaControlBody extends BodyApp {
 		}
 	}
 
-	// **********************************AgendaCtaCte**************************************//
-
 	private List<Object[]> eventosAgenda = new ArrayList<Object[]>();
 
 	public List<Object[]> getEventosAgenda() {
@@ -999,5 +998,23 @@ public abstract class EmpresaControlBody extends BodyApp {
 		evento[3] = texto;
 		evento[4] = link;
 		this.eventosAgenda.add(evento);
+	}	
+	
+	
+	/**
+	 * GETS / SETS
+	 */
+	
+	@SuppressWarnings("unchecked")
+	public List<MyArray> getRubros() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		RegisterDomain rr = RegisterDomain.getInstance();		
+		List<EmpresaRubro> list = rr.getObjects(EmpresaRubro.class.getName());
+		for (EmpresaRubro rubro : list) {
+			MyArray my = new MyArray(rubro.getDescripcion());
+			my.setId(rubro.getId());
+			out.add(my);
+		}
+		return out;
 	}
 }

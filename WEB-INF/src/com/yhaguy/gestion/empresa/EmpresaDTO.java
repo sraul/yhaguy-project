@@ -40,6 +40,8 @@ public class EmpresaDTO extends DTO {
 	private String userlocation = "";
 	
 	private boolean cuentaBloqueada;
+	
+	private MyArray rubro;
 
 	List<MyPair> monedas = new ArrayList<MyPair>();
 	List<MyPair> rubroEmpresas = new ArrayList<MyPair>();
@@ -317,5 +319,13 @@ public class EmpresaDTO extends DTO {
 
 	public void setCorreo_(String correo_) {
 		this.correo_ = correo_;
+	}
+
+	public MyArray getRubro() {
+		return rubro;
+	}
+
+	public void setRubro(MyArray rubro) {
+		this.rubro = rubro;
 	}
 }

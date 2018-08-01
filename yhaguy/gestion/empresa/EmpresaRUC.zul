@@ -4,9 +4,8 @@
 			<vlayout spacing="0">
 				<field value="País" />
 				<combobox model="@load(vm.dtoUtil.paisEmpresas)"
-					value="@load(vm.dtoEmp.pais)"
+					value="@load(vm.dtoEmp.pais.toString().toUpperCase())"
 					selectedItem="@bind(vm.dtoEmp.pais)"
-					constraint="${vm.check.noVacio}"
 					onChange="@command('verificarPais', comp1=ruc, comp2=ci)"
 					instant="true"
 					hflex="true">
@@ -18,14 +17,12 @@
 			<vlayout spacing="0">
 				<field value="Ruc" />
 				<textbox id="ruc" value="@bind(vm.dtoEmp.ruc)"
-					constraint="${vm.check.ruc}"
 					placeholder="En blanco si no tiene ruc.." 
 					hflex="true"/>
 			</vlayout>
 			<vlayout spacing="0">
 				<field value="Cédula" />
-				<textbox id="ci" value="@bind(vm.dtoEmp.ci)"
-					constraint="${vm.check.noVacio}" readonly="@load(vm.ciReadonly)" 
+				<textbox id="ci" value="@bind(vm.dtoEmp.ci)" readonly="@load(vm.ciReadonly)" 
 					hflex="true"/>
 			</vlayout>
 			
