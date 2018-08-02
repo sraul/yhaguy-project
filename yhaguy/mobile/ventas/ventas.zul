@@ -129,7 +129,7 @@
 			<longbox hflex="true" value="@bind(vm.selectedDetalle.cantidad)"></longbox>
 			<space></space>
 			<label value="Lista de Precio" sclass="mobile" />
-			<textbox value="MAYORISTA" sclass="mobile" />
+			<textbox value="MAYORISTA" readonly="true" sclass="mobile" hflex="true" />
 			<space></space>
 			<label value="Precio Iva Incluído" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold"
