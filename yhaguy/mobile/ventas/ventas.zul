@@ -91,8 +91,7 @@
 			emptyMessage="BUSQUE UN ARTÍCULO.."
 			style="overflow:auto" vflex="1"
 			model="@load(vm.articulos)" selectedItem="@bind(vm.selectedArticulo)"
-			visible="false"
-			onSelect="@command('setPrecioGs')">
+			visible="false">
 			<listhead>
 				<listheader />
 				<listheader width="15%" align="right"/>
@@ -136,7 +135,7 @@
 			<doublebox style="text-align:right;font-weight:bold"
 				format="###,###,###,##0" hflex="true" 
 				readonly="true"
-				value="@load(vm.selectedDetalle.precioGs)"/>
+				value="@load(vm.selectedArticulo.precioGs)"/>
 			<space></space>
 			<label value="Importe" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold"

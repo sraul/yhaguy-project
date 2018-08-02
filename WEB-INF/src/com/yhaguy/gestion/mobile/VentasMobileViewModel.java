@@ -76,6 +76,7 @@ public class VentasMobileViewModel extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		this.selectedDetalle = new VentaDetalle();
 		this.selectedDetalle.setArticulo(this.selectedArticulo);
+		this.selectedDetalle.setPrecioGs(this.selectedArticulo.getPrecioGs());
 		this.selectedDetalle.setTipoIVA(rr.getTipoPorSigla(Configuracion.SIGLA_IVA_10));
 		comp1.setVisible(false);
 		comp2.setVisible(true);
@@ -101,12 +102,6 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	@NotifyChange("selectedDetalle")
 	public void selectPrecio() throws Exception {
 		this.setPrecioVentaBaterias();
-	}
-	
-	@Command
-	@NotifyChange("selectedDetalle")
-	public void setPrecioGs() {
-		this.selectedDetalle.setPrecioGs(this.selectedArticulo.getPrecioGs());
 	}
 	
 	@Command
