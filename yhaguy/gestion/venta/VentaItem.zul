@@ -167,6 +167,22 @@
 				<row>
 					<hlayout>
 						<space></space>
+						<label value="Precio Unitario *:" />
+					</hlayout>
+					<hlayout>
+						<guaranibox
+							value="@bind(vm.det.precioGs)"
+							onChange="@command('validarPrecio', comp=self)"
+							hflex="true" />
+						<label
+							value="@load(vm.utilDto.simboloMonedaLocal)"
+							sclass="label-moneda" />
+						<space></space>
+					</hlayout>
+				</row>
+				<row>
+					<hlayout>
+						<space></space>
 						<label value="Precio Unitario:" />
 					</hlayout>
 					<hlayout>
