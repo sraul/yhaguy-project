@@ -43,7 +43,7 @@
 			</listhead>
 			<template name="model">
 			<listitem>
-				<listcell label="@load(each.empresa.razonSocial)" />
+				<listcell label="@load(each.nombre)" />
 			</listitem>
 		</template>
 		</listbox>
