@@ -112,10 +112,11 @@ public class VentasMobileViewModel extends SimpleViewModel {
 			Clients.showNotification("STOCK INSUFICIENTE..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
 			return;
 		}
+		/**
 		if (!this.validarLineaCredito()) {
 			Clients.showNotification("LINEA DE CREDITO INSUFICIENTE..", Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
 			return;
-		}
+		} **/
 		RegisterDomain rr = RegisterDomain.getInstance();
 		Venta venta = new Venta();
 		venta.setVendedor_(this.selectedVendedor);
@@ -248,6 +249,7 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	 * 
 	 * @return true si la linea de credito es valida..
 	 */
+	/**
 	private boolean validarLineaCredito() throws Exception {
 		boolean out = true;
 		double importeVenta = this.getTotalImporteGs();
@@ -256,7 +258,7 @@ public class VentasMobileViewModel extends SimpleViewModel {
 			out = false;
 		}
 		return out;
-	}
+	} **/
 	
 	/**
 	 * GETS / SETS
