@@ -15,6 +15,7 @@ public class ArticuloListaPrecio extends Domain {
 	public static final String LISTA = "LISTA";
 	public static final String MAYORISTA = "MAYORISTA";
 	public static final String MINORISTA = "MINORISTA";
+	public static final String DOLARES = "U$D";
 	
 	private String descripcion;
 	private String formula;

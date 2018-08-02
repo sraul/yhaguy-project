@@ -27,6 +27,7 @@ public class Venta extends Domain {
 	public static final String ENTREGA_EMPAQUE = "EMPAQUE";
 	public static final String ENTREGA_TRANSPORTADORA = "TRANSPORTADORA";
 	public static final String ENTREGA_COLECTIVO = "COLECTIVO";
+	public static final String ENTREGA_SERVICIO = "SERVICIO";
 
 	/** Presupuesto o Pedido */
 	private TipoMovimiento tipoMovimiento;

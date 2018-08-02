@@ -460,12 +460,14 @@ public class VentaControlBody extends BodyApp {
 			
 			if (crearPedido == false) {
 				for (VentaDetalleDTO item : out.getDetalles()) {
-					RegisterDomain rr = RegisterDomain.getInstance();
-					ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), out.getDeposito().getId());
-					ControlArticuloStock.actualizarStock(adp.getId(), item.getCantidad() * -1, this.getLoginNombre());
-					ControlArticuloStock.addMovimientoStock(out.getId(), out
-							.getTipoMovimiento().getId(), item.getCantidad()
-							* -1, adp.getId(), this.getLoginNombre());
+					if (!((String) item.getArticulo().getPos1()).startsWith("@")) {
+						RegisterDomain rr = RegisterDomain.getInstance();
+						ArticuloDeposito adp = rr.getArticuloDeposito(item.getArticulo().getId(), out.getDeposito().getId());
+						ControlArticuloStock.actualizarStock(adp.getId(), item.getCantidad() * -1, this.getLoginNombre());
+						ControlArticuloStock.addMovimientoStock(out.getId(), out
+								.getTipoMovimiento().getId(), item.getCantidad()
+								* -1, adp.getId(), this.getLoginNombre());
+					}
 				}
 			}
 		}
@@ -526,13 +528,15 @@ public class VentaControlBody extends BodyApp {
 		long idDep = this.dto.getDeposito().getId();
 		
 		for (VentaDetalleDTO item : items) {
-			long idArt = item.getArticulo().getId();
-			long cant = item.getCantidad();
-			long stock = this.ctr.stockDisponible(idArt, idDep);
-			if (cant > stock) {
-				out = false;
-				msgError = msgError + "\n - " + item.getArticulo().getPos1() 
-						+ " -pedido: " + cant + " -stock: " + stock;
+			if (!((String) item.getArticulo().getPos1()).startsWith("@")) {
+				long idArt = item.getArticulo().getId();
+				long cant = item.getCantidad();
+				long stock = this.ctr.stockDisponible(idArt, idDep);
+				if (cant > stock) {
+					out = false;
+					msgError = msgError + "\n - " + item.getArticulo().getPos1() 
+							+ " -pedido: " + cant + " -stock: " + stock;
+				}
 			}
 		}		
 		return new Object[]{ out, msgError };
@@ -1285,6 +1289,7 @@ public class VentaControlBody extends BodyApp {
 		out.setVendedor_(vendedor_);
 		out.setSucursal(sucursal);
 		out.setDeposito(deposito);
+		out.setPreparadoPor((String) usuarioFuncionario.getPos1());
 		out.setModoVenta(this.getUsuarioPropiedad().getModoVenta(utilDto.getModosVenta()));
 		
 		// las ventas de yhaguy baterias se hacen por reparto..
@@ -1606,13 +1611,14 @@ public class VentaControlBody extends BodyApp {
 			mensajeError += "\n" + stockMsg;
 		}
 		
+		/**
 		// verifica el saldo disponible..
 		double importeVenta = this.dto.getTotalImporteGs();
 		double disponible = this.dto.getCreditoDisponible();
 		if ((!this.dto.isCondicionContado()) && (importeVenta > disponible)) {
 			out = false;
 			mensajeError += "\n - LINEA DE CREDITO INSUFICIENTE..";
-		}
+		} **/
 		
 		return out;
 	}
@@ -1701,6 +1707,7 @@ public class VentaControlBody extends BodyApp {
 		out.add(Venta.ENTREGA_EMPAQUE);
 		out.add(Venta.ENTREGA_TRANSPORTADORA);
 		out.add(Venta.ENTREGA_COLECTIVO);
+		out.add(Venta.ENTREGA_SERVICIO);
 		return out;
 	}
 	

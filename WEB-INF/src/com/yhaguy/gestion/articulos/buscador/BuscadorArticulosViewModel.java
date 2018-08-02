@@ -36,8 +36,6 @@ import com.yhaguy.domain.ArticuloListaPrecioDetalle;
 import com.yhaguy.domain.ArticuloPrecioJedisoft;
 import com.yhaguy.domain.ArticuloUbicacion;
 import com.yhaguy.domain.Deposito;
-import com.yhaguy.domain.ImportacionPedidoCompra;
-import com.yhaguy.domain.ImportacionPedidoCompraDetalle;
 import com.yhaguy.domain.RegisterDomain;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
 import com.yhaguy.util.Utiles;
@@ -104,7 +102,6 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 	public void obtenerValores() throws Exception {
 		this.obtenerPrecio();
 		this.obtenerExistencia();
-		this.obtenerImportacionesEnCurso();
 	}
 	
 	@Command
@@ -191,25 +188,6 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 		this.existencia = this.getExistencia(idArticulo);
 	}
 	
-	/**
-	 * obtiene los datos de importacion en curso..
-	 */
-	private void obtenerImportacionesEnCurso() throws Exception {
-		this.importaciones = new ArrayList<MyArray>();
-		long idArticulo = this.selectedItem.getId();
-		RegisterDomain rr = RegisterDomain.getInstance();
-		for (ImportacionPedidoCompra imp : rr.getImportacionesEnCurso()) {
-			for (ImportacionPedidoCompraDetalle det : imp.getImportacionPedidoCompraDetalle()) {
-				if (det.getArticulo().getId().longValue() == idArticulo) {
-					MyArray my = new MyArray();
-					my.setPos1(imp.getNumeroPedidoCompra());
-					my.setPos2(det.getCantidad());
-					this.importaciones.add(my);
-				}
-			}
-		}
-	}
-	
 	@DependsOn({ "codInterno", "codOriginal", "codProveedor", "descripcion" })
 	public List<MyArray> getArticulos() {
 		this.setSelectedItem(null);
@@ -258,19 +236,14 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 	 */
 	private List<MyArray> getPrecios(long idArticulo, long idDeposito) throws Exception {
 		List<MyArray> out = new ArrayList<MyArray>();
-		Object[] costoInf = this.getCostoArticulo(idArticulo, idDeposito);
-		double costo = (double) costoInf[0];
-		
-		for (MyArray precio : this.getListasDePrecio()) {
-			double precioGs = this.getPrecioVenta(costo, (int) precio.getPos2());
-			MyArray my = new MyArray();
-			my.setPos1(precio.getPos1());
-			my.setPos2(precioGs);
-			my.setPos3(precioGs);
-			my.setPos4(precioGs);
-			my.setPos5(Utiles.getNumberFormat(precioGs));
-			out.add(my);
-		}		
+		RegisterDomain rr = RegisterDomain.getInstance();
+		Articulo art = rr.getArticuloById(idArticulo);
+		out.add(new MyArray(ArticuloListaPrecio.LISTA, art.getPrecioListaGs()));
+		if (this.isOperacionHabilitada("verPrecios")) {
+			out.add(new MyArray(ArticuloListaPrecio.MINORISTA, art.getPrecioMinoristaGs()));
+			out.add(new MyArray(ArticuloListaPrecio.MAYORISTA, art.getPrecioGs()));
+			out.add(new MyArray(ArticuloListaPrecio.DOLARES, art.getPrecioDs()));
+		}
 		return out;
 	}
 	
@@ -506,7 +479,9 @@ public class BuscadorArticulosViewModel extends SimpleViewModel {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Deposito> deps = rr.getDepositos();
 		for (Deposito dep : deps) {
-			out.add(new MyPair(dep.getId(), dep.getDescripcion()));
+			if (dep.getIp_pc() != null && dep.getIp_pc().equals("1")) {
+				out.add(new MyPair(dep.getId(), dep.getDescripcion()));
+			}
 		}
 		return out;
 	}

@@ -39,17 +39,8 @@
 			model="@load(vm.vendedores)" selectedItem="@bind(vm.selectedVendedor)"
 			visible="false">
 			<listhead>
-				<listheader />
+				<listheader label="SELECCIONE UN VENDEDOR" style="font-size:26pt;text-align:center" />
 			</listhead>
-			<auxhead>
-				<auxheader>
-					<hlayout>
-						<textbox hflex="true" sclass="filter-mobile"
-							instant="true" 
-							value="@bind(vm.razonSocialVendedor)"/>
-					</hlayout>
-				</auxheader>
-			</auxhead>
 			<template name="model">
 			<listitem>
 				<listcell label="@load(each.empresa.razonSocial)" />
@@ -100,7 +91,8 @@
 			emptyMessage="BUSQUE UN ARTÍCULO.."
 			style="overflow:auto" vflex="1"
 			model="@load(vm.articulos)" selectedItem="@bind(vm.selectedArticulo)"
-			visible="false">
+			visible="false"
+			onSelect="@command('setPrecioGs')">
 			<listhead>
 				<listheader />
 				<listheader width="15%" align="right"/>
@@ -138,27 +130,13 @@
 			<longbox hflex="true" value="@bind(vm.selectedDetalle.cantidad)"></longbox>
 			<space></space>
 			<label value="Lista de Precio" sclass="mobile" />
-			<combobox hflex="true"
-				model="@load(vm.listaPrecio)"
-				selectedItem="@bind(vm.selectedDetalle.listaPrecio)"
-				onSelect="@command('selectPrecio')"
-				value="@load(vm.selectedDetalle.listaPrecio.descripcion)">
-				<template name="model">
-					<comboitem label="@load(each.descripcion)"/>
-				</template>
-			</combobox>
+			<textbox value="MAYORISTA" sclass="mobile" />
 			<space></space>
 			<label value="Precio Iva Incluído" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold"
 				format="###,###,###,##0" hflex="true" 
 				readonly="true"
 				value="@load(vm.selectedDetalle.precioGs)"/>
-			<space></space>
-			<label value="Descuento" sclass="mobile" />
-			<doublebox style="text-align:right;font-weight:bold;color:red"
-				format="###,###,###,##0" hflex="true" 
-				value="@bind(vm.selectedDetalle.descuentoUnitarioGs)"
-				readonly="true"/>
 			<space></space>
 			<label value="Importe" sclass="mobile" />
 			<doublebox style="text-align:right;font-weight:bold"
@@ -180,7 +158,14 @@
 			<label value="Observación" sclass="mobile" />
 			<textbox hflex="true" rows="10"
 				value="@bind(vm.observacion)"></textbox>
-			
+			<space></space>
+			<label value="Entrega" sclass="mobile" />
+			<combobox hflex="true" model="@load(vm.tipoEntregas)"
+				selectedItem="@bind(vm.entrega)">
+				<template name="model">
+					<comboitem label="@load(each)"></comboitem>
+				</template>
+			</combobox>
 		</vlayout>
 		
 		<vlayout id="vl_generado" vflex="true" visible="false" style="padding:30px">			

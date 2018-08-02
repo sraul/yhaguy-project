@@ -718,9 +718,11 @@ public class CajaPeriodoControlBody extends BodyApp {
 	private boolean isStockDisponible(VentaDTO pedido) throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		for (VentaDetalleDTO item : pedido.getDetalles()) {
-			long stock = rr.getStockDisponible(item.getArticulo().getId(), pedido.getDeposito().getId());
-			if (stock < item.getCantidad()) {
-				return false;
+			if (!((String) item.getArticulo().getPos1()).startsWith("@")) {
+				long stock = rr.getStockDisponible(item.getArticulo().getId(), pedido.getDeposito().getId());
+				if (stock < item.getCantidad()) {
+					return false;
+				}
 			}
 		}
 		return true;

@@ -98,12 +98,13 @@ public class VentaDTO extends DTO {
 			return;
 		}
 		try {
+			/**
 			if ((!this.isCondicionContado()) && (this.getCreditoDisponible() < this.getTotalImporteGs())) {
 				this.condicionPago = this.getCondicionContado();
 				Clients.showNotification(
 						"SALDO INSUFICIENTE PARA VENTA CRÉDITO..",
 						Clients.NOTIFICATION_TYPE_ERROR, null, null, 0);
-			}
+			} **/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

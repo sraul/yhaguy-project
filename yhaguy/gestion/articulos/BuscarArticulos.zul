@@ -78,7 +78,7 @@
 				<hbox width="60px" style="margin-right:10px">
 					<toolbarbutton image="/core/images/table_chart.png"
 					tooltiptext="Ver Historial" onClick="@command('loadHistorico')"
-					disabled="@load(vm.selectedItem eq null? 'true':'false')" />
+					disabled="true" />
 				<toolbarbutton image="/core/images/camara.png"
 					tooltiptext="Ver Foto.." onClick="@command('verImagen')"
 					disabled="@load(vm.selectedItem eq null? 'true':'false')" />
@@ -149,15 +149,14 @@
 				<listheader/>
 				<listheader align="right" width="200px"/>
 				<listheader width="30px" align="center"/>
-				<listheader width="30px" align="center" visible="@load(vm.loginNombre eq 'hugog' or vm.loginNombre eq 'david')"/>
+				<listheader width="30px" align="center" visible="@load(vm.loginNombre eq 'fazz' or vm.loginNombre eq 'david')"/>
 			</listhead>
 			<template name="model">
 				<listitem>
 					<listcell label="@load(each.pos1)"/>
-					<listcell label="@load(each.pos5)"/>
+					<listcell label="@load(each.pos2) @converter('formattedNumber', format=each.pos1 eq 'U$D'? '###,###,###.00':'###,###,###')"/>
 					<listcell>						
-						<a image="/core/images/accessories-calculator-3.png"
-							onClick='calc.open(self, "after_end")'></a>
+						<a image="/core/images/accessories-calculator-3.png"></a>
 					</listcell>
 					<listcell>						
 						<a image="/core/images/lock_open.png"
@@ -168,41 +167,6 @@
 			</template>
 		</listbox>
 	</hlayout>
-	
-	<popup id="calc" sclass="rounded" onOpen="@command('reloadCalc')">
-		<grid sclass="vgrid" width="200px">
-			<columns>
-				<column/>
-				<column align="right"/>
-			</columns>
-			<rows>
-				<row>
-					<hlayout>
-						<toolbarbutton iconSclass="z-icon-plus" sclass="custom-tbutton" style="color:green"/>
-						<intbox width="40px" style="background:lightyellow; text-align:right"
-							onOK="@command('calculadora')"
-							value="@bind(vm.calcPorcentaje)"/>
-						<field value="%" />
-						<field value="=" />
-					</hlayout>
-					<label value="@load(vm.selectedPrecio.pos3) @converter('formattedNumber', format='###,###,###')" 
-						style="font-weight:bold;color:green"/>
-				</row>
-				<row>
-					<hlayout>
-						<toolbarbutton iconSclass="z-icon-minus" sclass="custom-tbutton" style="color:red"/>
-						<intbox width="40px" style="background:lightyellow; text-align:right"
-							onOK="@command('calculadora')"
-							value="@bind(vm.calcPorcentaje_)"/>
-						<field value="%" />
-						<field value="=" />
-					</hlayout>
-					<label value="@load(vm.selectedPrecio.pos4) @converter('formattedNumber', format='###,###,###')" 
-						style="font-weight:bold;color:red"/>
-				</row>
-			</rows>
-		</grid>
-	</popup>
 	
 	<popup id="unlock" sclass="rounded" onOpen="@command('reloadCalc')">
 		<grid sclass="vgrid" width="250px">
@@ -215,10 +179,10 @@
 					<hlayout>
 						<guaranibox style="background:lightyellow; text-align:right"
 							placeholder="Monto.."
-							value="@bind(vm.selectedPrecio.pos4)"/>
+							value="@bind(vm.selectedPrecio.pos2)"/>
 						<field value="Gs." />
 					</hlayout>
-					<label value="@load(vm.selectedPrecio.pos4) @converter('formattedNumber', format='###,###,###')" 
+					<label value="@load(vm.selectedPrecio.pos2) @converter('formattedNumber', format='###,###,###')" 
 						style="font-weight:bold;color:green"/>
 				</row>
 				<row>

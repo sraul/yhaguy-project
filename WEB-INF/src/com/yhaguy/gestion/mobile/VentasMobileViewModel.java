@@ -25,8 +25,8 @@ import com.yhaguy.domain.Cliente;
 import com.yhaguy.domain.CondicionPago;
 import com.yhaguy.domain.Deposito;
 import com.yhaguy.domain.Empresa;
-import com.yhaguy.domain.Funcionario;
 import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.Vendedor;
 import com.yhaguy.domain.Venta;
 import com.yhaguy.domain.VentaDetalle;
 import com.yhaguy.gestion.comun.ControlArticuloCosto;
@@ -39,9 +39,10 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	private String codigoInterno = "";
 	private String observacion = "";
 	private String numero = "";
+	private String entrega = "";
 	
 	private Empresa selectedEmpresa;
-	private Funcionario selectedVendedor;
+	private Vendedor selectedVendedor;
 	private Deposito selectedDeposito;
 	private CondicionPago selectedCondicion;
 	private Articulo selectedArticulo;
@@ -103,6 +104,12 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	}
 	
 	@Command
+	@NotifyChange("selectedDetalle")
+	public void setPrecioGs() {
+		this.selectedDetalle.setPrecioGs(this.selectedArticulo.getPrecioGs());
+	}
+	
+	@Command
 	@NotifyChange("*")
 	public void generarPedidoVenta(@BindingParam("comp1") Component comp1, @BindingParam("comp2") Component comp2,
 			@BindingParam("comp3") Component comp3, @BindingParam("comp4") Component comp4) throws Exception {
@@ -116,10 +123,10 @@ public class VentasMobileViewModel extends SimpleViewModel {
 		}
 		RegisterDomain rr = RegisterDomain.getInstance();
 		Venta venta = new Venta();
-		venta.setAtendido(this.selectedVendedor);
-		venta.setVendedor(this.selectedVendedor);
+		venta.setVendedor_(this.selectedVendedor);
 		venta.setCedulaRepartidor("");
 		venta.setChapaVehiculo("");
+		venta.setEntrega(this.entrega);
 		venta.setCliente(rr.getClienteByEmpresa(this.selectedEmpresa.getId()));
 		venta.setCondicionPago(this.selectedCondicion);
 		venta.setCuotas(0);
@@ -146,8 +153,8 @@ public class VentasMobileViewModel extends SimpleViewModel {
 		venta.setPuntoPartida("");
 		venta.setRepartidor("");
 		venta.setReparto(true);
-		venta.setSucursal(rr.getSucursalAppById(2));
-		venta.setTipoCambio(0);
+		venta.setSucursal(rr.getSucursalAppById(Long.parseLong(venta.getDeposito().getAuxi())));
+		venta.setTipoCambio(1);
 		venta.setTipoMovimiento(rr.getTipoMovimientoBySigla(Configuracion.SIGLA_TM_PEDIDO_VENTA));
 		venta.setTotalImporteGs(venta.getImporteGs());
 		venta.setValidez(0);
@@ -269,13 +276,12 @@ public class VentasMobileViewModel extends SimpleViewModel {
 		return rr.getEmpresas("", "", this.razonSocial, "");
 	}
 	
-	@DependsOn("razonSocialVendedor")
-	public List<Funcionario> getVendedores() throws Exception {
-		if (this.razonSocialVendedor.isEmpty()) {
-			return new ArrayList<Funcionario>();
-		}
+	/**
+	 * @return los vendedores..
+	 */
+	public List<Vendedor> getVendedores() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		return rr.getFuncionarios(this.razonSocialVendedor);
+		return rr.getVendedores_();
 	}
 	
 	@DependsOn("codigoInterno")
@@ -296,7 +302,14 @@ public class VentasMobileViewModel extends SimpleViewModel {
 	 */
 	public List<Deposito> getDepositos() throws Exception {
 		RegisterDomain rr = RegisterDomain.getInstance();
-		return rr.getDepositosPorSucursal((long) 2);
+		List<Deposito> out = new ArrayList<Deposito>();
+		List<Deposito> list = rr.getDepositos();
+		for (Deposito deposito : list) {
+			if (deposito.getIp_pc() != null && deposito.getIp_pc().equals("1")) {
+				out.add(deposito);
+			}
+		}
+		return out;
 	}
 	
 	/**
@@ -338,6 +351,19 @@ public class VentasMobileViewModel extends SimpleViewModel {
 				out.add(lp);
 			}
 		}
+		return out;
+	}
+	
+	/**
+	 * @return los tipos de entrega..
+	 */
+	public List<String> getTipoEntregas() {
+		List<String> out = new ArrayList<String>();
+		out.add(Venta.ENTREGA_REPARTO);
+		out.add(Venta.ENTREGA_EMPAQUE);
+		out.add(Venta.ENTREGA_TRANSPORTADORA);
+		out.add(Venta.ENTREGA_COLECTIVO);
+		out.add(Venta.ENTREGA_SERVICIO);
 		return out;
 	}
 	
@@ -386,11 +412,11 @@ public class VentasMobileViewModel extends SimpleViewModel {
 		this.razonSocialVendedor = razonSocialVendedor;
 	}
 
-	public Funcionario getSelectedVendedor() {
+	public Vendedor getSelectedVendedor() {
 		return selectedVendedor;
 	}
 
-	public void setSelectedVendedor(Funcionario selectedVendedor) {
+	public void setSelectedVendedor(Vendedor selectedVendedor) {
 		this.selectedVendedor = selectedVendedor;
 	}
 
@@ -464,5 +490,13 @@ public class VentasMobileViewModel extends SimpleViewModel {
 
 	public void setNumero(String numero) {
 		this.numero = numero;
+	}
+
+	public String getEntrega() {
+		return entrega;
+	}
+
+	public void setEntrega(String entrega) {
+		this.entrega = entrega;
 	}
 }

@@ -135,8 +135,10 @@ public abstract class BodyApp extends Body {
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Deposito> deps = rr.getAllDepositos();
 		for (Deposito deposito : deps) {
-			MyPair dep = new MyPair(deposito.getId(), deposito.getDescripcion(), deposito.getAuxi());
-			out.add(dep);
+			if (deposito.getIp_pc() != null && deposito.getIp_pc().equals("1")) {
+				MyPair dep = new MyPair(deposito.getId(), deposito.getDescripcion(), deposito.getAuxi());
+				out.add(dep);
+			}
 		}
 		Collections.sort(out, new Comparator<MyPair>() {
 			@Override

@@ -31,6 +31,7 @@ public class Articulo extends Domain {
 	private double costoGs;
 	private double costoDs;
 	private double precioGs;
+	private double precioDs;
 	private double precioMinoristaGs;
 	private double precioListaGs;
 	private Date fechaAlta; 
@@ -455,5 +456,13 @@ public class Articulo extends Domain {
 
 	public void setPrecioListaGs(double precioListaGs) {
 		this.precioListaGs = precioListaGs;
+	}
+
+	public double getPrecioDs() {
+		return precioDs;
+	}
+
+	public void setPrecioDs(double precioDs) {
+		this.precioDs = precioDs;
 	}
 }
