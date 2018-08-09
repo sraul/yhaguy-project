@@ -15,7 +15,8 @@ import com.coreweb.util.Misc;
 @SuppressWarnings("serial")
 public class CajaPeriodo extends Domain {
 	
-	public static final String TIPO_VENTA = "CAJA VENTAS";
+	public static final String TIPO_VENTA_CONTADO = "CAJA VENTAS CONTADO";
+	public static final String TIPO_VENTA_CREDITO = "CAJA VENTAS CREDITO";
 	public static final String TIPO_CHICA = "CAJA CHICA";
 	public static final String TIPO_VIATICOS = "CAJA VIATICOS";
 	public static final String TIPO_COBROS = "CAJA COBRANZAS";
@@ -71,7 +72,8 @@ public class CajaPeriodo extends Domain {
 	 */
 	public static List<String> getTipos() {
 		List<String> out = new ArrayList<String>();
-		out.add(TIPO_VENTA);
+		out.add(TIPO_VENTA_CONTADO);
+		out.add(TIPO_VENTA_CREDITO);
 		out.add(TIPO_CHICA);
 		out.add(TIPO_VIATICOS);
 		out.add(TIPO_PAGOS);
@@ -92,7 +94,7 @@ public class CajaPeriodo extends Domain {
 	 * @return si la planilla es de ventas..
 	 */
 	public boolean isCajaVentas() {
-		return this.tipo.equals(TIPO_VENTA);
+		return this.tipo.equals(TIPO_VENTA_CONTADO);
 	}
 	
 	/**
