@@ -46,7 +46,7 @@
 					<label value="@load(each.movimiento.nroComprobante)" sclass="det"></label>
 				</div>		
 				<div width="65px" style="text-align:right">
-					<label value="@load(each.movimiento.montoGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
+					<label value="@load(each.montoGs) @converter(vm.cnv.monedaLocal)" sclass="det"></label>
 				</div>	
 			</hbox>
 		</template>

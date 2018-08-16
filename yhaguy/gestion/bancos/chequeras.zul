@@ -1,5 +1,6 @@
 <window width="100%" height="100%"
-	apply="org.zkoss.bind.BindComposer">
+	apply="org.zkoss.bind.BindComposer"
+	viewModel="@id('vm') @init('com.yhaguy.gestion.bancos.chequeras.BancoChequerasViewModel')">
 	
 	<hlayout sclass="button-container">
 		<button mold="bs" sclass="btn-sm btn-success" 
@@ -12,7 +13,8 @@
 	</hlayout>
 	
 	<listbox sclass="small-list" vflex="true"
-		emptyMessage="SIN REGISTROS DE CHEQUERAS..">
+		emptyMessage="SIN REGISTROS DE CHEQUERAS.."
+		model="@load(vm.chequeras)">
 		<listhead>
 			<listheader label="Fecha"></listheader>
 			<listheader label="Número"></listheader>
@@ -39,6 +41,16 @@
 			<auxheader></auxheader>
 			<auxheader></auxheader>
 		</auxhead>
+		<template name="model">
+			<listitem>
+				<listcell label="@load(each.fecha)"></listcell>
+				<listcell label="@load(each.numero)"></listcell>
+				<listcell label="@load(each.banco.banco.descripcion)"></listcell>
+				<listcell label="@load(each.desde)"></listcell>
+				<listcell label="@load(each.hasta)"></listcell>
+				<listcell></listcell>
+			</listitem>
+		</template>
 		<listfoot>
 			<listfooter label="items"></listfooter>
 		</listfoot>
@@ -62,30 +74,40 @@
 			<rows>
 				<row>
 					<field value="Fecha:" />
-					<datebox hflex="true"></datebox>
+					<datebox hflex="true" value="@bind(vm.n_chequera.fecha)"></datebox>
 				</row>
 				<row>
 					<field value="Número:" />
-					<textbox hflex="true"></textbox>
+					<textbox hflex="true"
+						value="@bind(vm.n_chequera.numero)"></textbox>
 				</row>
 				<row>
 					<field value="Banco:" />
-					<combobox hflex="true"></combobox>
+					<combobox hflex="true" model="@load(vm.bancos)"
+						selectedItem="@bind(vm.n_chequera.banco)"
+						instant="true">
+						<template name="model">
+							<comboitem label="@load(each.banco.descripcion)"></comboitem>
+						</template>
+					</combobox>
 				</row>
 				<row>
 					<field value="Desde:" />
-					<spinner hflex="true"></spinner>
+					<spinner hflex="true"
+						value="@bind(vm.n_chequera.desde)"></spinner>
 				</row>
 				<row>
 					<field value="Hasta:" />
-					<spinner hflex="true"></spinner>
+					<spinner hflex="true"
+						value="@bind(vm.n_chequera.hasta)"></spinner>
 				</row>
 			</rows>
 		</grid>
 		<div height="10px"></div>
 		<hbox width="100%" pack="end">
 			<button mold="bs" sclass="btn-sm btn-success" 
-				iconSclass="z-icon-check" width="150px" style="margin-right:5px"></button>
+				iconSclass="z-icon-check" width="150px" style="margin-right:5px"
+				onClick="@command('addChequera', comp=pop_add)"></button>
 		</hbox>
 	</popup>
 	
