@@ -38,6 +38,28 @@
 						hflex="true" />
 				</row>
 				<row>
+					<field value="Sucursal:" />
+					<combobox hflex="true" model="@load(vm.sucursales)">
+						<template name="model">
+							<comboitem label="@load(each.descripcion)"></comboitem>
+						</template>	
+					</combobox>
+				</row>
+				<row>
+					<field value="Centro de Costo:" />
+					<combobox hflex="true" model="@load(vm.departamentos)"
+						selectedItem="@bind(vm.dato.nvoItem.departamento)"
+						instant="true">
+						<template name="model">
+							<comboitem label="@load(each.pos1)"></comboitem>
+						</template>	
+					</combobox>
+				</row>
+				<row>
+					<field value="Cantidad" />
+					<spinner value="@bind(vm.dato.nvoItem.cantidad)" width="150px"></spinner>
+				</row>
+				<row>
 					<field value="Iva:" />
 					<hlayout>
 						<combobox

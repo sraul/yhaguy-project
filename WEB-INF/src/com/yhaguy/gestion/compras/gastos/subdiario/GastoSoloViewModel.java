@@ -1,5 +1,8 @@
 package com.yhaguy.gestion.compras.gastos.subdiario;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.zkoss.bind.BindUtils;
 import org.zkoss.bind.annotation.AfterCompose;
 import org.zkoss.bind.annotation.BindingParam;
@@ -14,9 +17,13 @@ import org.zkoss.zul.Textbox;
 import com.coreweb.componente.BuscarElemento;
 import com.coreweb.componente.VerificaAceptarCancelar;
 import com.coreweb.control.SoloViewModel;
+import com.coreweb.util.MyArray;
 import com.yhaguy.ID;
 import com.yhaguy.UtilDTO;
 import com.yhaguy.domain.ArticuloGasto;
+import com.yhaguy.domain.DepartamentoApp;
+import com.yhaguy.domain.RegisterDomain;
+import com.yhaguy.domain.SucursalApp;
 
 public class GastoSoloViewModel extends SoloViewModel implements VerificaAceptarCancelar{
 	
@@ -156,6 +163,27 @@ public class GastoSoloViewModel extends SoloViewModel implements VerificaAceptar
 	/**
 	 * GET / SET
 	 */
+	
+	/**
+	 * @return los departamentos..
+	 */
+	public List<MyArray> getDepartamentos() throws Exception {
+		List<MyArray> out = new ArrayList<MyArray>();
+		RegisterDomain rr = RegisterDomain.getInstance();
+		List<DepartamentoApp> deps = rr.getDepartamentosApp();
+		for (DepartamentoApp dep : deps) {
+			MyArray my = new MyArray(dep.getNombre().toUpperCase());
+			my.setId(dep.getId());
+			out.add(my);
+		}
+		return out;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<SucursalApp> getSucursales() throws Exception {
+		RegisterDomain rr = RegisterDomain.getInstance();
+		return rr.getObjects(SucursalApp.class.getName());
+	}
 	
 	public GastoSimpleControl getDato() {
 		return dato;
