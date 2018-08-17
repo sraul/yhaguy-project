@@ -228,7 +228,7 @@ public class GastoSimpleControl extends SoloViewModel implements VerificaAceptar
 		w.setModo(WindowPopup.NUEVO);
 		w.setTitulo("Insertar ítem de Gasto");
 		w.setWidth("470px");
-		w.setHigth("330px");
+		w.setHigth("400px");
 		w.show(Configuracion.INSERTAR_ITEM_GASTO);
 		if (w.isClickAceptar()) {
 			this.dto.getDetalles().add(this.nvoItem);
