@@ -190,38 +190,8 @@
 						<cell colspan="2">
 							<vlayout spacing="5px">
 								<field value="Cliente" />
-								<bandbox hflex="true" readonly="true"
-									value="@load(vm.nvoServicio.cliente.razonSocial)"
-									id="bndCli_">
-									<bandpopup>
-										<listbox sclass="small-list"
-											height="200px" width="600px"
-											model="@load(vm.clientes)"
-											selectedItem="@bind(vm.nvoServicio.cliente)"
-											onSelect="bndCli_.close()">
-											<listhead>
-												<listheader width="130px">
-													<textbox sclass="filter"
-															hflex="true"
-															value="@bind(vm.filterRuc)"
-															instant="true" placeholder="Ruc.." />
-												</listheader>
-												<listheader>
-													<textbox sclass="filter"
-															hflex="true"
-															value="@bind(vm.filterRazonSocial)"
-															instant="true" placeholder="Razón Social.." />
-												</listheader>
-											</listhead>
-											<template name="model">
-												<listitem>
-													<listcell label="@load(each.ruc)"></listcell>
-													<listcell label="@load(each.razonSocial)"></listcell>
-												</listitem>
-											</template>
-										</listbox>
-									</bandpopup>
-								</bandbox>
+								<textbox placeholder="INGRESE EL RUC O NOMBRE DEL CLIENTE.." hflex="true"
+									value="@bind(vm.nvoServicio.cliente_)"></textbox>
 							</vlayout>
 						</cell>						
 					</row>
@@ -329,6 +299,7 @@
 				</auxhead>
 				<template name="model">
 					<listitem>
+						<listcell label="@load(each.numeroFactura)" />
 						<listcell label="@load(each.articulo.codigoInterno)" />
 						<listcell label="@load(each.estado)" />
 						<listcell label="@load(each.verifica_carga)" />

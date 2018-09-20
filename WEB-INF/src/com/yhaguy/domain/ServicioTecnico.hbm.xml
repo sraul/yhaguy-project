@@ -18,6 +18,7 @@
 		<property name="numeroReclamo" />
 		<property name="numeroReparto" />
 		<property name="choferReparto" />
+		<property name="cliente_" />
 		<property name="entregado">
 			<column name="entregado" not-null="true" default="false" />
 		</property>

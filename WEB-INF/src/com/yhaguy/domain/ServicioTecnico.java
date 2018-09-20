@@ -22,7 +22,8 @@ public class ServicioTecnico extends Domain {
 	private boolean entregado;
 	private String numeroReclamo;
 	private String numeroReparto;
-	private String choferReparto;
+	private String choferReparto;	
+	private String cliente_;
 	
 	private Set<Venta> facturas = new HashSet<Venta>();
 	private Set<ServicioTecnicoDetalle> detalles = new HashSet<ServicioTecnicoDetalle>();
@@ -260,5 +261,13 @@ public class ServicioTecnico extends Domain {
 
 	public void setChoferReparto(String choferReparto) {
 		this.choferReparto = choferReparto;
+	}
+
+	public String getCliente_() {
+		return cliente_;
+	}
+
+	public void setCliente_(String cliente_) {
+		this.cliente_ = cliente_;
 	}
 }

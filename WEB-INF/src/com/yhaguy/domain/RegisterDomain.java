@@ -26,6 +26,7 @@ import com.coreweb.domain.Register;
 import com.coreweb.domain.Tipo;
 import com.coreweb.domain.TipoTipo;
 import com.coreweb.domain.Usuario;
+import com.coreweb.extras.csv.CSV;
 import com.coreweb.util.Misc;
 import com.coreweb.util.MyArray;
 import com.yhaguy.Configuracion;
@@ -7183,6 +7184,37 @@ public class RegisterDomain extends Register {
 	}
 	
 	/**
+	 * @return los servicios tecnicos segun parametros..
+	 * [0]:id
+	 * [1]:numero
+	 * [2]:fecha
+	 * [3]:numeroReclamo
+	 * [4]:numeroReparto
+	 * [5]:receptor
+	 * [6]:tecnico
+	 * [7]:razonSocial
+	 * [8]:observaciones
+	 * [9]:diagnostico
+	 * [10]:entregado
+	 */
+	public List<Object[]> getServiciosTecnicosAutocentros(String fecha, String numero, String razonSocial, 
+			String receptor, String tecnico, String entregado) throws Exception {
+		boolean entregado_ = entregado.equals("S") ? true : false;
+		String query = "select s.id, s.numero, s.fecha, COALESCE(s.numeroReclamo, '- - -'), COALESCE(s.numeroReparto, '- - -'),"
+				+ " s.receptor, s.tecnico, s.cliente_, d.observacion, d.diagnostico, s.entregado from ServicioTecnico s join s.detalles d where "
+				+ " s.numero like '%" + numero + "%'"
+				+ " and cast (s.fecha as string) like '%" + fecha + "%'"
+				+ " and upper(s.receptor) like '%" + receptor.toUpperCase() + "%'"
+				+ " and upper(s.tecnico) like '%" + tecnico.toUpperCase() + "%'"
+				+ " and upper(s.cliente_) like '%" + razonSocial.toUpperCase() + "%'";
+				if (entregado.equals("S") || entregado.equals("N")) {
+					query += " and s.entregado = " + entregado_;
+				}
+				query += " order by s.fecha, s.numero";
+		return this.hqlLimit(query, 100);
+	}
+	
+	/**
 	 * @return el historico de movimientos..
 	 */
 	public List<HistoricoMovimientos> getHistoricoMovimientos() throws Exception {
@@ -8439,13 +8471,28 @@ public class RegisterDomain extends Register {
 	}
 	
 	public static void main(String[] args) {
-		RegisterDomain rr = RegisterDomain.getInstance();
-		try {			
-			Venta vta = new Venta();
-			rr.saveObject(vta, "sys");
+		try {
+			RegisterDomain rr = RegisterDomain.getInstance();
+			String src =  "./WEB-INF/docs/migracion/central/PRECIOS_.csv";
 			
+			String[][] cab = { { "Empresa", CSV.STRING } };			
+			String[][] det = { { "CODIGOINTERNO", CSV.STRING }, { "LISTA", CSV.STRING }, { "TEST", CSV.STRING } };
+			
+			CSV csv = new CSV(cab, det, src);
+			csv.start();
+			while (csv.hashNext()) {
+				String codigo = csv.getDetalleString("CODIGOINTERNO");
+				String lista = csv.getDetalleString("LISTA");
+				
+				Articulo art = rr.getArticulo(codigo);
+				art.setPrecioListaGs(Double.parseDouble(lista));
+				rr.saveObject(art, "sys");
+				
+				System.out.println(art.getPrecioListaGs());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 }

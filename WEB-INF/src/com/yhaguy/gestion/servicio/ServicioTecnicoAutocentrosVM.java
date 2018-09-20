@@ -207,7 +207,7 @@ public class ServicioTecnicoAutocentrosVM extends SimpleViewModel {
 		params.put("Fecha", Utiles.getDateToString(orden.getFecha(), Utiles.DD_MM_YYYY));
 		params.put("NroReclamo", orden.getNumero());
 		params.put("Receptor", orden.getReceptor());
-		params.put("Cliente", orden.getCliente().getRazonSocial());
+		params.put("Cliente", orden.getCliente_());
 		params.put("Usuario", getUs().getNombre());
 		this.imprimirComprobante(source, params, dataSource, ReportesViewModel.FORMAT_PDF);
 	}
@@ -407,7 +407,7 @@ public class ServicioTecnicoAutocentrosVM extends SimpleViewModel {
 		Map<String, Object[]> data = new HashMap<String, Object[]>();
 		RegisterDomain rr = RegisterDomain.getInstance();
 		List<Object[]> out = new ArrayList<Object[]>();
-		List<Object[]> list = rr.getServiciosTecnicos_(this.getFilterFecha(), this.filterNumeroServicio,
+		List<Object[]> list = rr.getServiciosTecnicosAutocentros(this.getFilterFecha(), this.filterNumeroServicio,
 				this.filterRazonSocial_, this.filterReceptor, this.filterTecnico, this.filterEntregado);
 		
 		for (Object[] serv : list) {
